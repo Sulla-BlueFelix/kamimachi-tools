@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>旅行の割り勘・立替精算ツール｜誰が誰にいくら払うか自動計算【無料・登録不要】</title>
+<meta name="description" content="旅行や飲み会の立て替えを入力するだけで、誰が誰にいくら払えばいいかを1円単位で自動計算。一部の人だけの支払いにも対応。登録不要・無料、スマホで使えて、結果はLINEにそのまま貼れます。">
+<link rel="canonical" href="https://sulla-bluefelix.github.io/kamimachi-tools/warikan/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="旅行の割り勘・立替精算ツール【無料・登録不要】">
+<meta property="og:description" content="立て替えを入力するだけで、誰が誰にいくら払うかを1円単位で自動計算。">
+<meta property="og:url" content="https://sulla-bluefelix.github.io/kamimachi-tools/warikan/">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"WebApplication","name":"旅行の割り勘・立替精算ツール","url":"https://sulla-bluefelix.github.io/kamimachi-tools/warikan/","applicationCategory":"FinanceApplication","operatingSystem":"Any","inLanguage":"ja","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"}},
+{"@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"一部の人だけが使ったお金も精算できますか？","acceptedAnswer":{"@type":"Answer","text":"できます。支払いごとに「誰の分か」のチェックを外すと、チェックした人だけで割ります。お酒を飲んだ人だけ、などに使えます。"}},
+{"@type":"Question","name":"1円単位の端数はどうなりますか？","acceptedAnswer":{"@type":"Answer","text":"割り切れない1円は、参加者リストの上の人から1円ずつ多く負担する形で配分し、合計が必ず支払額と一致するようにしています。"}},
+{"@type":"Question","name":"入力したデータはどこかに送信されますか？","acceptedAnswer":{"@type":"Answer","text":"送信されません。計算はすべてお使いのブラウザの中で行われ、内容はこの端末にだけ保存されます。共有リンクを作った場合は、リンク自体に内容が含まれます。"}},
+{"@type":"Question","name":"送金の回数を減らせますか？","acceptedAnswer":{"@type":"Answer","text":"はい。多く払った人と少なく払った人を金額の大きい順に組み合わせるので、送金はほとんどの場合「人数−1回」以下に収まります。"}}
+]}]}
+</script>
+<style>
+:root{--bg:#f6f3ec;--card:#fffdf8;--ink:#1d2b30;--sub:#5b6a6c;--line:#d9d3c5;--accent:#0b6b62;--accent-ink:#fff;--warn:#a2412f;--soft:#e7efe9}
+@media (prefers-color-scheme:dark){:root{--bg:#141a1c;--card:#1d2528;--ink:#e8ece9;--sub:#9fb0ad;--line:#33403f;--accent:#3fb3a2;--accent-ink:#0d1716;--warn:#e88a73;--soft:#23312f;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 system-ui,-apple-system,"Hiragino Sans","Noto Sans JP","Yu Gothic UI",sans-serif}
+main{max-width:720px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:clamp(22px,5.4vw,30px);line-height:1.4;margin:8px 0 6px}
+.lead{color:var(--sub);margin:0 0 20px}
+h2{font-size:19px;margin:0 0 10px}
+section.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 16px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input,select{font:inherit;color:inherit;background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:9px 10px;min-width:0}
+input:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px}
+button{font:inherit;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;padding:9px 14px;cursor:pointer}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+button.x{padding:6px 10px;color:var(--sub)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{display:flex;align-items:center;gap:4px;background:var(--soft);border-radius:999px;padding:4px 6px 4px 12px}
+.chip button{border:0;background:none;padding:2px 8px;color:var(--sub)}
+.pay{border-top:1px dashed var(--line);padding:12px 0}
+.pay:first-of-type{border-top:0}
+.pay .row>input[type=text]{flex:1 1 140px}
+.pay .amount{width:120px}
+.who{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:8px;font-size:14px;color:var(--sub)}
+.who label{display:flex;gap:4px;align-items:center}
+.result-line{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:17px}
+.result-line:last-child{border-bottom:0}
+.result-line b{white-space:nowrap}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:right;padding:6px 4px;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left}
+.plus{color:var(--accent)}.minus{color:var(--warn)}
+.muted{color:var(--sub);font-size:14px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px}
+.cta{border:2px solid var(--accent);background:var(--soft)}
+.cta a.btn{display:inline-block;background:var(--accent);color:var(--accent-ink);text-decoration:none;font-weight:700;padding:10px 16px;border-radius:9px;margin-top:6px}
+details{border-top:1px solid var(--line);padding:10px 0}
+summary{cursor:pointer;font-weight:600}
+footer{color:var(--sub);font-size:13px;text-align:center;margin-top:30px}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<main>
+<h1>旅行の割り勘・立替精算ツール</h1>
+<p class="lead">立て替えた支払いを入れるだけで、<strong>誰が誰にいくら払えばいいか</strong>を1円単位で計算します。登録不要・無料。データはこの端末の中だけで処理されます。</p>
+
+<section class="card">
+<h2>1. 参加者</h2>
+<form class="row" id="addPerson">
+<input id="personName" type="text" placeholder="名前（例：たろう）" maxlength="12" style="flex:1 1 160px" aria-label="参加者の名前">
+<button class="primary" type="submit">追加</button>
+</form>
+<div class="chips" id="people"></div>
+</section>
+
+<section class="card">
+<h2>2. 立て替えた支払い</h2>
+<div id="pays"></div>
+<div class="row" style="margin-top:8px">
+<button class="primary" id="addPay" type="button">＋ 支払いを追加</button>
+<button id="reset" type="button">すべて消す</button>
+</div>
+<p class="muted" id="resetConfirm" hidden>本当に消しますか？ <button id="resetYes" type="button">消す</button> <button id="resetNo" type="button">やめる</button></p>
+</section>
+
+<section class="card" id="resultCard">
+<h2>3. 精算結果</h2>
+<div id="result"></div>
+<div class="row" style="margin-top:12px">
+<button class="primary" id="copy" type="button">結果をコピー（LINEに貼れます）</button>
+<button id="share" type="button">共有リンクを作る</button>
+</div>
+<details style="margin-top:12px"><summary>ひとりずつの内訳</summary><div id="detail"></div></details>
+</section>
+
+<section class="card cta">
+<h2>旅のしおり・荷造りリストも作るなら</h2>
+<p style="margin:0 0 6px">この精算に加えて、<strong>到着・出発時刻が自動でつながる旅程表</strong>と、<strong>人数×泊数で個数が出る荷造りリスト</strong>をまとめた、印刷・CSV対応のオフライン版を用意しています。</p>
+<a class="btn" href="https://kamimachi-press.booth.pm/items/9190079" rel="noopener">旅の段取り帳を見る（BOOTH・680円）</a>
+<p class="muted" style="margin:8px 0 0">無料見本（旅のしおりPDF）もダウンロードできます。</p>
+</section>
+
+<section class="card">
+<h2>よくある質問</h2>
+<details><summary>一部の人だけが使ったお金も精算できますか？</summary><p>できます。支払いごとに「誰の分か」のチェックを外すと、チェックした人だけで割ります。お酒を飲んだ人だけ、子どもを除く、などに使えます。</p></details>
+<details><summary>1円単位の端数はどうなりますか？</summary><p>割り切れない1円は、参加者リストの上の人から1円ずつ多く負担する形で配分します。合計は必ず支払額と一致します。</p></details>
+<details><summary>送金の回数を減らせますか？</summary><p>多く払った人と少なく払った人を金額の大きい順に組み合わせるので、送金はほとんどの場合「人数−1回」以下になります。</p></details>
+<details><summary>入力したデータはどこかに送信されますか？</summary><p>送信されません。計算はブラウザの中だけで行い、内容はこの端末に保存されます。共有リンクを作った場合は、リンクそのものに内容が含まれるので、送る相手にご注意ください。</p></details>
+<details><summary>計算方法は？</summary><p>支払いごとに「払った人」に金額をプラス、「対象の人」に負担額をマイナスして、ひとりずつの差額を出します。プラスの人は受け取る側、マイナスの人は払う側です。</p></details>
+</section>
+
+<footer>紙町活版所 ・ <a href="../">ほかの無料ツール</a></footer>
+</main>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+(function(){
+var KEY='kamimachi-warikan-v1';
+var state={people:[],pays:[]};
+var $=function(id){return document.getElementById(id)};
+var uid=function(){return Math.random().toString(36).slice(2,9)};
+var yen=function(n){return n.toLocaleString('ja-JP')+'円'};
+
+function load(){
+  var h=location.hash.slice(1);
+  if(h.indexOf('d=')===0){
+    try{state=JSON.parse(decodeURIComponent(escape(atob(h.slice(2).replace(/-/g,'+').replace(/_/g,'/')))));history.replaceState(null,'',location.pathname);save();return}catch(e){}
+  }
+  try{var s=localStorage.getItem(KEY);if(s)state=JSON.parse(s)}catch(e){}
+  if(!state.people||!state.people.length){state={people:['あなた','ともだちA','ともだちB'],pays:[]}}
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+
+function toast(msg){var t=$('toast');t.textContent=msg;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){t.hidden=true},2200)}
+
+function renderPeople(){
+  var box=$('people');box.innerHTML='';
+  state.people.forEach(function(p,i){
+    var c=document.createElement('span');c.className='chip';
+    c.appendChild(document.createTextNode(p));
+    var b=document.createElement('button');b.type='button';b.textContent='×';b.setAttribute('aria-label',p+'を削除');
+    b.onclick=function(){
+      state.people.splice(i,1);
+      state.pays.forEach(function(x){
+        x.who=x.who.filter(function(w){return w!==p});
+        if(x.payer===p)x.payer=state.people[0]||'';
+      });
+      update(true);
+    };
+    c.appendChild(b);box.appendChild(c);
+  });
+}
+
+function renderPays(){
+  var box=$('pays');box.innerHTML='';
+  if(!state.pays.length){box.innerHTML='<p class="muted">まだありません。「＋ 支払いを追加」から入れてください。</p>';return}
+  state.pays.forEach(function(x,i){
+    var d=document.createElement('div');d.className='pay';
+    var r=document.createElement('div');r.className='row';
+    var sel=document.createElement('select');sel.setAttribute('aria-label','払った人');
+    state.people.forEach(function(p){var o=document.createElement('option');o.value=o.textContent=p;if(p===x.payer)o.selected=true;sel.appendChild(o)});
+    sel.onchange=function(){x.payer=sel.value;update()};
+    var lbl=document.createElement('span');lbl.textContent='が';lbl.className='muted';
+    var memo=document.createElement('input');memo.type='text';memo.placeholder='内容（例：ホテル代）';memo.value=x.memo||'';memo.maxLength=30;memo.setAttribute('aria-label','内容');
+    memo.oninput=function(){x.memo=memo.value;update()};
+    var amt=document.createElement('input');amt.className='amount';amt.type='number';amt.inputMode='numeric';amt.min='0';amt.step='1';amt.placeholder='金額';amt.value=x.amount||'';amt.setAttribute('aria-label','金額（円）');
+    amt.oninput=function(){var v=Math.floor(Number(amt.value));x.amount=v>0&&isFinite(v)?v:0;update()};
+    var del=document.createElement('button');del.type='button';del.className='x';del.textContent='削除';
+    del.onclick=function(){state.pays.splice(i,1);update(true)};
+    r.append(sel,lbl,memo,amt,del);
+    var who=document.createElement('div');who.className='who';
+    who.appendChild(document.createTextNode('誰の分：'));
+    state.people.forEach(function(p){
+      var l=document.createElement('label');var cb=document.createElement('input');cb.type='checkbox';cb.checked=x.who.indexOf(p)>=0;
+      cb.onchange=function(){if(cb.checked){x.who.push(p)}else{x.who=x.who.filter(function(w){return w!==p})}update()};
+      l.append(cb,document.createTextNode(p));who.appendChild(l);
+    });
+    d.append(r,who);box.appendChild(d);
+  });
+}
+
+function compute(){
+  var bal={},paid={},owe={};
+  state.people.forEach(function(p){bal[p]=0;paid[p]=0;owe[p]=0});
+  state.pays.forEach(function(x){
+    var targets=state.people.filter(function(p){return x.who.indexOf(p)>=0});
+    if(!x.amount||!targets.length||!(x.payer in bal))return;
+    var base=Math.floor(x.amount/targets.length),rem=x.amount-base*targets.length;
+    paid[x.payer]+=x.amount;bal[x.payer]+=x.amount;
+    targets.forEach(function(p,i){var s=base+(i<rem?1:0);owe[p]+=s;bal[p]-=s});
+  });
+  var cr=[],db=[];
+  state.people.forEach(function(p){if(bal[p]>0)cr.push([p,bal[p]]);else if(bal[p]<0)db.push([p,-bal[p]])});
+  cr.sort(function(a,b){return b[1]-a[1]});db.sort(function(a,b){return b[1]-a[1]});
+  var tx=[],i=0,j=0;
+  while(i<db.length&&j<cr.length){
+    var m=Math.min(db[i][1],cr[j][1]);
+    tx.push({from:db[i][0],to:cr[j][0],amount:m});
+    db[i][1]-=m;cr[j][1]-=m;
+    if(!db[i][1])i++;if(!cr[j][1])j++;
+  }
+  return {bal:bal,paid:paid,owe:owe,tx:tx};
+}
+
+function renderResult(){
+  var r=compute(),box=$('result');
+  var total=state.pays.reduce(function(s,x){return s+(x.amount||0)},0);
+  if(!total){box.innerHTML='<p class="muted">支払いを入れると、ここに「誰が誰にいくら」が出ます。</p>';$('detail').innerHTML='';return r}
+  var h='<p class="muted">合計 '+yen(total)+'</p>';
+  if(!r.tx.length)h+='<p>精算は不要です。全員ちょうどです。</p>';
+  r.tx.forEach(function(t){h+='<div class="result-line"><span>'+esc(t.from)+' → '+esc(t.to)+'</span><b>'+yen(t.amount)+'</b></div>'});
+  box.innerHTML=h;
+  var d='<table><thead><tr><th>名前</th><th>払った</th><th>負担</th><th>差額</th></tr></thead><tbody>';
+  state.people.forEach(function(p){var b=r.bal[p];d+='<tr><td>'+esc(p)+'</td><td>'+yen(r.paid[p])+'</td><td>'+yen(r.owe[p])+'</td><td class="'+(b>0?'plus':b<0?'minus':'')+'">'+(b>0?'+':'')+yen(b)+'</td></tr>'});
+  $('detail').innerHTML=d+'</tbody></table>';
+  return r;
+}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+
+function update(full){save();if(full){renderPeople();renderPays()}renderResult()}
+
+$('addPerson').onsubmit=function(e){
+  e.preventDefault();var n=$('personName').value.trim();
+  if(!n)return;if(state.people.indexOf(n)>=0){toast('同じ名前がいます');return}
+  if(state.people.length>=20){toast('20人までです');return}
+  state.people.push(n);
+  state.pays.forEach(function(x){if(x.who.length===state.people.length-1)x.who.push(n)});
+  $('personName').value='';update(true);
+};
+$('addPay').onclick=function(){
+  if(!state.people.length){toast('先に参加者を追加してください');return}
+  state.pays.push({id:uid(),payer:state.people[0],memo:'',amount:0,who:state.people.slice()});
+  update(true);
+  var last=document.querySelectorAll('.pay .amount');if(last.length)last[last.length-1].focus();
+};
+$('reset').onclick=function(){$('resetConfirm').hidden=false};
+$('resetNo').onclick=function(){$('resetConfirm').hidden=true};
+$('resetYes').onclick=function(){state={people:[],pays:[]};$('resetConfirm').hidden=true;update(true)};
+
+function copyText(t,msg){
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){toast(msg)},function(){fallback(t,msg)})}else fallback(t,msg);
+}
+function fallback(t,msg){var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy');toast(msg)}catch(e){toast('コピーできませんでした')}a.remove()}
+
+$('copy').onclick=function(){
+  var r=compute();var total=state.pays.reduce(function(s,x){return s+(x.amount||0)},0);
+  if(!total){toast('まだ支払いがありません');return}
+  var lines=['【精算】合計 '+yen(total)];
+  state.pays.forEach(function(x){if(x.amount)lines.push('・'+(x.memo||'支払い')+' '+yen(x.amount)+'（'+x.payer+'が立替）')});
+  lines.push('');
+  if(!r.tx.length)lines.push('精算は不要です');
+  r.tx.forEach(function(t){lines.push(t.from+' → '+t.to+'　'+yen(t.amount))});
+  lines.push('','割り勘ツール https://sulla-bluefelix.github.io/kamimachi-tools/warikan/');
+  copyText(lines.join('\n'),'コピーしました');
+};
+$('share').onclick=function(){
+  var s=btoa(unescape(encodeURIComponent(JSON.stringify(state)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  copyText(location.origin+location.pathname+'#d='+s,'共有リンクをコピーしました');
+};
+
+load();update(true);
+})();
+</script>
+</body>
+</html>

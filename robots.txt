@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://sulla-bluefelix.github.io/kamimachi-tools/sitemap.xml
