@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>迷路メーカー｜かんたん〜難しい迷路を自動作成・A4印刷【無料・登録不要】</title>
+<meta name="description" content="大きさを選ぶだけで、入口から出口までの道が1本だけの迷路を自動で作ります。8×8のかんたんな迷路から40×40の難しい迷路まで。A4に大きく印刷でき、答えのページとなまえ欄も付けられます。登録不要・無料。">
+<link rel="canonical" href="https://sulla-bluefelix.github.io/kamimachi-tools/maze/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="迷路メーカー（印刷できる無料の迷路を自動作成）">
+<meta property="og:description" content="道が1本だけの迷路を自動で作って、A4に大きく印刷。答えのページ・なまえ欄付き。">
+<meta property="og:url" content="https://sulla-bluefelix.github.io/kamimachi-tools/maze/">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"WebApplication","name":"迷路メーカー","url":"https://sulla-bluefelix.github.io/kamimachi-tools/maze/","applicationCategory":"GameApplication","operatingSystem":"Any","inLanguage":"ja","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"}},
+{"@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"迷路の答えは本当に1つだけですか？","acceptedAnswer":{"@type":"Answer","text":"はい。どのマスからどのマスへも行き方が1通りしかない「完全迷路」として作るので、スタートからゴールまでの正しい道はちょうど1本です。行き止まりはありますが、ぐるっと一周できる輪の道や、たどり着けないマスはありません。"}},
+{"@type":"Question","name":"どの難しさを選べばいいですか？","acceptedAnswer":{"@type":"Answer","text":"かんたん（8×8）は道が太く、鉛筆で線を引きはじめた小さなお子さんでも取り組みやすい大きさです。ふつう（14×14）は小学校低学年ごろ、むずかしい（22×22）以上は高学年や大人でも手ごたえがあります。あくまで目安なので、1枚目はやさしめにして様子を見るのがおすすめです。"}},
+{"@type":"Question","name":"同じ迷路をもう一度印刷できますか？","acceptedAnswer":{"@type":"Answer","text":"できます。迷路番号と大きさが同じなら、いつでも同じ迷路になります。印刷した紙の右下に番号と大きさが入るので、それを入れ直してください。「この迷路のリンクをコピー」で作ったリンクを開いても同じ迷路が出ます。"}},
+{"@type":"Question","name":"学校や学童で配ってもいいですか？","acceptedAnswer":{"@type":"Answer","text":"このページで作った迷路は、ご家庭・学校・学童・教室などで自由に印刷して配っていただけます。作った迷路を素材集として販売することはご遠慮ください。"}},
+{"@type":"Question","name":"白黒プリンターでもきれいに印刷できますか？","acceptedAnswer":{"@type":"Answer","text":"はい。迷路は黒い線だけで描いているので、白黒でもくっきり出ます。答えの線はオレンジ色ですが、白黒で印刷すると灰色の太い線になり、壁と見分けられます。印刷画面では用紙をA4、倍率を100%（または既定）にしてください。"}}
+]}]}
+</script>
+<style>
+:root{--bg:#f6f3ec;--card:#fffdf8;--ink:#1d2b30;--sub:#5b6a6c;--line:#d9d3c5;--accent:#0b6b62;--accent-ink:#fff;--warn:#a2412f;--soft:#e7efe9;--warm:#c75a1f;--warm-soft:#fbeadb;--paper:#fff;--paper-ink:#1b1b1b;--kid:"Hiragino Maru Gothic ProN","UD Digi Kyokasho N-B","BIZ UDPGothic",system-ui,-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#141a1c;--card:#1d2528;--ink:#e8ece9;--sub:#9fb0ad;--line:#33403f;--accent:#3fb3a2;--accent-ink:#0d1716;--warn:#e88a73;--soft:#23312f;--warm:#f0a061;--warm-soft:#3a2c22;--paper:#f1ede4;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 system-ui,-apple-system,"Hiragino Sans","Noto Sans JP","Yu Gothic UI",sans-serif}
+main{max-width:720px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:clamp(22px,5.4vw,30px);line-height:1.4;margin:8px 0 6px}
+.lead{color:var(--sub);margin:0 0 20px}
+h2{font-size:19px;margin:0 0 10px}
+section.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 16px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input,select{font:inherit;color:inherit;background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:9px 10px;min-width:0}
+input:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px}
+button{font:inherit;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;padding:9px 14px;cursor:pointer}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+.muted{color:var(--sub);font-size:14px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px}
+.cta{border:2px solid var(--accent);background:var(--soft)}
+.cta a.btn{display:inline-block;background:var(--accent);color:var(--accent-ink);text-decoration:none;font-weight:700;padding:10px 16px;border-radius:9px;margin-top:6px}
+details{border-top:1px solid var(--line);padding:10px 0}
+summary{cursor:pointer;font-weight:600}
+footer{color:var(--sub);font-size:13px;text-align:center;margin-top:30px}
+a{color:var(--accent)}
+ol.steps{margin:0;padding-left:1.4em}
+ol.steps li{margin:4px 0}
+/* tool */
+.presets{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:0 0 12px}
+.preset{display:flex;flex-direction:column;align-items:center;gap:0;padding:8px 6px;font-family:var(--kid);font-weight:700;line-height:1.35;border-radius:12px;border:2px solid var(--line);background:var(--bg)}
+.preset small{font-weight:400;font-size:13px;color:var(--sub);font-family:system-ui,sans-serif}
+.preset .stars{color:var(--warm);font-size:12px;letter-spacing:1px}
+.preset[aria-pressed="true"]{border-color:var(--warm);background:var(--warm-soft)}
+.fields{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:0 0 12px}
+.fields label{display:flex;align-items:center;gap:6px;white-space:nowrap}
+.fields input[type=number]{width:76px}
+#seed{width:110px}
+.bigbtn{font-size:17px;padding:11px 18px;font-family:var(--kid)}
+.head2{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 10px}
+.head2 h2{margin:0}
+#ans[aria-pressed="true"]{background:var(--warm-soft);border-color:var(--warm);font-weight:700}
+.paper{background:var(--paper);color:var(--paper-ink);border-radius:6px;padding:14px 12px 10px;box-shadow:0 1px 3px rgba(0,0,0,.12),0 6px 18px rgba(0,0,0,.06);font-family:var(--kid)}
+.paper .s-head{display:flex;flex-direction:column;gap:4px;margin:0 0 8px}
+.paper .s-title{text-align:center;font-size:clamp(18px,4.6vw,24px);font-weight:700;line-height:1.3;overflow-wrap:anywhere}
+.paper .s-name{align-self:flex-end;display:flex;align-items:flex-end;gap:6px;font-size:14px}
+.paper .s-line{display:inline-block;width:min(46vw,200px);border-bottom:1.5px solid currentColor;height:1.2em}
+.paper .mz{display:block;width:100%;height:auto;max-height:78vh;margin:0 auto}
+.paper .s-foot{text-align:right;font-size:11px;color:#6b6b6b;font-family:system-ui,sans-serif;margin-top:4px}
+.mz .w{fill:none;stroke:#1b1b1b;stroke-linecap:square;stroke-linejoin:miter}
+.mz .rt{fill:none;stroke:#ec7a3a;stroke-linecap:round;stroke-linejoin:round;opacity:.92}
+.mz .mk{fill:#1b1b1b}
+.mz text{font-family:var(--kid);font-weight:700;fill:#1b1b1b}
+.paper .mz .mk-s{fill:#0b6b62}
+.paper .mz .mk-g{fill:#c75a1f}
+.checks{display:flex;flex-direction:column;gap:6px;margin:10px 0 12px}
+.checks label{display:flex;gap:8px;align-items:center}
+.checks input{width:18px;height:18px}
+.tfield{display:flex;flex-direction:column;gap:4px;max-width:420px}
+#printArea{display:none}
+@page{size:A4 portrait;margin:0}
+@media print{
+  html,body{background:#fff!important;color:#000!important}
+  main,.toast{display:none!important}
+  #printArea{display:block}
+  .sheet{width:210mm;height:296mm;padding:12mm;display:flex;flex-direction:column;overflow:hidden;break-after:page;page-break-after:always;font-family:var(--kid);color:#000;background:#fff}
+  .sheet:last-child{break-after:auto;page-break-after:auto}
+  .sheet .s-head{height:24mm;display:flex;flex-direction:column;justify-content:space-between}
+  .sheet .s-title{text-align:center;font-size:8.5mm;font-weight:700;line-height:1.2;white-space:nowrap;overflow:hidden}
+  .sheet .s-name{align-self:flex-end;display:flex;align-items:flex-end;gap:2.5mm;font-size:5mm;line-height:1}
+  .sheet .s-line{display:inline-block;width:72mm;border-bottom:.4mm solid #000;height:7mm}
+  .sheet.noname .s-head{height:13mm}
+  .sheet .s-body{flex:1;display:flex;align-items:center;justify-content:center;min-height:0}
+  .sheet .mz{display:block;width:186mm;height:236mm}
+  .sheet.noname .mz{height:247mm}
+  .sheet .s-foot{height:5mm;text-align:right;font-size:3mm;color:#555;font-family:system-ui,sans-serif;line-height:5mm}
+}
+</style>
+</head>
+<body>
+<main>
+<h1>迷路メーカー（印刷できる無料の迷路を自動作成）</h1>
+<p class="lead">大きさを選ぶと、<strong>入口から出口までの道が1本だけの迷路</strong>をその場で作ります。A4に大きく印刷でき、答えのページも付けられます。登録不要・無料です。</p>
+
+<section class="card">
+<h2>1. 大きさを選ぶ</h2>
+<div class="presets" id="presets" role="group" aria-label="難しさ">
+<button type="button" class="preset" data-w="8" data-h="8"><span>かんたん</span><span class="stars" aria-hidden="true">★</span><small>8×8マス</small></button>
+<button type="button" class="preset" data-w="14" data-h="14"><span>ふつう</span><span class="stars" aria-hidden="true">★★</span><small>14×14マス</small></button>
+<button type="button" class="preset" data-w="22" data-h="22"><span>むずかしい</span><span class="stars" aria-hidden="true">★★★</span><small>22×22マス</small></button>
+<button type="button" class="preset" data-w="32" data-h="32"><span>とてもむずかしい</span><span class="stars" aria-hidden="true">★★★★</span><small>32×32マス</small></button>
+</div>
+<div class="fields">
+<label>横 <input id="w" type="number" min="5" max="40" step="1" inputmode="numeric" aria-label="横のマス数（5〜40）"> マス</label>
+<label>縦 <input id="h" type="number" min="5" max="40" step="1" inputmode="numeric" aria-label="縦のマス数（5〜40）"> マス</label>
+<label>迷路番号 <input id="seed" type="number" min="1" max="999999" step="1" inputmode="numeric" aria-label="迷路番号（1〜999999）"></label>
+</div>
+<button class="primary bigbtn" id="gen" type="button">新しい迷路を作る</button>
+<p class="muted" style="margin:8px 0 0">マス数は5〜40で自由に決められます。迷路番号と大きさが同じなら、何度でも同じ迷路になります。</p>
+</section>
+
+<section class="card">
+<div class="head2"><h2>2. できた迷路</h2><button id="ans" type="button" aria-pressed="false">答えを表示</button></div>
+<div class="paper" id="paper"></div>
+<p class="muted" id="info" style="margin:10px 0 6px"></p>
+<button id="share" type="button">この迷路のリンクをコピー</button>
+</section>
+
+<section class="card">
+<h2>3. 印刷する</h2>
+<label class="tfield"><span>紙のタイトル（空なら「めいろ」）</span><input id="title" type="text" maxlength="20" placeholder="めいろ"></label>
+<div class="checks">
+<label><input type="checkbox" id="optName" checked> なまえ欄を入れる</label>
+<label><input type="checkbox" id="optAns"> 答えのページも印刷する（2枚目）</label>
+</div>
+<button class="primary bigbtn" id="print" type="button">印刷する（A4縦）</button>
+<p class="muted" style="margin:8px 0 0">1枚目は、答えを表示中でも答えなしで印刷されます。印刷画面で用紙「A4」、倍率「100%」（または「既定」）を選んでください。「PDFに保存」を選ぶとPDFにもできます。</p>
+</section>
+
+<section class="card">
+<h2>使い方</h2>
+<ol class="steps">
+<li>「かんたん」〜「とてもむずかしい」から選ぶか、横と縦のマス数を入れます。</li>
+<li>「新しい迷路を作る」を押すたびに、別の迷路になります。</li>
+<li>「答えを表示」で正しい道を確かめられます。</li>
+<li>タイトルを入れて「印刷する」を押します。答えも配るときは「答えのページも印刷する」にチェックします。</li>
+</ol>
+<p class="muted" style="margin:10px 0 0">A4の紙いっぱいに広げたいときは、縦を横の1.2倍くらいにすると余白が減ります（例：横20×縦24）。</p>
+</section>
+
+<section class="card cta">
+<h2>ことば探しや暗号の問題も作るなら</h2>
+<p style="margin:0 0 6px">迷路に加えて、<strong>好きなかなの言葉を隠す「ことば探し」</strong>と、<strong>秘密のメッセージをマスの住所でたどって解く「ポストの暗号」</strong>も作れる紙あそびの編集ツールを用意しています。ことば探しは2〜8文字のかなを最大8語まで右・下・右下に並べ、どの言葉も1回だけ見つかることを確かめて出題します。パソコンのGoogle Chromeで開いて、オフラインで使えます。</p>
+<a class="btn" href="https://kamimachi-press.booth.pm/items/9190030" rel="noopener">雨の日の遊び紙を見る（BOOTH・680円）</a>
+<p class="muted" style="margin:8px 0 0">無料見本（迷路1問と答えのA4 PDF）もダウンロードできます。</p>
+</section>
+
+<section class="card">
+<h2>よくある質問</h2>
+<details><summary>迷路の答えは本当に1つだけですか？</summary><p>はい。どのマスからどのマスへも行き方が1通りしかない「完全迷路」として作るので、スタートからゴールまでの正しい道はちょうど1本です。行き止まりはありますが、ぐるっと一周できる輪の道や、たどり着けないマスはありません。</p></details>
+<details><summary>どの難しさを選べばいいですか？</summary><p>かんたん（8×8）は道が太く、鉛筆で線を引きはじめた小さなお子さんでも取り組みやすい大きさです。ふつう（14×14）は小学校低学年ごろ、むずかしい（22×22）以上は高学年や大人でも手ごたえがあります。あくまで目安なので、1枚目はやさしめにして様子を見るのがおすすめです。</p></details>
+<details><summary>同じ迷路をもう一度印刷できますか？</summary><p>できます。迷路番号と大きさが同じなら、いつでも同じ迷路になります。印刷した紙の右下に番号と大きさが入るので、それを入れ直してください。「この迷路のリンクをコピー」で作ったリンクを開いても同じ迷路が出ます。</p></details>
+<details><summary>学校や学童で配ってもいいですか？</summary><p>このページで作った迷路は、ご家庭・学校・学童・教室などで自由に印刷して配っていただけます。作った迷路を素材集として販売することはご遠慮ください。</p></details>
+<details><summary>白黒プリンターでもきれいに印刷できますか？</summary><p>はい。迷路は黒い線だけで描いているので、白黒でもくっきり出ます。答えの線はオレンジ色ですが、白黒で印刷すると灰色の太い線になり、壁と見分けられます。印刷画面では用紙をA4、倍率を100%（または既定）にしてください。</p></details>
+</section>
+
+<footer>紙町活版所 ・ <a href="../">ほかの無料ツール</a></footer>
+</main>
+<div id="printArea" aria-hidden="true"></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/*CORE-START*/
+var MIN_SIZE=5,MAX_SIZE=40,MAX_SEED=999999;
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function clampInt(v,lo,hi,def){if(v===''||v==null)return def;v=Math.floor(Number(v));if(!isFinite(v))return def;return Math.min(hi,Math.max(lo,v))}
+// cells: i = y*W + x. right[i]=1: wall between (x,y) and (x+1,y). bottom[i]=1: wall between (x,y) and (x,y+1).
+// Entrance: top side of cell 0 (top-left). Exit: bottom side of the last cell (bottom-right).
+function makeMaze(W,H,seed){
+  var rnd=mulberry32(seed),N=W*H,right=new Uint8Array(N),bottom=new Uint8Array(N),seen=new Uint8Array(N);
+  right.fill(1);bottom.fill(1);
+  var first=Math.floor(rnd()*N),stack=[first],nb=[];seen[first]=1;
+  while(stack.length){
+    var c=stack[stack.length-1],x=c%W,y=(c-x)/W;nb.length=0;
+    if(y>0&&!seen[c-W])nb.push(c-W);
+    if(x<W-1&&!seen[c+1])nb.push(c+1);
+    if(y<H-1&&!seen[c+W])nb.push(c+W);
+    if(x>0&&!seen[c-1])nb.push(c-1);
+    if(!nb.length){stack.pop();continue}
+    var n=nb[Math.floor(rnd()*nb.length)];
+    if(n===c+1)right[c]=0;else if(n===c-1)right[n]=0;else if(n===c+W)bottom[c]=0;else bottom[n]=0;
+    seen[n]=1;stack.push(n);
+  }
+  return {W:W,H:H,seed:seed,right:right,bottom:bottom,start:0,goal:N-1};
+}
+function openNeighbors(m,c){
+  var W=m.W,x=c%W,r=[];
+  if(c>=W&&!m.bottom[c-W])r.push(c-W);
+  if(x<W-1&&!m.right[c])r.push(c+1);
+  if(c+W<W*m.H&&!m.bottom[c])r.push(c+W);
+  if(x>0&&!m.right[c-1])r.push(c-1);
+  return r;
+}
+function solveMaze(m){
+  var N=m.W*m.H,prev=new Int32Array(N).fill(-1),q=[m.start],i,j;prev[m.start]=m.start;
+  for(i=0;i<q.length;i++){var c=q[i];if(c===m.goal)break;var nb=openNeighbors(m,c);for(j=0;j<nb.length;j++)if(prev[nb[j]]<0){prev[nb[j]]=c;q.push(nb[j])}}
+  if(prev[m.goal]<0)return null;
+  var path=[];for(var a=m.goal;;a=prev[a]){path.push(a);if(a===m.start)break}
+  return path.reverse();
+}
+var CELL=10;
+function wallPath(m){
+  var W=m.W,H=m.H,C=CELL,d='',run,on,x,y,i,j;
+  for(j=0;j<=H;j++){run=-1;
+    for(x=0;x<=W;x++){
+      if(x===W)on=false;else if(j===0)on=x!==0;else if(j===H)on=x!==W-1;else on=!!m.bottom[(j-1)*W+x];
+      if(on&&run<0)run=x;
+      if(!on&&run>=0){d+='M'+run*C+' '+j*C+'H'+x*C;run=-1}
+    }
+  }
+  for(i=0;i<=W;i++){run=-1;
+    for(y=0;y<=H;y++){
+      if(y===H)on=false;else if(i===0||i===W)on=true;else on=!!m.right[y*W+i-1];
+      if(on&&run<0)run=y;
+      if(!on&&run>=0){d+='M'+i*C+' '+run*C+'V'+y*C;run=-1}
+    }
+  }
+  return d;
+}
+function r2(v){return Math.round(v*100)/100}
+function mazeSVG(m,path,label){
+  var W=m.W,H=m.H,C=CELL,MW=W*C,MH=H*C,L=Math.max(MW,MH),n=Math.max(W,H);
+  var sw=0.6+(n-5)/35*0.6,fs=L*0.036,a=Math.min(C*0.9,fs*1.1);
+  var cs=C/2,cg=MW-C/2;
+  var gap=sw+C*0.2,bh=Math.max(a,fs)*1.05,yc=gap+bh/2,top=gap+bh+sw,bot=top;
+  var pad=sw*1.5+C*0.2;
+  var minX=Math.min(-pad,cg-a*0.75-3.1*fs-pad),maxX=Math.max(MW+pad,cs+a*0.75+4.1*fs+pad);
+  var s='<svg class="mz" xmlns="http://www.w3.org/2000/svg" viewBox="'+r2(minX)+' '+r2(-top)+' '+r2(maxX-minX)+' '+r2(MH+top+bot)+'" preserveAspectRatio="xMidYMid meet" role="img" aria-label="'+label+'">';
+  s+='<path class="w" stroke-width="'+r2(sw)+'" d="'+wallPath(m)+'"/>';
+  if(path){
+    var pts=[[cs,-C*0.35]];
+    for(var i=0;i<path.length;i++){var c=path[i],x=c%W,y=(c-x)/W;pts.push([x*C+C/2,y*C+C/2])}
+    pts.push([cg,MH+C*0.35]);
+    s+='<polyline class="rt" stroke-width="'+r2(C*0.3)+'" points="'+pts.map(function(p){return r2(p[0])+','+r2(p[1])}).join(' ')+'"/>';
+  }
+  s+='<polygon class="mk mk-s" points="'+r2(cs-a/2)+','+r2(-yc-a*0.45)+' '+r2(cs+a/2)+','+r2(-yc-a*0.45)+' '+r2(cs)+','+r2(-yc+a*0.45)+'"/>';
+  s+='<text x="'+r2(cs+a*0.75)+'" y="'+r2(-yc+fs*0.36)+'" font-size="'+r2(fs)+'">スタート</text>';
+  s+='<polygon class="mk mk-g" points="'+r2(cg-a/2)+','+r2(MH+yc-a*0.45)+' '+r2(cg+a/2)+','+r2(MH+yc-a*0.45)+' '+r2(cg)+','+r2(MH+yc+a*0.45)+'"/>';
+  s+='<text x="'+r2(cg-a*0.75)+'" y="'+r2(MH+yc+fs*0.36)+'" font-size="'+r2(fs)+'" text-anchor="end">ゴール</text>';
+  return s+'</svg>';
+}
+/*CORE-END*/
+(function(){
+var KEY='kamimachi-maze-v1';
+var $=function(id){return document.getElementById(id)};
+var st={w:14,h:14,seed:1,title:'',optName:true,optAns:false,showAns:false};
+var maze=null,path=null;
+
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function toast(msg){var t=$('toast');t.textContent=msg;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){t.hidden=true},2200)}
+function newSeed(){return 1+Math.floor(Math.random()*MAX_SEED)}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({w:st.w,h:st.h,title:st.title,optName:st.optName,optAns:st.optAns}))}catch(e){}}
+function readHash(){
+  var h=location.hash.slice(1);if(!h)return false;
+  var p={};h.split('&').forEach(function(kv){var i=kv.indexOf('=');if(i>0)p[kv.slice(0,i)]=kv.slice(i+1)});
+  if(!p.s)return false;
+  st.w=clampInt(p.w,MIN_SIZE,MAX_SIZE,14);st.h=clampInt(p.h,MIN_SIZE,MAX_SIZE,st.w);st.seed=clampInt(p.s,1,MAX_SEED,1);
+  return true;
+}
+function load(){
+  try{var s=JSON.parse(localStorage.getItem(KEY)||'null');if(s){
+    st.w=clampInt(s.w,MIN_SIZE,MAX_SIZE,14);st.h=clampInt(s.h,MIN_SIZE,MAX_SIZE,14);
+    st.title=typeof s.title==='string'?s.title.slice(0,20):'';st.optName=s.optName!==false;st.optAns=!!s.optAns;
+  }}catch(e){}
+  if(!readHash())st.seed=newSeed();
+}
+function writeHash(){try{history.replaceState(null,'','#w='+st.w+'&h='+st.h+'&s='+st.seed)}catch(e){}}
+
+function title(){return st.title.trim()||'めいろ'}
+function foot(){return '紙町活版所の迷路メーカー　No.'+st.seed+'（'+st.w+'×'+st.h+'マス）'}
+function sheetHTML(answer,forPrint){
+  var showRoute=answer||(!forPrint&&st.showAns);
+  var t=answer?title()+'　こたえ':title();
+  var h='<div class="s-head"><div class="s-title">'+esc(t)+'</div>';
+  if(st.optName&&!answer)h+='<div class="s-name">なまえ<span class="s-line"></span></div>';
+  h+='</div><div class="s-body">'+mazeSVG(maze,showRoute?path:null,st.w+'×'+st.h+'マスの迷路'+(showRoute?'（答えつき）':''))+'</div>';
+  h+='<div class="s-foot">'+esc(foot())+'</div>';
+  if(!forPrint)return h;
+  return '<div class="sheet'+(st.optName?'':' noname')+'">'+h+'</div>';
+}
+function renderPaper(){
+  $('paper').innerHTML=sheetHTML(false,false);
+  $('info').textContent=st.w+'×'+st.h+'マス ・ 答えの道のり '+path.length+'マス ・ 迷路番号 '+st.seed;
+  $('printArea').innerHTML=sheetHTML(false,true)+(st.optAns?sheetHTML(true,true):'');
+}
+function syncControls(){
+  $('w').value=st.w;$('h').value=st.h;$('seed').value=st.seed;
+  [].forEach.call(document.querySelectorAll('.preset'),function(b){b.setAttribute('aria-pressed',String(+b.dataset.w===st.w&&+b.dataset.h===st.h))});
+  $('ans').setAttribute('aria-pressed',String(st.showAns));$('ans').textContent=st.showAns?'答えをかくす':'答えを表示';
+}
+function build(){
+  maze=makeMaze(st.w,st.h,st.seed);path=solveMaze(maze);
+  syncControls();renderPaper();writeHash();save();
+}
+
+[].forEach.call(document.querySelectorAll('.preset'),function(b){
+  b.onclick=function(){st.w=+b.dataset.w;st.h=+b.dataset.h;st.showAns=false;build()};
+});
+function sizeChange(){st.w=clampInt($('w').value,MIN_SIZE,MAX_SIZE,st.w);st.h=clampInt($('h').value,MIN_SIZE,MAX_SIZE,st.h);st.showAns=false;build()}
+$('w').onchange=sizeChange;$('h').onchange=sizeChange;
+$('seed').onchange=function(){st.seed=clampInt($('seed').value,1,MAX_SEED,st.seed);st.showAns=false;build()};
+$('gen').onclick=function(){st.seed=newSeed();st.showAns=false;build()};
+$('ans').onclick=function(){st.showAns=!st.showAns;syncControls();renderPaper()};
+$('title').oninput=function(){st.title=$('title').value;renderPaper();save()};
+$('optName').onchange=function(){st.optName=$('optName').checked;renderPaper();save()};
+$('optAns').onchange=function(){st.optAns=$('optAns').checked;renderPaper();save()};
+$('print').onclick=function(){renderPaper();window.print()};
+
+function copyText(t,msg){
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){toast(msg)},function(){fallback(t,msg)})}else fallback(t,msg);
+}
+function fallback(t,msg){var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy');toast(msg)}catch(e){toast('コピーできませんでした')}a.remove()}
+$('share').onclick=function(){copyText(location.href.split('#')[0]+'#w='+st.w+'&h='+st.h+'&s='+st.seed,'リンクをコピーしました')};
+window.addEventListener('hashchange',function(){var ow=st.w,oh=st.h,os=st.seed;if(readHash()&&(ow!==st.w||oh!==st.h||os!==st.seed)){st.showAns=false;build()}});
+
+load();
+$('title').value=st.title;$('optName').checked=st.optName;$('optAns').checked=st.optAns;
+build();
+})();
+</script>
+</body>
+</html>

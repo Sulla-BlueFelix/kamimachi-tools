@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ダイスロール｜TRPG用1d100・2d6・CoC技能判定【無料・登録不要】</title>
+<meta name="description" content="ブラウザですぐ振れるTRPG用のオンラインダイス。1d100・2d6・3d6*5などのダイス式で出目と合計を表示。クトゥルフ神話TRPG第7版の技能判定（ハード・イクストリーム、ボーナス・ペナルティダイス）と第6版にも対応。履歴つき・無料。">
+<link rel="canonical" href="https://sulla-bluefelix.github.io/kamimachi-tools/dice/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="TRPGダイスロール（1d100・2d6・CoC技能判定）【無料・登録不要】">
+<meta property="og:description" content="ダイス式やボタンですぐ振れるオンラインダイス。CoC第7版・第6版の技能判定にも対応。">
+<meta property="og:url" content="https://sulla-bluefelix.github.io/kamimachi-tools/dice/">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"WebApplication","name":"TRPGダイスロール（1d100・2d6・CoC技能判定）","url":"https://sulla-bluefelix.github.io/kamimachi-tools/dice/","applicationCategory":"GameApplication","operatingSystem":"Any","inLanguage":"ja","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"}},
+{"@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"ダイスの出目に偏りはありませんか？","acceptedAnswer":{"@type":"Answer","text":"ブラウザに備わった暗号用の乱数（crypto.getRandomValues）を使っています。面数で割り切れない端の値は捨てて引き直す方法（棄却法）にしているので、どの目も同じ確率で出ます。直前の出目が次の出目に影響することもありません。"}},
+{"@type":"Question","name":"どんなダイス式が使えますか？","acceptedAnswer":{"@type":"Answer","text":"「2d6」のような「個数d面数」と、足し算・引き算・掛け算（*または×）・割り算（/、端数切り捨て）・括弧が使えます。例：1d100、2d6+3、3d6*5、(2d6+6)*5、2d6+1d4-1。dは大文字でも全角でもかまいません。ダイスは1か所につき100個・1000面まで、式全体で200個までです。"}},
+{"@type":"Question","name":"クトゥルフ神話TRPG第7版の成功度はどう決まりますか？","acceptedAnswer":{"@type":"Answer","text":"1d100の出目が01ならクリティカル、技能値の1/5以下（端数切り捨て）ならイクストリーム成功、1/2以下ならハード成功、技能値以下ならレギュラー成功です。ファンブルは、技能値が50未満なら96〜100、50以上なら100です。たとえば技能値65なら、ハードは32以下、イクストリームは13以下です。"}},
+{"@type":"Question","name":"ボーナス・ペナルティダイスはどう振るのですか？","acceptedAnswer":{"@type":"Answer","text":"一の位のダイスを1個、十の位のダイスを「1＋ボーナス（またはペナルティ）の数」個振り、ボーナスなら出目が小さくなる十の位を、ペナルティなら大きくなる十の位を採用します。十の位00と一の位0の組み合わせは100として扱います。ボーナスとペナルティが両方あるときは、打ち消し合った残りの数を選んでください。"}},
+{"@type":"Question","name":"第6版の判定とは何が違いますか？","acceptedAnswer":{"@type":"Answer","text":"第6版の判定では、01〜05がクリティカル、96〜100がファンブル、それ以外は技能値以下なら成功です。ハード・イクストリームといった成功の度合いや、ボーナス・ペナルティダイスはありません。クリティカル・ファンブルの扱いは卓によって異なるので、ハウスルールがあればそちらを優先してください。"}},
+{"@type":"Question","name":"履歴はほかの人にも見えますか？","acceptedAnswer":{"@type":"Answer","text":"見えません。履歴は直近50件までこの端末のブラウザにだけ保存され、どこにも送信されません。オンラインセッションでは「履歴をコピー」でチャットに貼れますが、ほかの参加者が出目を確かめられる仕組みではないので、公平さが必要な場面では卓で決めたダイスツールを使ってください。"}}
+]}]}
+</script>
+<style>
+:root{--bg:#f6f3ec;--card:#fffdf8;--ink:#1d2b30;--sub:#5b6a6c;--line:#d9d3c5;--accent:#0b6b62;--accent-ink:#fff;--warn:#a2412f;--soft:#e7efe9;--gold:#8a5a00;--gold-bg:#f7ebcc}
+@media (prefers-color-scheme:dark){:root{--bg:#141a1c;--card:#1d2528;--ink:#e8ece9;--sub:#9fb0ad;--line:#33403f;--accent:#3fb3a2;--accent-ink:#0d1716;--warn:#e88a73;--soft:#23312f;--gold:#f0c060;--gold-bg:#3a3018;color-scheme:dark}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 system-ui,-apple-system,"Hiragino Sans","Noto Sans JP","Yu Gothic UI",sans-serif}
+main{max-width:720px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:clamp(22px,5.4vw,30px);line-height:1.4;margin:8px 0 6px}
+.lead{color:var(--sub);margin:0 0 20px}
+h2{font-size:19px;margin:0 0 10px}
+section.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 16px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input,select{font:inherit;color:inherit;background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:9px 10px;min-width:0}
+input:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px}
+button{font:inherit;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;padding:9px 14px;cursor:pointer}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+.muted{color:var(--sub);font-size:14px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px}
+.cta{border:2px solid var(--accent);background:var(--soft)}
+.cta a.btn span{white-space:nowrap}
+.cta a.btn{display:inline-block;background:var(--accent);color:var(--accent-ink);text-decoration:none;font-weight:700;padding:10px 16px;border-radius:9px;margin-top:6px}
+details{border-top:1px solid var(--line);padding:10px 0}
+summary{cursor:pointer;font-weight:600}
+footer{color:var(--sub);font-size:13px;text-align:center;margin-top:30px}
+a{color:var(--accent)}
+ol.steps{margin:0;padding-left:1.4em}
+ol.steps li{margin:0 0 4px}
+label.f{display:flex;flex-direction:column;gap:2px;font-size:14px;color:var(--sub)}
+label.f input,label.f select{color:var(--ink);font-size:16px}
+.expr{flex:1 1 180px;font-size:18px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+@media (min-width:600px){.quick{grid-template-columns:repeat(9,1fr)}}
+.quick button{padding:10px 4px;font-weight:600;font-variant-numeric:tabular-nums}
+.sub-h{font-size:14px;color:var(--sub);margin:14px 0 0}
+.result{margin-top:14px;border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--bg);min-height:76px}
+.result .big{font-size:40px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums}
+.result .what{font-size:14px;color:var(--sub)}
+.result .detail{font-size:14px;color:var(--sub);overflow-wrap:anywhere;margin-top:4px;font-variant-numeric:tabular-nums}
+.result .err{color:var(--warn);font-weight:600}
+.result .empty{color:var(--sub);font-size:14px}
+.pop{animation:pop .25s ease-out}
+@keyframes pop{from{transform:scale(.96);opacity:.4}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.pop{animation:none}}
+.headline{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.lvl{display:inline-block;font-weight:800;font-size:18px;border-radius:8px;padding:2px 10px;border:2px solid currentColor}
+.lv-critical{color:var(--gold);background:var(--gold-bg)}
+.lv-extreme,.lv-hard,.lv-regular,.lv-success{color:var(--accent);background:var(--soft)}
+.lv-failure{color:var(--sub)}
+.lv-fumble{color:var(--warn)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid2 .wide{grid-column:1/-1}
+@media (max-width:480px){.grid2{grid-template-columns:1fr}}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg label{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:9px;padding:6px 12px;cursor:pointer;background:var(--bg)}
+.seg label:has(input:checked){border-color:var(--accent);background:var(--soft);font-weight:700}
+.rules{font-size:14px;margin:12px 0 0;padding:10px 12px;border-radius:10px;background:var(--soft)}
+.rules ul{margin:4px 0 6px;padding-left:1.2em}
+.rules p{margin:0}
+.hist{list-style:none;margin:10px 0 0;padding:0;max-height:420px;overflow:auto}
+.hist li{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:15px;overflow-wrap:anywhere}
+.hist li:last-child{border-bottom:0}
+.hist time{flex:0 0 auto;color:var(--sub);font-size:13px;font-variant-numeric:tabular-nums;padding-top:2px}
+.hist span{min-width:0}
+</style>
+</head>
+<body>
+<main>
+<h1>TRPGダイスロール（1d100・2d6・CoC技能判定）</h1>
+<p class="lead">ダイス式を入れるか、ボタンを押すだけで振れる無料のオンラインダイスです。クトゥルフ神話TRPGの技能判定（第7版・第6版）にも対応しています。登録不要で、履歴はこの端末にだけ保存されます。</p>
+
+<section class="card">
+<h2>ダイスを振る</h2>
+<form class="row" id="exprForm">
+<input class="expr" id="expr" type="text" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" maxlength="100" placeholder="例：2d6+3" aria-label="ダイス式" value="2d6">
+<button class="primary" type="submit">振る</button>
+</form>
+<div class="quick" role="group" aria-label="よく使うダイス">
+<button type="button" data-roll="1d100">1D100</button>
+<button type="button" data-roll="1d20">1D20</button>
+<button type="button" data-roll="1d10">1D10</button>
+<button type="button" data-roll="1d6">1D6</button>
+<button type="button" data-roll="2d6">2D6</button>
+<button type="button" data-roll="3d6">3D6</button>
+<button type="button" data-roll="1d4">1D4</button>
+<button type="button" data-roll="1d8">1D8</button>
+<button type="button" data-roll="1d12">1D12</button>
+</div>
+<p class="sub-h">能力値づくり（CoC第7版）</p>
+<div class="row" style="margin-top:6px">
+<button type="button" data-roll="3d6*5">3D6×5</button>
+<button type="button" data-roll="(2d6+6)*5">(2D6+6)×5</button>
+</div>
+<div class="result" id="exprResult" aria-live="polite"><p class="empty" style="margin:0">ここに出目と合計が出ます。使える書き方：2d6+3、1d100、3d6*5、2d6+1d4-1、(2d6+6)*5 など。</p></div>
+</section>
+
+<section class="card">
+<h2>クトゥルフ神話TRPGの技能判定</h2>
+<form id="cocForm">
+<div class="seg" role="radiogroup" aria-label="ルールの版">
+<label><input type="radio" name="ed" value="7" checked> 第7版</label>
+<label><input type="radio" name="ed" value="6"> 第6版</label>
+</div>
+<div class="grid2" style="margin-top:10px">
+<label class="f">技能名（任意）<input id="skillName" type="text" maxlength="20" placeholder="例：目星"></label>
+<label class="f">技能値<input id="skill" type="number" inputmode="numeric" min="1" max="200" step="1" value="50" required></label>
+<label class="f wide" id="bpWrap">ボーナス・ペナルティダイス
+<select id="bp">
+<option value="-2">ペナルティ2個</option>
+<option value="-1">ペナルティ1個</option>
+<option value="0" selected>なし</option>
+<option value="1">ボーナス1個</option>
+<option value="2">ボーナス2個</option>
+</select></label>
+</div>
+<div class="row" style="margin-top:12px">
+<button class="primary" type="submit">判定する（1D100）</button>
+<span class="muted" id="thresholds"></span>
+</div>
+</form>
+<div class="result" id="cocResult" aria-live="polite"><p class="empty" style="margin:0">技能値を入れて「判定する」を押すと、出目と判定結果が出ます。</p></div>
+<div class="rules" id="rules7">
+<p><b>第7版の判定</b></p>
+<ul>
+<li>01：クリティカル</li>
+<li>技能値の1/5以下（端数切り捨て）：イクストリーム成功</li>
+<li>技能値の1/2以下（端数切り捨て）：ハード成功</li>
+<li>技能値以下：レギュラー成功</li>
+<li>ファンブル：技能値50未満は96〜100、50以上は100</li>
+<li>ボーナス・ペナルティダイス：十の位を追加で振り、ボーナスは小さくなる方、ペナルティは大きくなる方を採用（十の位00と一の位0は100）</li>
+</ul>
+<p class="muted">一般的なルールに沿った判定です。卓のハウスルールがある場合はそちらを優先してください。</p>
+</div>
+<div class="rules" id="rules6" hidden>
+<p><b>第6版の判定</b></p>
+<ul>
+<li>01〜05：クリティカル</li>
+<li>96〜100：ファンブル（技能値に関係なく）</li>
+<li>それ以外で技能値以下：成功、技能値より大きい：失敗</li>
+</ul>
+<p class="muted">クリティカル・ファンブルの扱いは卓によって異なります。卓のハウスルールがある場合はそちらを優先してください。</p>
+</div>
+</section>
+
+<section class="card">
+<h2>履歴</h2>
+<div class="row">
+<button class="primary" type="button" id="copy">履歴をコピー</button>
+<button type="button" id="clear">履歴を消す</button>
+<span class="muted" id="histCount"></span>
+</div>
+<p class="muted" id="clearConfirm" hidden>履歴をすべて消しますか？ <button id="clearYes" type="button">消す</button> <button id="clearNo" type="button">やめる</button></p>
+<ol class="hist" id="hist" aria-label="ダイスの履歴（新しい順）"></ol>
+</section>
+
+<section class="card">
+<h2>使い方</h2>
+<ol class="steps">
+<li>「ダイスを振る」に <code>2d6+3</code> のような式を入れて「振る」を押します。よく使うダイスはボタン1つで振れます。</li>
+<li>技能判定は、版（第7版／第6版）を選び、技能値を入れて「判定する」を押します。第7版ではボーナス・ペナルティダイスの数も選べます。</li>
+<li>結果は履歴に時刻つきで残ります（直近50件）。「履歴をコピー」で、セッションのチャットやメモに貼れます。</li>
+</ol>
+</section>
+
+<section class="card cta">
+<h2>シナリオが改訂されたら、進行メモも引っ越し</h2>
+<p style="margin:0 0 6px">前の卓でシナリオPDFに書き込んだ付箋が、改訂版ではページがずれて合わない。そんなGM・KPのための買い切りツールが<strong>卓の付箋引越帖</strong>です。旧稿のPDFに付けた付箋やコメント付きハイライトを読み取り、<strong>紙面と文字の一致を確かめて新版での移動先を判定</strong>。確定したメモを、<strong>新版のコピーへテキスト付箋として書き出します</strong>。</p>
+<a class="btn" href="https://kamimachi-press.booth.pm/items/9195743" rel="noopener">卓の付箋引越帖を見る<span>（BOOTH・500円）</span></a>
+<p class="muted" style="margin:8px 0 0">PC版Chromeで使います。各PDF 6ページ・付箋3枚まで試せる無料体験版（架空シナリオの見本付き）があります。処理は端末内で完結します。</p>
+</section>
+
+<section class="card">
+<h2>よくある質問</h2>
+<details><summary>ダイスの出目に偏りはありませんか？</summary><p>ブラウザに備わった暗号用の乱数（crypto.getRandomValues）を使っています。面数で割り切れない端の値は捨てて引き直す方法（棄却法）にしているので、どの目も同じ確率で出ます。直前の出目が次の出目に影響することもありません。</p></details>
+<details><summary>どんなダイス式が使えますか？</summary><p>「2d6」のような「個数d面数」と、足し算・引き算・掛け算（*または×）・割り算（/、端数切り捨て）・括弧が使えます。例：1d100、2d6+3、3d6*5、(2d6+6)*5、2d6+1d4-1。dは大文字でも全角でもかまいません。ダイスは1か所につき100個・1000面まで、式全体で200個までです。</p></details>
+<details><summary>クトゥルフ神話TRPG第7版の成功度はどう決まりますか？</summary><p>1d100の出目が01ならクリティカル、技能値の1/5以下（端数切り捨て）ならイクストリーム成功、1/2以下ならハード成功、技能値以下ならレギュラー成功です。ファンブルは、技能値が50未満なら96〜100、50以上なら100です。たとえば技能値65なら、ハードは32以下、イクストリームは13以下です。</p></details>
+<details><summary>ボーナス・ペナルティダイスはどう振るのですか？</summary><p>一の位のダイスを1個、十の位のダイスを「1＋ボーナス（またはペナルティ）の数」個振り、ボーナスなら出目が小さくなる十の位を、ペナルティなら大きくなる十の位を採用します。十の位00と一の位0の組み合わせは100として扱います。ボーナスとペナルティが両方あるときは、打ち消し合った残りの数を選んでください。</p></details>
+<details><summary>第6版の判定とは何が違いますか？</summary><p>第6版の判定では、01〜05がクリティカル、96〜100がファンブル、それ以外は技能値以下なら成功です。ハード・イクストリームといった成功の度合いや、ボーナス・ペナルティダイスはありません。クリティカル・ファンブルの扱いは卓によって異なるので、ハウスルールがあればそちらを優先してください。</p></details>
+<details><summary>履歴はほかの人にも見えますか？</summary><p>見えません。履歴は直近50件までこの端末のブラウザにだけ保存され、どこにも送信されません。オンラインセッションでは「履歴をコピー」でチャットに貼れますが、ほかの参加者が出目を確かめられる仕組みではないので、公平さが必要な場面では卓で決めたダイスツールを使ってください。</p></details>
+<p class="muted" style="margin:10px 0 0">このページは非公式の判定補助ツールです。</p>
+</section>
+
+<footer>紙町活版所 ・ <a href="../">ほかの無料ツール</a></footer>
+</main>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/*CORE-START*/
+var Dice=(function(){
+'use strict';
+var LIM={count:100,sides:1000,total:200,len:100,num:1000000,result:1e15};
+function DiceError(msg){this.message=msg;this.name='DiceError'}
+function fail(m){throw new DiceError(m)}
+// Uniform integer 1..m from a 32-bit source, rejecting the top values that
+// would make some faces more likely (no modulo bias).
+function makeRng(fill){
+  var buf=new Uint32Array(1);
+  return function(m){
+    if(!(m>=1&&m<=4294967296&&Math.floor(m)===m))throw new RangeError('bad m');
+    var lim=4294967296-(4294967296%m);
+    do{fill(buf)}while(buf[0]>=lim);
+    return buf[0]%m+1;
+  };
+}
+function normalize(src){
+  var s=String(src==null?'':src).normalize('NFKC');
+  return s.replace(/[×✕]/g,'*').replace(/÷/g,'/').replace(/[−‐‑‒–—―ー]/g,'-');
+}
+function tokenize(s){
+  var t=[],i=0;
+  while(i<s.length){
+    var c=s[i];
+    if(c>='0'&&c<='9'){var j=i;while(j<s.length&&s[j]>='0'&&s[j]<='9')j++;t.push({k:'num',v:s.slice(i,j)});i=j;continue}
+    if(c==='d'||c==='D'){t.push({k:'d',v:'d'});i++;continue}
+    if('+-*/()%'.indexOf(c)>=0){t.push({k:c,v:c});i++;continue}
+    fail('使えない文字があります：「'+c+'」');
+  }
+  return t;
+}
+function parse(src){
+  var s=normalize(src);
+  if(/[0-9]\s+[0-9]/.test(s))fail('数字のあいだに空白があります（例：2d6+3）');
+  s=s.replace(/\s+/g,'');
+  if(!s)fail('ダイス式を入れてください（例：2d6+3）');
+  if(s.length>LIM.len)fail('式が長すぎます（'+LIM.len+'文字まで）');
+  var t=tokenize(s),pos=0,diceCount=0,depth=0;
+  function peek(){return t[pos]}
+  function next(){return t[pos++]}
+  function num(tok){
+    if(tok.v.length>7||Number(tok.v)>LIM.num)fail('数が大きすぎます（1000000まで）');
+    return Number(tok.v);
+  }
+  function deeper(){if(++depth>30)fail('式が複雑すぎます')}
+  function expr(){
+    var n=term();
+    while(peek()&&(peek().k==='+'||peek().k==='-')){var op=next().k;n={k:'bin',op:op,a:n,b:term()}}
+    return n;
+  }
+  function term(){
+    var n=unary();
+    while(peek()&&(peek().k==='*'||peek().k==='/')){var op=next().k;n={k:'bin',op:op,a:n,b:unary()}}
+    return n;
+  }
+  function unary(){
+    var tk=peek();
+    if(tk&&(tk.k==='+'||tk.k==='-')){next();deeper();var u=unary();depth--;return tk.k==='-'?{k:'neg',a:u}:u}
+    return primary();
+  }
+  function primary(){
+    var tk=next();
+    if(!tk)fail('式が途中で終わっています');
+    if(tk.k==='('){deeper();var e=expr();var c=next();if(!c||c.k!==')')fail('括弧の数が合っていません');depth--;return {k:'paren',a:e}}
+    if(tk.k==='num'){
+      if(peek()&&peek().k==='d'){next();return dice(num(tk))}
+      return {k:'num',v:num(tk)};
+    }
+    if(tk.k==='d')return dice(1);
+    if(tk.k===')')fail('括弧の数が合っていません');
+    fail('「'+tk.v+'」の位置がおかしいです');
+  }
+  function dice(n){
+    var tk=next(),m;
+    if(tk&&tk.k==='%')m=100;
+    else if(tk&&tk.k==='num')m=num(tk);
+    else fail('dのあとに面数を書いてください（例：2d6）');
+    if(n<1)fail('ダイスの個数は1以上にしてください');
+    if(n>LIM.count)fail('ダイスは1か所につき'+LIM.count+'個までです');
+    if(m<2||m>LIM.sides)fail('面数は2〜'+LIM.sides+'にしてください');
+    diceCount+=n;
+    if(diceCount>LIM.total)fail('ダイスは式全体で'+LIM.total+'個までです');
+    return {k:'dice',n:n,m:m};
+  }
+  var ast=expr();
+  if(pos<t.length){var r=t[pos];fail(r.k===')'?'括弧の数が合っていません':'「'+r.v+'」の位置がおかしいです')}
+  return {ast:ast,dice:diceCount};
+}
+var OPS={'+':'+','-':'-','*':'×','/':'÷'};
+function format(n){
+  switch(n.k){
+    case 'num':return String(n.v);
+    case 'dice':return n.n+'D'+n.m;
+    case 'neg':return '-'+format(n.a);
+    case 'paren':return '('+format(n.a)+')';
+    default:return format(n.a)+OPS[n.op]+format(n.b);
+  }
+}
+function evaluate(p,rng){
+  var parts=[];
+  function chk(v){if(!isFinite(v)||Math.abs(v)>LIM.result)fail('結果が大きすぎます');return v}
+  function ev(n){
+    var a,b,v,i;
+    switch(n.k){
+      case 'num':return {v:n.v,s:String(n.v)};
+      case 'dice':
+        var r=[],sum=0;
+        for(i=0;i<n.n;i++){var x=rng(n.m);r.push(x);sum+=x}
+        parts.push({n:n.n,m:n.m,rolls:r,sum:sum});
+        return {v:sum,s:n.n+'D'+n.m+'['+r.join(',')+']'};
+      case 'neg':a=ev(n.a);return {v:-a.v,s:'-'+a.s};
+      case 'paren':a=ev(n.a);return {v:a.v,s:'('+a.s+')'};
+      default:
+        a=ev(n.a);b=ev(n.b);
+        if(n.op==='+')v=a.v+b.v;
+        else if(n.op==='-')v=a.v-b.v;
+        else if(n.op==='*')v=a.v*b.v;
+        else{if(b.v===0)fail('0で割ることはできません');v=Math.trunc(a.v/b.v)}
+        return {v:chk(v)+0,s:a.s+OPS[n.op]+b.s};
+    }
+  }
+  var r=ev(p.ast);
+  return {total:r.v,detail:r.s,parts:parts,expr:format(p.ast)};
+}
+function roll(src,rng){return evaluate(parse(src),rng)}
+// Call of Cthulhu 7th edition
+var LV7={critical:'クリティカル',extreme:'イクストリーム成功',hard:'ハード成功',regular:'レギュラー成功',failure:'失敗',fumble:'ファンブル'};
+function level7(r,skill){
+  if(r===1)return 'critical';
+  if(r===100||(skill<50&&r>=96))return 'fumble';
+  if(r<=Math.floor(skill/5))return 'extreme';
+  if(r<=Math.floor(skill/2))return 'hard';
+  if(r<=skill)return 'regular';
+  return 'failure';
+}
+// d100 from one units die (0-9) and tens dice (0-9 meaning 00-90); 00+0 = 100.
+function combine(t,u){var v=t*10+u;return v===0?100:v}
+function pick7(tens,units,bp){
+  var c=tens.map(function(t){return combine(t,units)}),r=c[0];
+  for(var i=1;i<c.length;i++){if(bp>0?c[i]<r:c[i]>r)r=c[i]}
+  return {cands:c,roll:r};
+}
+function check7(skill,bp,rng){
+  bp=Math.max(-2,Math.min(2,bp|0));
+  var units=rng(10)-1,tens=[];
+  for(var i=0;i<=Math.abs(bp);i++)tens.push(rng(10)-1);
+  var p=pick7(tens,units,bp);
+  var lv=level7(p.roll,skill);
+  return {ed:7,skill:skill,bp:bp,units:units,tens:tens,cands:p.cands,roll:p.roll,level:lv,label:LV7[lv],hard:Math.floor(skill/2),extreme:Math.floor(skill/5)};
+}
+// 6th edition
+var LV6={critical:'クリティカル',success:'成功',failure:'失敗',fumble:'ファンブル'};
+function level6(r,skill){
+  if(r<=5)return 'critical';
+  if(r>=96)return 'fumble';
+  return r<=skill?'success':'failure';
+}
+function check6(skill,rng){
+  var r=rng(100),lv=level6(r,skill);
+  return {ed:6,skill:skill,roll:r,level:lv,label:LV6[lv]};
+}
+return {LIM:LIM,makeRng:makeRng,normalize:normalize,parse:parse,evaluate:evaluate,roll:roll,format:format,level7:level7,combine:combine,pick7:pick7,check7:check7,level6:level6,check6:check6,DiceError:DiceError};
+})();
+/*CORE-END*/
+
+(function(){
+'use strict';
+var KEY='kamimachi-dice-v1',MAX_HIST=50;
+var $=function(id){return document.getElementById(id)};
+var rng=Dice.makeRng(function(b){crypto.getRandomValues(b)});
+var state={hist:[],expr:'2d6',skill:50,bp:0,ed:'7',name:''};
+
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function toast(msg){var t=$('toast');t.textContent=msg;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){t.hidden=true},2200)}
+function load(){
+  try{
+    var s=JSON.parse(localStorage.getItem(KEY)||'null');
+    if(s&&typeof s==='object'){
+      if(Array.isArray(s.hist))state.hist=s.hist.filter(function(h){return h&&typeof h.t==='number'&&typeof h.s==='string'}).slice(-MAX_HIST);
+      if(typeof s.expr==='string')state.expr=s.expr.slice(0,100);
+      if(typeof s.skill==='number'&&s.skill>=1&&s.skill<=200)state.skill=Math.floor(s.skill);
+      if([-2,-1,0,1,2].indexOf(s.bp)>=0)state.bp=s.bp;
+      if(s.ed==='6'||s.ed==='7')state.ed=s.ed;
+      if(typeof s.name==='string')state.name=s.name.slice(0,20);
+    }
+  }catch(e){}
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+function pad(n){return (n<10?'0':'')+n}
+function hms(t){var d=new Date(t);return pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds())}
+function addHist(s){
+  state.hist.push({t:Date.now(),s:s});
+  if(state.hist.length>MAX_HIST)state.hist=state.hist.slice(-MAX_HIST);
+  save();renderHist();
+}
+function renderHist(){
+  var ol=$('hist');ol.innerHTML='';
+  for(var i=state.hist.length-1;i>=0;i--){
+    var h=state.hist[i],li=document.createElement('li');
+    var tm=document.createElement('time');tm.dateTime=new Date(h.t).toISOString();tm.textContent=hms(h.t);
+    var sp=document.createElement('span');sp.textContent=h.s;
+    li.append(tm,sp);ol.appendChild(li);
+  }
+  if(!state.hist.length)ol.innerHTML='<li class="muted">まだ履歴はありません。</li>';
+  $('histCount').textContent=state.hist.length?state.hist.length+'件（最大'+MAX_HIST+'件）':'';
+}
+function pop(el){el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop')}
+
+function doRoll(src){
+  var box=$('exprResult');
+  try{
+    var r=Dice.roll(src,rng);
+    var single=r.parts.length===1&&r.parts[0].n===1&&r.detail===r.parts[0].n+'D'+r.parts[0].m+'['+r.total+']';
+    box.innerHTML='<div class="what">'+esc(r.expr)+'</div><div class="big">'+esc(r.total)+'</div>'+(single?'':'<div class="detail">'+esc(r.detail)+' = '+esc(r.total)+'</div>');
+    pop(box);
+    addHist(r.expr+' → '+r.total+(single?'':'（'+r.detail+'）'));
+    return r;
+  }catch(e){
+    if(!(e instanceof Dice.DiceError))throw e;
+    box.innerHTML='<p class="err" style="margin:0">'+esc(e.message)+'</p>';
+    return null;
+  }
+}
+
+function edition(){var c=document.querySelector('input[name=ed]:checked');return c?c.value:'7'}
+function skillValue(){var v=Number($('skill').value);return (Number.isInteger(v)&&v>=1&&v<=200)?v:null}
+function updateCocUI(){
+  var ed=edition();
+  $('bpWrap').hidden=ed!=='7';$('rules7').hidden=ed!=='7';$('rules6').hidden=ed!=='6';
+  var v=skillValue();
+  if(!v){$('thresholds').textContent='';return}
+  $('thresholds').textContent=ed==='7'?'ハード '+Math.floor(v/2)+'以下／イクストリーム '+Math.floor(v/5)+'以下':'成功 '+v+'以下';
+}
+function two(n){return n===100?'100':pad(n)}
+function doCheck(){
+  var box=$('cocResult'),v=skillValue(),ed=edition(),name=$('skillName').value.trim().slice(0,20);
+  if(!v){box.innerHTML='<p class="err" style="margin:0">技能値は1〜200の整数で入れてください。</p>';return null}
+  var who=(name?name:'技能')+'（'+v+'）',r,detail,hist;
+  if(ed==='7'){
+    var bp=Number($('bp').value)||0;
+    r=Dice.check7(v,bp,rng);
+    var bpTxt=bp>0?'ボーナス'+bp:bp<0?'ペナルティ'+(-bp):'';
+    if(bp){
+      detail='十の位 '+r.tens.map(function(t){return t?t*10:'00'}).join('・')+'／一の位 '+r.units+' → 候補 '+r.cands.map(two).join('・')+' → '+(bp>0?'小さい方':'大きい方')+'の '+two(r.roll)+' を採用';
+    }else{
+      detail='十の位 '+(r.tens[0]?r.tens[0]*10:'00')+'／一の位 '+r.units;
+    }
+    detail+='（ハード '+r.hard+'以下・イクストリーム '+r.extreme+'以下）';
+    hist='CoC7版 '+who+(bpTxt?' '+bpTxt:'')+' → '+two(r.roll)+' '+r.label;
+  }else{
+    r=Dice.check6(v,rng);
+    detail='1D100 → '+two(r.roll)+'（01〜05クリティカル・96〜100ファンブル）';
+    hist='CoC6版 '+who+' → '+two(r.roll)+' '+r.label;
+  }
+  box.innerHTML='<div class="what">'+esc('第'+ed+'版 '+who+(ed==='7'&&r.bp?(r.bp>0?' ボーナス'+r.bp:' ペナルティ'+(-r.bp)):''))+'</div><div class="headline"><span class="big">'+esc(two(r.roll))+'</span><span class="lvl lv-'+r.level+'">'+esc(r.label)+'</span></div><div class="detail">'+esc(detail)+'</div>';
+  pop(box);
+  addHist(hist);
+  updateCocUI();
+  state.skill=v;state.ed=ed;state.name=name;state.bp=ed==='7'?(Number($('bp').value)||0):state.bp;save();
+  return r;
+}
+
+function copyText(t,msg){
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){toast(msg)},function(){fallback(t,msg)})}else fallback(t,msg);
+}
+function fallback(t,msg){var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy');toast(msg)}catch(e){toast('コピーできませんでした')}a.remove()}
+
+$('exprForm').onsubmit=function(e){e.preventDefault();state.expr=$('expr').value;save();doRoll($('expr').value)};
+document.querySelectorAll('[data-roll]').forEach(function(b){b.onclick=function(){var x=b.getAttribute('data-roll');$('expr').value=x;state.expr=x;save();doRoll(x)}});
+$('cocForm').onsubmit=function(e){e.preventDefault();doCheck()};
+document.querySelectorAll('input[name=ed]').forEach(function(r){r.onchange=function(){state.ed=edition();save();updateCocUI()}});
+$('skill').oninput=updateCocUI;$('skill').onchange=updateCocUI;
+$('bp').onchange=function(){state.bp=Number($('bp').value)||0;save()};
+$('copy').onclick=function(){
+  if(!state.hist.length){toast('まだ履歴がありません');return}
+  copyText(state.hist.map(function(h){return '['+hms(h.t)+'] '+h.s}).join('\n'),'履歴をコピーしました（古い順）');
+};
+$('clear').onclick=function(){if(state.hist.length)$('clearConfirm').hidden=false};
+$('clearNo').onclick=function(){$('clearConfirm').hidden=true};
+$('clearYes').onclick=function(){state.hist=[];save();renderHist();$('clearConfirm').hidden=true;toast('履歴を消しました')};
+
+load();
+$('expr').value=state.expr;$('skill').value=state.skill;$('bp').value=String(state.bp);$('skillName').value=state.name;
+var edr=document.querySelector('input[name=ed][value="'+state.ed+'"]');if(edr)edr.checked=true;
+updateCocUI();renderHist();
+})();
+</script>
+</body>
+</html>

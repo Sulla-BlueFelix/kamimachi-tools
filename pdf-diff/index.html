@@ -1,0 +1,844 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDF比較ツール｜新旧PDFの差分を無料で表示【アップロードなし・登録不要】</title>
+<meta name="description" content="新旧2つのPDFを選ぶだけで、同じページどうしを重ねて修正箇所を赤と青で表示します。違うページの一覧、ページ数や寸法の違い、追加・削除された文字列もわかります。PDFはアップロードせずブラウザ内で処理する無料ツールです。">
+<link rel="canonical" href="https://sulla-bluefelix.github.io/kamimachi-tools/pdf-diff/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="PDF比較ツール（新旧PDFの差分チェック）【無料・アップロードなし】">
+<meta property="og:description" content="新旧2つのPDFの違いを、ページごとに色と枠で表示。文字の追加・削除も一覧にします。">
+<meta property="og:url" content="https://sulla-bluefelix.github.io/kamimachi-tools/pdf-diff/">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"WebApplication","name":"PDF比較ツール（新旧PDFの差分チェック）","url":"https://sulla-bluefelix.github.io/kamimachi-tools/pdf-diff/","applicationCategory":"UtilitiesApplication","operatingSystem":"Any","inLanguage":"ja","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"}},
+{"@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"PDFはアップロードされますか？","acceptedAnswer":{"@type":"Answer","text":"されません。PDFの読み込み・描画・比較はすべてお使いのブラウザの中で行い、ファイルの中身はどこにも送信しません。ネットから読み込むのは、表示用のプログラム（Mozilla PDF.js）と、日本語フォント用の文字対応表だけです。"}},
+{"@type":"Question","name":"どんな違いがわかりますか？","acceptedAnswer":{"@type":"Answer","text":"同じページ番号どうしを画像として重ね、色が変わった画素を表示します。文字の修正、図や写真の差し替え、位置のずれ、色の変更など、紙面に出る違いが対象です。文字情報のあるPDFなら、削除・追加された文字列も一覧にします。フォントの埋め込み方やしおり、メタデータなど、紙面に出ない違いは対象外です。"}},
+{"@type":"Question","name":"どのくらい小さな違いまで見つかりますか？","acceptedAnswer":{"@type":"Answer","text":"ページの幅を約1000ピクセル（A4で約120dpi相当）にそろえて描画し、1画素ずつ比べます。本文1文字の訂正や句読点の違いも検出できます。差の割合は、色が変わった画素がページに占める割合です。1文字の修正なら0.1%未満になることも多いので、割合の大小より、枠で囲まれた位置を確認してください。"}},
+{"@type":"Question","name":"途中でページが追加・削除されたPDFも比べられますか？","acceptedAnswer":{"@type":"Answer","text":"このツールは同じページ番号どうしを比べるため、途中に1ページ挿入されると、それ以降のページはすべて「差あり」になります。ページ数の違いと、片方にしかないページは表示しますが、ずれたページの対応づけはしません。"}},
+{"@type":"Question","name":"何ページまで比較できますか？","acceptedAnswer":{"@type":"Answer","text":"旧版・新版それぞれ先頭から30ページまでです。31ページ以降は比較せず、その旨を表示します。ページ数や画像が多いPDFほど時間がかかります。パスワードで保護されたPDFは開けません。"}},
+{"@type":"Question","name":"スキャンしたPDFでも使えますか？","acceptedAnswer":{"@type":"Answer","text":"使えますが、スキャンするたびに位置や濃さがわずかに変わるため、ほぼ全面が差として出ます。文字情報もないので文字の比較はできません。Word・InDesign・Illustratorなどから書き出したPDFどうしの比較に向いています。"}}
+]}]}
+</script>
+<style>
+:root{--bg:#f6f3ec;--card:#fffdf8;--ink:#1d2b30;--sub:#5b6a6c;--line:#d9d3c5;--accent:#0b6b62;--accent-ink:#fff;--warn:#a2412f;--soft:#e7efe9;--del-bg:#fbe1dc;--del-ink:#8f2a1a;--ins-bg:#dbe8fb;--ins-ink:#173f86;--stage:#8b8f8c}
+@media (prefers-color-scheme:dark){:root{--bg:#141a1c;--card:#1d2528;--ink:#e8ece9;--sub:#9fb0ad;--line:#33403f;--accent:#3fb3a2;--accent-ink:#0d1716;--warn:#e88a73;--soft:#23312f;--del-bg:#4a2620;--del-ink:#ffc2b5;--ins-bg:#1f3352;--ins-ink:#bcd5ff;--stage:#3a4344;color-scheme:dark}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 system-ui,-apple-system,"Hiragino Sans","Noto Sans JP","Yu Gothic UI",sans-serif}
+main{max-width:960px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:clamp(22px,5.4vw,30px);line-height:1.4;margin:8px 0 6px}
+.lead{color:var(--sub);margin:0 0 20px}
+h2{font-size:19px;margin:0 0 10px}
+h3{font-size:16px;margin:16px 0 6px}
+section.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 16px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input,select{font:inherit;color:inherit;background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:9px 10px;min-width:0}
+input:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px}
+button{font:inherit;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;padding:9px 14px;cursor:pointer}
+button:disabled{opacity:.45;cursor:default}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+button[aria-pressed=true]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+.muted{color:var(--sub);font-size:14px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px}
+.cta{border:2px solid var(--accent);background:var(--soft)}
+.cta a.btn span{white-space:nowrap}
+.cta a.btn{display:inline-block;background:var(--accent);color:var(--accent-ink);text-decoration:none;font-weight:700;padding:10px 16px;border-radius:9px;margin-top:6px}
+details{border-top:1px solid var(--line);padding:10px 0}
+summary{cursor:pointer;font-weight:600}
+footer{color:var(--sub);font-size:13px;text-align:center;margin-top:30px}
+a{color:var(--accent)}
+ol.steps{margin:0;padding-left:1.4em}
+ol.steps li{margin:0 0 4px}
+/* file pickers */
+.drops{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:600px){.drops{grid-template-columns:1fr}}
+.drop{display:block;border:2px dashed var(--line);border-radius:12px;padding:14px;cursor:pointer;background:var(--bg);min-width:0}
+.drop:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+.drop.over{border-color:var(--accent);background:var(--soft)}
+.drop .ttl{display:block;font-weight:700;font-size:17px}
+.drop .hint{display:block;color:var(--sub);font-size:14px}
+.drop .fname{display:block;margin-top:6px;font-size:14px;overflow-wrap:anywhere}
+.drop .fname.err{color:var(--warn)}
+.drop.ok{border-style:solid;border-color:var(--accent)}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.pick{display:inline-block;margin-top:8px;padding:6px 12px;border:1px solid var(--line);border-radius:9px;background:var(--card);font-size:14px}
+/* results */
+progress{width:100%;height:10px;accent-color:var(--accent)}
+.sum{margin:0;padding-left:1.2em}
+.sum li{margin:0 0 4px}
+.note{background:var(--soft);border-radius:10px;padding:10px 12px;font-size:14px;margin:10px 0 0}
+.plist{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:10px}
+.pg{text-align:left;padding:8px 10px;line-height:1.45;min-width:0}
+.pg b{display:block;font-size:15px}
+.pg span{display:block;font-size:13px;color:var(--sub)}
+.pg[aria-pressed=true] span{color:inherit}
+.pg.diff{border-color:var(--warn);border-width:2px}
+.pg.same b::after{content:"　差なし";font-weight:400;font-size:13px;color:var(--sub)}
+.pg[aria-pressed=true].same b::after{color:inherit}
+/* viewer */
+.vhead{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center}
+.vhead h2{margin:0}
+.seg{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.seg button{padding:6px 12px;font-size:15px}
+.stage{position:relative;margin-top:10px;background:var(--stage);border-radius:10px;overflow:auto;max-height:78vh;padding:8px;-webkit-overflow-scrolling:touch}
+.zwrap{display:flex;gap:8px;justify-content:center;align-items:flex-start;margin:0 auto}
+.zwrap figure{margin:0;flex:1 1 0;min-width:0;text-align:center}
+.zwrap figcaption{font-size:13px;color:#fff;background:rgba(0,0,0,.45);border-radius:6px;display:inline-block;padding:0 8px;margin-bottom:4px}
+.zwrap canvas{display:block;margin:0 auto;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.35);cursor:zoom-in}
+.zoomed canvas{cursor:default}
+.fit canvas{max-width:100%;max-height:calc(78vh - 50px);width:auto;height:auto}
+.fitw canvas{width:100%;height:auto}
+.stage .msg{color:#fff;padding:30px 10px;text-align:center}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--sub);margin-top:8px}
+.legend i{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:4px}
+.sw-del{background:#d21e1e}.sw-ins{background:#0a5ae6}.sw-box{border:3px solid #f08c00}
+.facts{font-size:14px;margin:10px 0 0;padding-left:1.2em}
+/* text diff */
+.hunk{border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin:8px 0;font-size:15px;overflow-wrap:anywhere}
+.hunk div{display:flex;gap:8px;align-items:baseline}
+.hunk div+div{border-top:1px dashed var(--line);margin-top:6px;padding-top:6px}
+.hunk .tag{flex:0 0 auto;font-size:12px;font-weight:700;border-radius:5px;padding:0 6px;border:1px solid var(--line)}
+.hunk .tx{white-space:pre-wrap;min-width:0}
+del{background:var(--del-bg);color:var(--del-ink);text-decoration:line-through;text-decoration-thickness:2px}
+ins{background:var(--ins-bg);color:var(--ins-ink);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+.gap{font-size:13px;color:var(--sub);text-align:center}
+.none{color:var(--sub);font-style:italic}
+</style>
+</head>
+<body>
+<main>
+<h1>PDF比較ツール（新旧PDFの差分チェック）</h1>
+<p class="lead">旧版と新版のPDFを選ぶと、同じページ番号どうしを重ねて、<strong>修正箇所を色と枠で表示</strong>します。PDFはアップロードせず、すべてこの端末のブラウザ内で処理します。登録不要・無料です。</p>
+
+<section class="card">
+<h2>1. 比べるPDFを選ぶ</h2>
+<div class="drops">
+<label class="drop" id="dropOld">
+<span class="ttl">旧版のPDF</span>
+<span class="hint">ここにドラッグ＆ドロップ、または</span>
+<span class="pick">ファイルを選ぶ</span>
+<input class="vh" type="file" id="fileOld" accept="application/pdf,.pdf" aria-label="旧版のPDFを選ぶ">
+<span class="fname" id="nameOld" aria-live="polite">未選択</span>
+</label>
+<label class="drop" id="dropNew">
+<span class="ttl">新版のPDF</span>
+<span class="hint">ここにドラッグ＆ドロップ、または</span>
+<span class="pick">ファイルを選ぶ</span>
+<input class="vh" type="file" id="fileNew" accept="application/pdf,.pdf" aria-label="新版のPDFを選ぶ">
+<span class="fname" id="nameNew" aria-live="polite">未選択</span>
+</label>
+</div>
+<div class="row" style="margin-top:10px">
+<button type="button" id="swap">旧版と新版を入れ替える</button>
+<span class="muted">2つのPDFを同時にドロップすると、先のファイルを旧版にします。</span>
+</div>
+<p class="muted" style="margin:10px 0 0">PDFはこの端末の中だけで処理され、どこにも送信されません。比べるのは各PDFの先頭30ページまでです。</p>
+</section>
+
+<section class="card" id="resultCard" hidden>
+<h2>2. 比較結果</h2>
+<div id="progressBox" hidden>
+<p class="muted" id="progressText" style="margin:0 0 4px" aria-live="polite">比較しています…</p>
+<progress id="progress" max="1" value="0"></progress>
+</div>
+<div id="summary"></div>
+<div id="listBox" hidden>
+<div class="row" style="margin-top:12px;justify-content:space-between">
+<label class="muted" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="onlyDiff" checked> 違いのあるページだけ表示</label>
+</div>
+<div class="plist" id="plist" role="group" aria-label="ページの一覧"></div>
+</div>
+</section>
+
+<section class="card" id="viewCard" hidden>
+<div class="vhead">
+<h2 id="viewTitle">ページ</h2>
+<div class="row">
+<button type="button" id="prevPg" aria-label="一覧の前のページ">前へ</button>
+<button type="button" id="nextPg" aria-label="一覧の次のページ">次へ</button>
+</div>
+</div>
+<div class="seg" role="group" aria-label="表示の切り替え">
+<button type="button" data-mode="diff" aria-pressed="true">差分強調</button>
+<button type="button" data-mode="old" aria-pressed="false">旧版</button>
+<button type="button" data-mode="new" aria-pressed="false">新版</button>
+<button type="button" data-mode="side" aria-pressed="false">横並び</button>
+</div>
+<div class="seg" role="group" aria-label="拡大">
+<button type="button" data-zoom="0" aria-pressed="false">全体</button>
+<button type="button" data-zoom="1" aria-pressed="false">幅に合わせる</button>
+<button type="button" data-zoom="2" aria-pressed="false">2倍</button>
+<button type="button" data-zoom="4" aria-pressed="false">4倍</button>
+<button type="button" id="nextBox">次の変化箇所</button>
+<label class="muted" style="display:flex;gap:6px;align-items:center;margin-left:4px"><input type="checkbox" id="showBoxes" checked> 枠を表示</label>
+</div>
+<div class="stage" id="stage"><div class="msg">ページを選んでください。</div></div>
+<div class="legend" id="legend">
+<span class="lg-diff"><i class="sw-del"></i>赤：旧版にだけある部分</span>
+<span class="lg-diff"><i class="sw-ins"></i>青：新版にだけある部分</span>
+<span class="lg-box"><i class="sw-box"></i>オレンジの枠：変化した箇所</span>
+</div>
+<ul class="facts" id="facts"></ul>
+<h3>文字の違い</h3>
+<div id="textDiff"></div>
+</section>
+
+<section class="card">
+<h2>使い方</h2>
+<ol class="steps">
+<li>「旧版」「新版」の枠に、それぞれPDFを選ぶか、ドラッグ＆ドロップします。</li>
+<li>2つそろうと自動で比較が始まり、違いのあるページが一覧に出ます。</li>
+<li>ページを選ぶと、変化した場所が赤（旧版だけにある）と青（新版だけにある）で塗られ、オレンジの枠で囲まれます。「次の変化箇所」を押すと、枠の位置を順に拡大します。</li>
+<li>文字情報のあるPDFなら、下の「文字の違い」に削除・追加された文字列が出ます。「旧版」「新版」「横並び」で元の紙面も確かめられます。</li>
+</ol>
+</section>
+
+<section class="card cta">
+<h2>合同誌・アンソロジーの差し替え校正なら</h2>
+<p style="margin:0 0 6px">この無料ツールは「同じページ番号どうし」を比べます。寄稿者から届いた新版でページが増減していると、番号がずれて対応がとれません。<strong>差し替え校正台</strong>は、似たページを対応づけて<strong>追加・削除・寸法変更・白紙化の候補</strong>を表示し、確認したページとメモを<strong>人別・版別の台帳</strong>に残せるツールです。各160ページまで比較でき、メモはJSONで保存・再開、一覧はCSVに書き出せます。</p>
+<a class="btn" href="https://kamimachi-press.booth.pm/items/9194704" rel="noopener">差し替え校正台を見る<span>（BOOTH・1,200円）</span></a>
+<p class="muted" style="margin:8px 0 0">PC版Chrome・Edge向けです。旧稿・新版それぞれ6ページまで照合できる無料体験版（見本PDF付き）もあります。PDFの処理は端末内で完結します。</p>
+</section>
+
+<section class="card">
+<h2>よくある質問</h2>
+<details><summary>PDFはアップロードされますか？</summary><p>されません。PDFの読み込み・描画・比較はすべてお使いのブラウザの中で行い、ファイルの中身はどこにも送信しません。ネットから読み込むのは、表示用のプログラム（Mozilla PDF.js）と、日本語フォント用の文字対応表だけです。</p></details>
+<details><summary>どんな違いがわかりますか？</summary><p>同じページ番号どうしを画像として重ね、色が変わった画素を表示します。文字の修正、図や写真の差し替え、位置のずれ、色の変更など、紙面に出る違いが対象です。文字情報のあるPDFなら、削除・追加された文字列も一覧にします。フォントの埋め込み方やしおり、メタデータなど、紙面に出ない違いは対象外です。</p></details>
+<details><summary>どのくらい小さな違いまで見つかりますか？</summary><p>ページの幅を約1000ピクセル（A4で約120dpi相当）にそろえて描画し、1画素ずつ比べます。本文1文字の訂正や句読点の違いも検出できます。差の割合は、色が変わった画素がページに占める割合です。1文字の修正なら0.1%未満になることも多いので、割合の大小より、枠で囲まれた位置を確認してください。</p></details>
+<details><summary>途中でページが追加・削除されたPDFも比べられますか？</summary><p>このツールは同じページ番号どうしを比べるため、途中に1ページ挿入されると、それ以降のページはすべて「差あり」になります。ページ数の違いと、片方にしかないページは表示しますが、ずれたページの対応づけはしません。</p></details>
+<details><summary>何ページまで比較できますか？</summary><p>旧版・新版それぞれ先頭から30ページまでです。31ページ以降は比較せず、その旨を表示します。ページ数や画像が多いPDFほど時間がかかります。パスワードで保護されたPDFは開けません。</p></details>
+<details><summary>スキャンしたPDFでも使えますか？</summary><p>使えますが、スキャンするたびに位置や濃さがわずかに変わるため、ほぼ全面が差として出ます。文字情報もないので文字の比較はできません。Word・InDesign・Illustratorなどから書き出したPDFどうしの比較に向いています。</p></details>
+</section>
+
+<footer>紙町活版所 ・ <a href="../">ほかの無料ツール</a></footer>
+</main>
+<div class="toast" id="toast" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" integrity="sha512-q+4liFwdPC/bNdhUpZx6aXDx/h77yEQtn4I1slHydcbZK34nLaR3cAeYSJshoxIOq3mjEf7xJE8YWIUHMn+oCQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+/*CORE-START*/
+var Core=(function(){
+'use strict';
+// Copy an RGBA image of w*h into a white W*H canvas (top-left aligned).
+function padImage(src,w,h,W,H){
+  if(w===W&&h===H)return src;
+  var out=new Uint8ClampedArray(W*H*4);out.fill(255);
+  for(var y=0;y<h;y++)out.set(src.subarray(y*w*4,(y+1)*w*4),y*W*4);
+  return out;
+}
+function lum(d,i){return d[i]*299+d[i+1]*587+d[i+2]*114}
+// Compare two same-size RGBA buffers. A pixel counts as changed when any
+// channel differs by more than `threshold` (0-255).
+function diffPixels(a,b,w,h,opt){
+  opt=opt||{};
+  var th=opt.threshold==null?40:opt.threshold,cell=opt.cell||16;
+  var gw=Math.ceil(w/cell),gh=Math.ceil(h/cell),grid=new Uint8Array(gw*gh);
+  var changed=0,added=0,removed=0;
+  for(var y=0;y<h;y++){
+    var row=y*w*4,gy=((y/cell)|0)*gw;
+    for(var x=0;x<w;x++){
+      var i=row+x*4;
+      var dr=a[i]-b[i],dg=a[i+1]-b[i+1],db=a[i+2]-b[i+2];
+      if(dr<0)dr=-dr;if(dg<0)dg=-dg;if(db<0)db=-db;
+      if(dr>th||dg>th||db>th){
+        changed++;grid[gy+((x/cell)|0)]=1;
+        if(lum(b,i)<lum(a,i))added++;else removed++;
+      }
+    }
+  }
+  var total=w*h;
+  return {w:w,h:h,changed:changed,added:added,removed:removed,total:total,ratio:total?changed/total:0,boxes:boxesFromGrid(grid,gw,gh,cell,w,h)};
+}
+// Group changed grid cells (bridging gaps of one empty cell) into boxes.
+// Boxes are returned as fractions of the image size, top to bottom.
+function boxesFromGrid(grid,gw,gh,cell,w,h){
+  var seen=new Uint8Array(gw*gh),boxes=[];
+  for(var s=0;s<grid.length;s++){
+    if(!grid[s]||seen[s])continue;
+    var stack=[s],x0=gw,y0=gh,x1=-1,y1=-1,n=0;seen[s]=1;
+    while(stack.length){
+      var c=stack.pop(),cx=c%gw,cy=(c/gw)|0;n++;
+      if(cx<x0)x0=cx;if(cx>x1)x1=cx;if(cy<y0)y0=cy;if(cy>y1)y1=cy;
+      for(var dy=-2;dy<=2;dy++)for(var dx=-2;dx<=2;dx++){
+        var nx=cx+dx,ny=cy+dy;
+        if(nx<0||ny<0||nx>=gw||ny>=gh)continue;
+        var k=ny*gw+nx;
+        if(grid[k]&&!seen[k]){seen[k]=1;stack.push(k)}
+      }
+    }
+    var px=Math.max(0,x0*cell-4),py=Math.max(0,y0*cell-4),qx=Math.min(w,(x1+1)*cell+4),qy=Math.min(h,(y1+1)*cell+4);
+    boxes.push({x:px/w,y:py/h,w:(qx-px)/w,h:(qy-py)/h,cells:n});
+  }
+  boxes.sort(function(p,q){return (p.y-q.y)||(p.x-q.x)});
+  return boxes;
+}
+// Paint a diff image: unchanged = faint gray of the new page,
+// ink only in the old page = red, ink only in the new page = blue.
+function paintDiff(a,b,w,h,th,out){
+  th=th==null?40:th;
+  for(var i=0,n=w*h*4;i<n;i+=4){
+    var dr=a[i]-b[i],dg=a[i+1]-b[i+1],db=a[i+2]-b[i+2];
+    if(dr<0)dr=-dr;if(dg<0)dg=-dg;if(db<0)db=-db;
+    if(dr>th||dg>th||db>th){
+      if(lum(b,i)<lum(a,i)){out[i]=10;out[i+1]=90;out[i+2]=230}
+      else{out[i]=210;out[i+1]=30;out[i+2]=30}
+    }else{
+      var v=255-(255-lum(b,i)/1000)*0.28;
+      out[i]=out[i+1]=out[i+2]=v;
+    }
+    out[i+3]=255;
+  }
+  return out;
+}
+function formatRatio(r){
+  if(!r)return '0%';
+  if(r<0.0001)return '0.01%未満';
+  if(r<0.1)return (r*100).toFixed(2)+'%';
+  return (r*100).toFixed(1)+'%';
+}
+function ptToMm(pt){return Math.round(pt*25.4/72)}
+var PAPERS=[['A3',297,420],['A4',210,297],['A5',148,210],['A6',105,148],['B4',257,364],['B5',182,257],['B6',128,182],['ISO B4',250,353],['ISO B5',176,250],['ISO B6',125,176],['レター',216,279],['はがき',100,148]];
+function paperName(wPt,hPt){
+  var w=wPt*25.4/72,h=hPt*25.4/72,s=Math.min(w,h),l=Math.max(w,h);
+  for(var i=0;i<PAPERS.length;i++){var p=PAPERS[i];if(Math.abs(s-p[1])<=2&&Math.abs(l-p[2])<=2)return p[0]+(w>h?'横':'')}
+  return '';
+}
+function sizeLabel(wPt,hPt){
+  var n=paperName(wPt,hPt);
+  return (n?n+' ':'')+ptToMm(wPt)+'×'+ptToMm(hPt)+'mm';
+}
+// Text: unify CJK radical / vertical presentation forms that some PDF
+// writers emit, collapse whitespace.
+function normChars(s){return s.replace(/[⺀-⿟豈-﫿︐-︟︰-﹏]/g,function(c){return c.normalize('NFKC')})}
+function normLine(s){return normChars(s).replace(/[\s　]+/g,' ').trim()}
+// Build lines from pdf.js text items using their positions
+// (same baseline moving right = horizontal line, same column moving down = vertical line).
+function itemsToLines(items){
+  var lines=[],cur='',last=null;
+  for(var k=0;k<items.length;k++){
+    var it=items[k];
+    if(!it||typeof it.str!=='string'||!it.str)continue;
+    var tr=it.transform||[1,0,0,1,0,0],x=tr[4],y=tr[5];
+    var fs=Math.max(Math.sqrt(tr[0]*tr[0]+tr[1]*tr[1]),Math.sqrt(tr[2]*tr[2]+tr[3]*tr[3]),1);
+    var wd=it.width||0,ht=it.height||0;
+    if(last){
+      var m=Math.max(fs,last.fs),tol=m*0.5;
+      var horiz=Math.abs(y-last.y)<tol&&x>last.x-tol&&x<last.x+last.w+m*4;
+      var step=last.y-y;
+      var vert=Math.abs(x-last.x)<tol&&step>0&&step<=Math.max(last.h,last.fs)+m*0.6&&last.w<=last.fs*1.3&&wd<=fs*1.3;
+      if(!(horiz||vert)){lines.push(cur);cur=''}
+    }
+    cur+=it.str;last={x:x,y:y,fs:fs,w:wd,h:ht};
+  }
+  if(cur)lines.push(cur);
+  var out=[];
+  for(var j=0;j<lines.length;j++){var s=normLine(lines[j]);if(s)out.push(s)}
+  return out;
+}
+// Longest-common-subsequence diff of two sequences (arrays or strings).
+// Returns [{t:'eq'|'del'|'ins', v:item}]. Falls back to replace-all when too big.
+function diffSeq(a,b,limit){
+  limit=limit||4000000;
+  var n=a.length,m=b.length,pre=0,suf=0,ops=[],i,j;
+  while(pre<n&&pre<m&&a[pre]===b[pre])pre++;
+  while(suf<n-pre&&suf<m-pre&&a[n-1-suf]===b[m-1-suf])suf++;
+  for(i=0;i<pre;i++)ops.push({t:'eq',v:a[i]});
+  var A=n-pre-suf,B=m-pre-suf;
+  if(A&&B&&(A+1)*(B+1)<=limit){
+    var W=B+1,L=new Uint32Array((A+1)*W);
+    for(i=A-1;i>=0;i--)for(j=B-1;j>=0;j--){
+      L[i*W+j]=a[pre+i]===b[pre+j]?L[(i+1)*W+j+1]+1:Math.max(L[(i+1)*W+j],L[i*W+j+1]);
+    }
+    i=0;j=0;
+    while(i<A&&j<B){
+      if(a[pre+i]===b[pre+j]){ops.push({t:'eq',v:a[pre+i]});i++;j++}
+      else if(L[(i+1)*W+j]>=L[i*W+j+1]){ops.push({t:'del',v:a[pre+i]});i++}
+      else{ops.push({t:'ins',v:b[pre+j]});j++}
+    }
+    for(;i<A;i++)ops.push({t:'del',v:a[pre+i]});
+    for(;j<B;j++)ops.push({t:'ins',v:b[pre+j]});
+  }else{
+    for(i=0;i<A;i++)ops.push({t:'del',v:a[pre+i]});
+    for(j=0;j<B;j++)ops.push({t:'ins',v:b[pre+j]});
+  }
+  for(i=n-suf;i<n;i++)ops.push({t:'eq',v:a[i]});
+  return ops;
+}
+function pushPart(arr,t,s){if(!s)return;var l=arr[arr.length-1];if(l&&l.t===t)l.s+=s;else arr.push({t:t,s:s})}
+// Character diff of two strings -> parts for the old side (eq/del) and new side (eq/ins).
+// Very short equal runs between changes are folded into the change to avoid confetti.
+function charDiff(s,t){
+  var ops=diffSeq(s,t,4000000),seg=[];
+  for(var k=0;k<ops.length;k++)pushPart(seg,ops[k].t,ops[k].v);
+  var old=[],neu=[];
+  for(k=0;k<seg.length;k++){
+    var g=seg[k];
+    if(g.t==='eq'&&g.s.length<=1&&k>0&&k<seg.length-1&&seg[k-1].t!=='eq'&&seg[k+1].t!=='eq'){
+      pushPart(old,'del',g.s);pushPart(neu,'ins',g.s);continue;
+    }
+    if(g.t!=='ins')pushPart(old,g.t,g.s);
+    if(g.t!=='del')pushPart(neu,g.t,g.s);
+  }
+  return {old:old,neu:neu};
+}
+// Line diff, then character diff inside each changed block.
+// hunks: {type:'eq',lines:[..]} or {type:'chg',old:[parts],neu:[parts],oldText,newText}
+function textDiff(oldLines,newLines){
+  var ops=diffSeq(oldLines,newLines,4000000),hunks=[],dels=[],inss=[],eqs=[];
+  function flushChg(){
+    if(!dels.length&&!inss.length)return;
+    var ot=dels.join('\n'),nt=inss.join('\n'),h={type:'chg',oldText:ot,newText:nt};
+    if(ot&&nt&&ot.length*nt.length<=4000000){var cd=charDiff(ot,nt);h.old=cd.old;h.neu=cd.neu}
+    else{h.old=ot?[{t:'del',s:ot}]:[];h.neu=nt?[{t:'ins',s:nt}]:[]}
+    hunks.push(h);dels=[];inss=[];
+  }
+  function flushEq(){if(eqs.length){hunks.push({type:'eq',lines:eqs});eqs=[]}}
+  for(var k=0;k<ops.length;k++){
+    var o=ops[k];
+    if(o.t==='eq'){flushChg();eqs.push(o.v)}
+    else{flushEq();if(o.t==='del')dels.push(o.v);else inss.push(o.v)}
+  }
+  flushChg();flushEq();
+  var changed=false;
+  for(k=0;k<hunks.length;k++)if(hunks[k].type==='chg')changed=true;
+  return {changed:changed,hunks:hunks};
+}
+return {padImage:padImage,diffPixels:diffPixels,boxesFromGrid:boxesFromGrid,paintDiff:paintDiff,formatRatio:formatRatio,ptToMm:ptToMm,paperName:paperName,sizeLabel:sizeLabel,normLine:normLine,itemsToLines:itemsToLines,diffSeq:diffSeq,charDiff:charDiff,textDiff:textDiff};
+})();
+/*CORE-END*/
+
+(function(){
+'use strict';
+var CDN='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
+var WORKER_SRI='sha512-BbrZ76UNZq5BhH7LL7pn9A4TKQpQeNCHOo65/akfelcIBbcVvYWOFQKPXIrykE3qZxYjmDX573oa4Ywsc7rpTw==';
+var DATA='https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/';
+var LIMIT=30,SCAN_W=1000,SCAN_MAX_H=2000,VIEW_MULT=2,VIEW_MAX=2800,TH=40,CELL=16;
+var $=function(id){return document.getElementById(id)};
+var slots={old:null,neu:null},seq={old:0,neu:0};
+var res=null,runId=0,viewSeq=0,cur=null,view=null;
+var mode='diff',zoom=window.innerWidth>=700?0:1,boxIdx=-1;
+var workerReady=null;
+var cvA=document.createElement('canvas'),cvB=document.createElement('canvas');
+var ctxA=cvA.getContext('2d',{willReadFrequently:true}),ctxB=cvB.getContext('2d',{willReadFrequently:true});
+
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function toast(msg){var t=$('toast');t.textContent=msg;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){t.hidden=true},2400)}
+function fmtSize(b){return b>=1048576?(b/1048576).toFixed(1)+'MB':Math.max(1,Math.round(b/1024))+'KB'}
+
+function ensureWorker(){
+  if(workerReady)return workerReady;
+  workerReady=fetch(CDN+'pdf.worker.min.js',{integrity:WORKER_SRI,mode:'cors',credentials:'omit',referrerPolicy:'no-referrer'})
+    .then(function(r){if(!r.ok)throw new Error('worker '+r.status);return r.blob()})
+    .then(function(b){pdfjsLib.GlobalWorkerOptions.workerSrc=URL.createObjectURL(new Blob([b],{type:'text/javascript'}))})
+    .catch(function(e){workerReady=null;e.libLoad=true;throw e});
+  return workerReady;
+}
+
+function slotEls(which){return which==='old'?{drop:$('dropOld'),name:$('nameOld'),input:$('fileOld'),label:'旧版'}:{drop:$('dropNew'),name:$('nameNew'),input:$('fileNew'),label:'新版'}}
+function showSlot(which,msg,isErr){
+  var e=slotEls(which),s=slots[which];
+  e.name.classList.toggle('err',!!isErr);
+  if(msg!=null){e.name.textContent=msg;e.drop.classList.toggle('ok',false);return}
+  if(!s){e.name.textContent='未選択';e.drop.classList.remove('ok');return}
+  var over=s.count>LIMIT?'（先頭'+LIMIT+'ページを比較）':'';
+  e.name.textContent=s.name+' ・ '+s.count+'ページ ・ '+fmtSize(s.size)+over;
+  e.drop.classList.add('ok');
+}
+
+function loadFile(which,file){
+  if(!file)return;
+  if(!/\.pdf$/i.test(file.name)&&file.type!=='application/pdf'){showSlot(which,'PDFファイルを選んでください（'+file.name+'）',true);return}
+  if(!window.pdfjsLib){showSlot(which,'PDF表示用のプログラムを読み込めませんでした。ネット接続を確認して、ページを再読み込みしてください。',true);return}
+  var my=++seq[which];
+  cancelRun();
+  res=null;cur=null;view=null;$('resultCard').hidden=true;$('viewCard').hidden=true;
+  showSlot(which,'読み込み中…');
+  ensureWorker().then(function(){return file.arrayBuffer()}).then(function(buf){
+    return pdfjsLib.getDocument({data:new Uint8Array(buf),cMapUrl:DATA+'cmaps/',cMapPacked:true,standardFontDataUrl:DATA+'standard_fonts/',isEvalSupported:false,enableXfa:false}).promise;
+  }).then(function(doc){
+    if(my!==seq[which]){doc.destroy();return}
+    if(slots[which]&&slots[which].doc)slots[which].doc.destroy();
+    slots[which]={name:file.name,size:file.size,doc:doc,count:doc.numPages};
+    showSlot(which);
+    maybeCompare();
+  }).catch(function(e){
+    if(my!==seq[which])return;
+    if(slots[which]&&slots[which].doc)slots[which].doc.destroy();
+    slots[which]=null;
+    var n=e&&e.name,msg;
+    if(e&&e.libLoad)msg='PDF表示用のプログラムを読み込めませんでした。ネット接続を確認して、もう一度選んでください。';
+    else if(n==='PasswordException')msg='パスワードで保護されたPDFは開けません（'+file.name+'）';
+    else msg='PDFとして読み込めませんでした。壊れているか、PDFではない可能性があります（'+file.name+'）';
+    showSlot(which,msg,true);
+  });
+}
+
+function cancelRun(){runId++;viewSeq++}
+
+function maybeCompare(){
+  if(slots.old&&slots.neu)compare();
+}
+
+function scanScale(va,vb){
+  var mw=Math.max(va?va.width:0,vb?vb.width:0),mh=Math.max(va?va.height:0,vb?vb.height:0);
+  var s=SCAN_W/mw;
+  if(mh*s>SCAN_MAX_H)s=SCAN_MAX_H/mh;
+  return s;
+}
+function renderTo(page,scale,canvas,ctx){
+  var vp=page.getViewport({scale:scale});
+  canvas.width=Math.max(1,Math.floor(vp.width));canvas.height=Math.max(1,Math.floor(vp.height));
+  return page.render({canvasContext:ctx,viewport:vp}).promise.then(function(){return {w:canvas.width,h:canvas.height}});
+}
+function pageText(page){
+  return page.getTextContent().then(function(tc){return Core.itemsToLines(tc.items)},function(){return []});
+}
+
+function scanPage(A,B,i,hasA,hasB){
+  var rec={i:i,hasA:hasA,hasB:hasB,changed:0,ratio:0,boxes:[],textA:[],textB:[],text:null};
+  var pa=null,pb=null;
+  return Promise.all([hasA?A.doc.getPage(i):null,hasB?B.doc.getPage(i):null]).then(function(p){
+    pa=p[0];pb=p[1];
+    var va=pa&&pa.getViewport({scale:1}),vb=pb&&pb.getViewport({scale:1});
+    rec.dimA=va?[va.width,va.height]:null;rec.dimB=vb?[vb.width,vb.height]:null;
+    rec.sizeDiff=!!(va&&vb&&(Math.abs(va.width-vb.width)>0.5||Math.abs(va.height-vb.height)>0.5));
+    rec.scale=scanScale(va,vb);
+    if(!(pa&&pb))return null;
+    return renderTo(pa,rec.scale,cvA,ctxA).then(function(ia){
+      return renderTo(pb,rec.scale,cvB,ctxB).then(function(ib){
+        var W=Math.max(ia.w,ib.w),H=Math.max(ia.h,ib.h);
+        var da=Core.padImage(ctxA.getImageData(0,0,ia.w,ia.h).data,ia.w,ia.h,W,H);
+        var db=Core.padImage(ctxB.getImageData(0,0,ib.w,ib.h).data,ib.w,ib.h,W,H);
+        var d=Core.diffPixels(da,db,W,H,{threshold:TH,cell:CELL});
+        rec.changed=d.changed;rec.ratio=d.ratio;rec.boxes=d.boxes;rec.added=d.added;rec.removed=d.removed;
+      });
+    });
+  }).then(function(){
+    return Promise.all([pa?pageText(pa):[],pb?pageText(pb):[]]);
+  }).then(function(t){
+    rec.textA=t[0];rec.textB=t[1];
+    if(pa&&pb)rec.text=Core.textDiff(rec.textA,rec.textB);
+    rec.textChanged=!!(rec.text&&rec.text.changed);
+    rec.differs=!(hasA&&hasB)||rec.changed>0||rec.sizeDiff||rec.textChanged;
+  }).catch(function(e){
+    rec.error=true;rec.differs=true;
+  }).then(function(){
+    if(pa)pa.cleanup();if(pb)pb.cleanup();
+    return rec;
+  });
+}
+
+function compare(){
+  var id=++runId;viewSeq++;
+  var A=slots.old,B=slots.neu;
+  var nA=Math.min(A.count,LIMIT),nB=Math.min(B.count,LIMIT),n=Math.max(nA,nB);
+  res={A:A,B:B,nA:nA,nB:nB,n:n,pages:[],done:false};
+  cur=null;view=null;
+  $('resultCard').hidden=false;$('viewCard').hidden=true;$('listBox').hidden=true;
+  $('summary').innerHTML='';
+  $('progressBox').hidden=false;$('progress').max=n;$('progress').value=0;
+  $('progressText').textContent='比較しています… 0 / '+n+' ページ';
+  var i=0;
+  function step(){
+    if(id!==runId)return;
+    if(i>=n){finish();return}
+    i++;
+    scanPage(A,B,i,i<=nA,i<=nB).then(function(rec){
+      if(id!==runId)return;
+      res.pages.push(rec);
+      $('progress').value=i;
+      $('progressText').textContent='比較しています… '+i+' / '+n+' ページ';
+      setTimeout(step,0);
+    });
+  }
+  function finish(){
+    res.done=true;
+    $('progressBox').hidden=true;
+    renderSummary();renderList();
+    var first=res.pages.filter(function(p){return p.differs})[0];
+    if(first)select(first);
+  }
+  step();
+}
+
+function pagesStr(arr){
+  var nums=arr.map(function(p){return p.i}),out=[],s=null,prev=null;
+  nums.forEach(function(n){
+    if(s===null){s=prev=n;return}
+    if(n===prev+1){prev=n;return}
+    out.push(s===prev?s:s+'〜'+prev);s=prev=n;
+  });
+  if(s!==null)out.push(s===prev?s:s+'〜'+prev);
+  return out.join('、');
+}
+
+function renderSummary(){
+  var A=res.A,B=res.B,P=res.pages,h='<ul class="sum">';
+  var both=P.filter(function(p){return p.hasA&&p.hasB});
+  var diffs=P.filter(function(p){return p.differs});
+  var pix=both.filter(function(p){return p.changed>0});
+  var txt=both.filter(function(p){return p.textChanged});
+  var size=both.filter(function(p){return p.sizeDiff});
+  h+='<li>旧版 <b>'+A.count+'</b>ページ ／ 新版 <b>'+B.count+'</b>ページ。同じページ番号どうし、<b>'+both.length+'</b>ページを比較しました。</li>';
+  if(!diffs.length){
+    h+='<li><b>違いは見つかりませんでした。</b>紙面（画素）・文字・寸法とも同じです。</li>';
+  }else{
+    h+='<li>違いのあるページ：<b>'+diffs.length+'ページ</b>（'+esc(pagesStr(diffs))+'ページ）</li>';
+    if(pix.length)h+='<li>紙面に違いがあるページ：'+esc(pagesStr(pix))+'</li>';
+    if(txt.length)h+='<li>文字に違いがあるページ：'+esc(pagesStr(txt))+'</li>';
+  }
+  if(size.length)h+='<li>寸法が違うページ：'+esc(pagesStr(size))+'（例：'+esc(pagesStr([size[0]]))+'ページ 旧 '+esc(Core.sizeLabel(size[0].dimA[0],size[0].dimA[1]))+' → 新 '+esc(Core.sizeLabel(size[0].dimB[0],size[0].dimB[1]))+'）</li>';
+  else if(P.length&&P[0].dimA)h+='<li>寸法：'+esc(Core.sizeLabel(P[0].dimA[0],P[0].dimA[1]))+(both.length>1?'（比較したページはすべて同じ寸法）':'')+'</li>';
+  var err=P.filter(function(p){return p.error});
+  if(err.length)h+='<li>描画できなかったページ：'+esc(pagesStr(err))+'</li>';
+  h+='</ul>';
+  var d=B.count-A.count;
+  if(d){
+    var onlyB=P.filter(function(p){return !p.hasA}),onlyA=P.filter(function(p){return !p.hasB});
+    var t=d>0?'新版は旧版より<b>'+d+'ページ多い</b>です。':'新版は旧版より<b>'+(-d)+'ページ少ない</b>です。';
+    if(onlyB.length)t+=pagesStr(onlyB)+'ページは新版にしかありません。';
+    if(onlyA.length)t+=pagesStr(onlyA)+'ページは旧版にしかありません。';
+    t+='途中でページが追加・削除されている場合、それ以降はページ番号がずれるため、ほぼすべて「差あり」になります。';
+    h+='<p class="note">'+t+'</p>';
+  }
+  if(A.count>LIMIT||B.count>LIMIT){
+    var who=[];if(A.count>LIMIT)who.push('旧版（'+A.count+'ページ）');if(B.count>LIMIT)who.push('新版（'+B.count+'ページ）');
+    h+='<p class="note">無料版で比べるのは各PDFの先頭'+LIMIT+'ページまでです。'+who.join('・')+'の'+(LIMIT+1)+'ページ目以降は比較していません。</p>';
+  }
+  $('summary').innerHTML=h;
+}
+
+function recTags(p){
+  var t=[];
+  if(p.error)t.push('描画できません');
+  else if(!p.hasA)t.push('新版のみ');
+  else if(!p.hasB)t.push('旧版のみ');
+  else{
+    if(p.changed>0)t.push('差 '+Core.formatRatio(p.ratio));
+    if(p.textChanged)t.push('文字');
+    if(p.sizeDiff)t.push('寸法');
+    if(!p.differs)t.push('差 0%');
+  }
+  return t;
+}
+function renderList(){
+  var box=$('plist'),only=$('onlyDiff').checked;box.innerHTML='';
+  $('listBox').hidden=false;
+  var shown=res.pages.filter(function(p){return !only||p.differs});
+  if(!shown.length){box.innerHTML='<p class="muted" style="grid-column:1/-1;margin:0">違いのあるページはありません。チェックを外すと、すべてのページを開けます。</p>';return}
+  shown.forEach(function(p){
+    var b=document.createElement('button');b.type='button';
+    b.className='pg '+(p.differs?'diff':'same');
+    b.setAttribute('aria-pressed',cur===p?'true':'false');
+    b.innerHTML='<b>'+p.i+'ページ</b><span>'+esc(recTags(p).join(' ・ '))+'</span>';
+    b.onclick=function(){select(p,true)};
+    box.appendChild(b);
+  });
+}
+function shownPages(){var only=$('onlyDiff').checked;return res?res.pages.filter(function(p){return !only||p.differs}):[]}
+
+function select(p,scroll){
+  cur=p;boxIdx=-1;
+  renderList();
+  $('viewCard').hidden=false;
+  if(scroll)$('viewCard').scrollIntoView({behavior:'smooth',block:'start'});
+  showPage(p);
+}
+
+function renderSide(doc,i,scale){
+  return doc.getPage(i).then(function(pg){
+    var c=document.createElement('canvas'),x=c.getContext('2d',{willReadFrequently:true});
+    return renderTo(pg,scale,c,x).then(function(r){var d=x.getImageData(0,0,r.w,r.h);pg.cleanup();return {w:r.w,h:r.h,data:d.data}});
+  });
+}
+
+function showPage(p){
+  var id=++viewSeq;
+  view=null;
+  $('viewTitle').textContent=p.i+'ページ';
+  updateNav();
+  $('stage').innerHTML='<div class="msg">描画しています…</div>';
+  renderFacts(p);renderText(p);
+  var dims=[p.dimA,p.dimB].filter(Boolean);
+  var long=Math.max.apply(null,dims.map(function(d){return Math.max(d[0],d[1])}));
+  var s=p.scale*VIEW_MULT;if(long*s>VIEW_MAX)s=VIEW_MAX/long;
+  Promise.all([p.hasA?renderSide(res.A.doc,p.i,s):null,p.hasB?renderSide(res.B.doc,p.i,s):null]).then(function(r){
+    if(id!==viewSeq)return;
+    var a=r[0],b=r[1],W=Math.max(a?a.w:0,b?b.w:0),H=Math.max(a?a.h:0,b?b.h:0);
+    var v={W:W,H:H,a:a?Core.padImage(a.data,a.w,a.h,W,H):null,b:b?Core.padImage(b.data,b.w,b.h,W,H):null,d:null};
+    if(v.a&&v.b)v.d=Core.paintDiff(v.a,v.b,W,H,TH,new Uint8ClampedArray(W*H*4));
+    view=v;
+    if(!(v.a&&v.b))mode=v.a?'old':'new';
+    drawStage();
+  }).catch(function(){
+    if(id!==viewSeq)return;
+    $('stage').innerHTML='<div class="msg">このページは描画できませんでした。</div>';
+  });
+}
+
+function makeCanvas(data,label){
+  var c=document.createElement('canvas');c.width=view.W;c.height=view.H;
+  var x=c.getContext('2d');var img=x.createImageData(view.W,view.H);img.data.set(data);x.putImageData(img,0,0);
+  if($('showBoxes').checked&&cur&&cur.boxes.length){
+    var lw=Math.max(2,Math.round(view.W/400));
+    cur.boxes.forEach(function(bx,k){
+      x.strokeStyle='#f08c00';x.lineWidth=k===boxIdx?lw*2.5:lw;
+      x.strokeRect(bx.x*view.W,bx.y*view.H,bx.w*view.W,bx.h*view.H);
+    });
+  }
+  c.setAttribute('role','img');c.setAttribute('aria-label',label);
+  c.onclick=function(ev){
+    if(zoom>=2)return;
+    var r=c.getBoundingClientRect();
+    var fx=(ev.clientX-r.left)/r.width,fy=(ev.clientY-r.top)/r.height;
+    setZoom(2);scrollToFrac(c,fx,fy);
+  };
+  var f=document.createElement('figure');
+  if(mode==='side'){var cap=document.createElement('figcaption');cap.textContent=label.split('：')[0];f.appendChild(cap)}
+  f.appendChild(c);
+  return f;
+}
+
+function drawStage(){
+  var st=$('stage');
+  if(!view||!cur){return}
+  var hasBoth=!!(view.a&&view.b);
+  if(!hasBoth&&(mode==='diff'||mode==='side'))mode=view.a?'old':'new';
+  if(mode==='old'&&!view.a)mode='new';
+  if(mode==='new'&&!view.b)mode='old';
+  document.querySelectorAll('[data-mode]').forEach(function(b){
+    var m=b.getAttribute('data-mode');
+    b.setAttribute('aria-pressed',m===mode?'true':'false');
+    b.disabled=(!hasBoth&&(m==='diff'||m==='side'))||(m==='old'&&!view.a)||(m==='new'&&!view.b);
+  });
+  var sl=st.scrollLeft,stp=st.scrollTop;
+  st.innerHTML='';
+  var w=document.createElement('div');w.className='zwrap';
+  var n=cur.i+'ページ';
+  if(mode==='diff')w.appendChild(makeCanvas(view.d,'差分強調：'+n+'（赤は旧版だけ、青は新版だけにある部分）'));
+  else if(mode==='old')w.appendChild(makeCanvas(view.a,'旧版：'+n));
+  else if(mode==='new')w.appendChild(makeCanvas(view.b,'新版：'+n));
+  else{w.appendChild(makeCanvas(view.a,'旧版：'+n));w.appendChild(makeCanvas(view.b,'新版：'+n))}
+  st.appendChild(w);
+  var showBox=!!(cur.boxes.length&&$('showBoxes').checked);
+  document.querySelectorAll('#legend .lg-diff').forEach(function(e){e.hidden=mode!=='diff'});
+  document.querySelector('#legend .lg-box').hidden=!showBox;
+  $('legend').hidden=mode!=='diff'&&!showBox;
+  applyZoom();
+  st.scrollLeft=sl;st.scrollTop=stp;
+  $('nextBox').disabled=!cur.boxes.length;
+  $('nextBox').textContent=cur.boxes.length?(boxIdx>=0?'次の変化箇所（'+(boxIdx+1)+'/'+cur.boxes.length+'）':'次の変化箇所（全'+cur.boxes.length+'か所）'):'次の変化箇所';
+}
+
+function applyZoom(){
+  var st=$('stage'),w=st.querySelector('.zwrap');
+  document.querySelectorAll('[data-zoom]').forEach(function(b){b.setAttribute('aria-pressed',Number(b.getAttribute('data-zoom'))===zoom?'true':'false')});
+  if(!w)return;
+  st.classList.toggle('fit',zoom===0);st.classList.toggle('fitw',zoom===1);st.classList.toggle('zoomed',zoom>=2);
+  var inner=st.clientWidth-16;
+  w.style.width=zoom>=2?(inner*zoom)+'px':'';
+  w.querySelectorAll('canvas').forEach(function(c){c.style.width=zoom>=2?'100%':''});
+}
+function setZoom(z){zoom=z;applyZoom()}
+function scrollToFrac(c,fx,fy){
+  var st=$('stage');
+  var sr=st.getBoundingClientRect(),cr=c.getBoundingClientRect();
+  var x=cr.left-sr.left+st.scrollLeft+fx*cr.width,y=cr.top-sr.top+st.scrollTop+fy*cr.height;
+  st.scrollLeft=Math.max(0,x-st.clientWidth/2);st.scrollTop=Math.max(0,y-st.clientHeight/2);
+}
+
+function renderFacts(p){
+  var f=[];
+  if(p.error)f.push('このページは描画できませんでした。');
+  if(!p.hasA)f.push('このページは新版にしかありません（旧版は'+res.A.count+'ページまで）。');
+  if(!p.hasB)f.push('このページは旧版にしかありません（新版は'+res.B.count+'ページまで）。');
+  if(p.hasA&&p.hasB){
+    if(p.changed>0)f.push('紙面の差：'+Core.formatRatio(p.ratio)+'（変化した画素 '+p.changed.toLocaleString('ja-JP')+'、変化箇所 '+p.boxes.length+'か所）');
+    else f.push('紙面の差：なし');
+  }
+  if(p.dimA&&p.dimB){
+    if(p.sizeDiff)f.push('寸法が違います：旧 '+Core.sizeLabel(p.dimA[0],p.dimA[1])+' → 新 '+Core.sizeLabel(p.dimB[0],p.dimB[1])+'（左上をそろえて重ねています）');
+    else f.push('寸法：'+Core.sizeLabel(p.dimA[0],p.dimA[1]));
+  }else{var d=p.dimA||p.dimB;if(d)f.push('寸法：'+Core.sizeLabel(d[0],d[1]))}
+  $('facts').innerHTML=f.map(function(s){return '<li>'+esc(s)+'</li>'}).join('');
+}
+
+function partsHtml(parts,kind){
+  if(!parts.length)return '<span class="none">（なし）</span>';
+  return parts.map(function(x){
+    var s=esc(x.s);
+    if(x.t==='eq')return s;
+    return kind==='old'?'<del>'+s+'</del>':'<ins>'+s+'</ins>';
+  }).join('');
+}
+function renderText(p){
+  var box=$('textDiff');
+  if(!p.hasA||!p.hasB){
+    var lines=p.hasA?p.textA:p.textB;
+    box.innerHTML='<p class="muted">片方にしかないページです。'+(lines.length?'このページの文字（先頭）：</p><div class="hunk"><span class="tx">'+esc(lines.slice(0,8).join('\n'))+'</span></div>':'文字情報はありません。</p>');
+    return;
+  }
+  if(!p.textA.length&&!p.textB.length){box.innerHTML='<p class="muted">このページには文字情報がありません（画像だけのページ、またはスキャンしたPDFの可能性があります）。紙面の違いは上の画像で確認してください。</p>';return}
+  if(!p.text||!p.text.changed){box.innerHTML='<p class="muted">文字の違いはありません。'+(p.changed>0?'位置・図・色などの違いは上の画像で確認してください。':'')+'</p>';return}
+  var h='<p class="muted" style="margin:0">削除は<del>取り消し線</del>、追加は<ins>下線</ins>で示します（行単位で比べたあと、行の中を1文字ずつ比べています）。</p>';
+  p.text.hunks.forEach(function(k){
+    if(k.type==='eq'){h+='<p class="gap">同じ行 '+k.lines.length+'行</p>';return}
+    h+='<div class="hunk"><div><span class="tag">旧</span><span class="tx">'+partsHtml(k.old,'old')+'</span></div><div><span class="tag">新</span><span class="tx">'+partsHtml(k.neu,'new')+'</span></div></div>';
+  });
+  box.innerHTML=h;
+}
+
+function updateNav(){
+  var list=shownPages(),k=list.indexOf(cur);
+  $('prevPg').disabled=k<=0;$('nextPg').disabled=k<0||k>=list.length-1;
+}
+
+// events
+['old','neu'].forEach(function(which){
+  var e=slotEls(which);
+  e.input.addEventListener('change',function(){
+    var fs=e.input.files;
+    if(fs&&fs.length>1){loadFile('old',fs[0]);loadFile('neu',fs[1])}
+    else if(fs&&fs[0])loadFile(which,fs[0]);
+    e.input.value='';
+  });
+  e.drop.addEventListener('dragover',function(ev){ev.preventDefault();e.drop.classList.add('over')});
+  e.drop.addEventListener('dragleave',function(){e.drop.classList.remove('over')});
+  e.drop.addEventListener('drop',function(ev){
+    ev.preventDefault();e.drop.classList.remove('over');
+    var fs=ev.dataTransfer&&ev.dataTransfer.files;if(!fs||!fs.length)return;
+    if(fs.length>1){loadFile('old',fs[0]);loadFile('neu',fs[1])}else loadFile(which,fs[0]);
+  });
+});
+window.addEventListener('dragover',function(ev){ev.preventDefault()});
+window.addEventListener('drop',function(ev){ev.preventDefault()});
+$('swap').onclick=function(){
+  var t=slots.old;slots.old=slots.neu;slots.neu=t;
+  var s=seq.old;seq.old=seq.neu;seq.neu=s;
+  showSlot('old');showSlot('neu');cancelRun();
+  if(slots.old&&slots.neu)compare();
+};
+$('onlyDiff').onchange=function(){if(res&&res.done){renderList();updateNav()}};
+document.querySelectorAll('[data-mode]').forEach(function(b){b.onclick=function(){mode=b.getAttribute('data-mode');drawStage()}});
+document.querySelectorAll('[data-zoom]').forEach(function(b){b.onclick=function(){setZoom(Number(b.getAttribute('data-zoom')))}});
+$('showBoxes').onchange=drawStage;
+$('nextBox').onclick=function(){
+  if(!cur||!cur.boxes.length||!view)return;
+  boxIdx=(boxIdx+1)%cur.boxes.length;
+  if(zoom<2)zoom=2;
+  drawStage();
+  var bx=cur.boxes[boxIdx],c=$('stage').querySelector('canvas');
+  if(c)scrollToFrac(c,bx.x+bx.w/2,bx.y+bx.h/2);
+};
+$('prevPg').onclick=function(){var l=shownPages(),k=l.indexOf(cur);if(k>0)select(l[k-1])};
+$('nextPg').onclick=function(){var l=shownPages(),k=l.indexOf(cur);if(k>=0&&k<l.length-1)select(l[k+1])};
+window.addEventListener('resize',function(){if(zoom>=2)applyZoom()});
+if(!window.pdfjsLib){showSlot('old','PDF表示用のプログラムを読み込めませんでした。ネット接続を確認して、ページを再読み込みしてください。',true)}
+})();
+</script>
+</body>
+</html>

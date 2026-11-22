@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SRT字幕ファイル作成・編集ツール｜台本から自動で作れる【無料・登録不要】</title>
+<meta name="description" content="台本を貼るだけで字幕のタイミングを自動で振り、SRTファイルを作成できる無料ツール。既存の.srtの読み込み・編集、全体の時刻ずらし、重なりや長すぎる行のチェックにも対応。登録不要で、ブラウザだけで使えます。">
+<link rel="canonical" href="https://sulla-bluefelix.github.io/kamimachi-tools/srt/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="SRT字幕ファイル作成・編集ツール【無料・登録不要】">
+<meta property="og:description" content="台本から字幕のタイミングを自動で振ってSRTを書き出し。既存のSRTの編集・時刻ずらし・重なりチェックも。">
+<meta property="og:url" content="https://sulla-bluefelix.github.io/kamimachi-tools/srt/">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"WebApplication","name":"SRT字幕ファイル作成ツール","url":"https://sulla-bluefelix.github.io/kamimachi-tools/srt/","applicationCategory":"MultimediaApplication","operatingSystem":"Any","inLanguage":"ja","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"}},
+{"@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"作ったSRTファイルはどこで使えますか？","acceptedAnswer":{"@type":"Answer","text":"YouTube Studioの字幕のアップロード、VLCなどの動画プレーヤー、Premiere ProやDaVinci Resolveなどの動画編集ソフトで読み込めます。動画と同じ名前（例：movie.mp4 と movie.srt）にして同じフォルダーに置くと、自動で字幕を表示するプレーヤーもあります。"}},
+{"@type":"Question","name":"書き出したSRTが文字化けします。","acceptedAnswer":{"@type":"Answer","text":"このツールはUTF-8で書き出します。古いソフトで文字化けするときは、「先頭にBOMを付ける」にチェックして書き出し直してください。読み込みはUTF-8・Shift_JIS・UTF-16（BOM付き）を自動で判別します。"}},
+{"@type":"Question","name":"字幕1枚あたり何文字くらいが読みやすいですか？","acceptedAnswer":{"@type":"Answer","text":"映画の字幕では「1秒4文字・1行13〜16文字・2行まで」がよく使われる目安です。話し言葉に合わせる動画の字幕ではもう少し多くても読めますが、1行が長すぎると画面の端まで広がるので、チェック欄の「1行の文字数の目安」で確認できます。"}},
+{"@type":"Question","name":"時刻はどの形式で入力できますか？","acceptedAnswer":{"@type":"Answer","text":"「00:00:01,500」のほか、「1.5」（秒）、「1:02.5」（分:秒）、「0:01:02.5」（時:分:秒）でも入力できます。欄から離れると、SRTの形式（時:分:秒,ミリ秒）に自動でそろえます。"}},
+{"@type":"Question","name":"字幕全体が動画とずれています。","acceptedAnswer":{"@type":"Answer","text":"「時刻をまとめてずらす」で、ミリ秒単位で全体を前後に動かせます。途中から（例：12番以降だけ）ずらすこともできます。0秒より前になる時刻は0秒にそろえます。"}},
+{"@type":"Question","name":"入力した字幕はどこかに送信されますか？","acceptedAnswer":{"@type":"Answer","text":"送信されません。読み込んだファイルも含めてブラウザの中だけで処理し、作業内容はこの端末に自動で保存されます。"}}
+]}]}
+</script>
+<style>
+:root{--bg:#f6f3ec;--card:#fffdf8;--ink:#1d2b30;--sub:#5b6a6c;--line:#d9d3c5;--accent:#0b6b62;--accent-ink:#fff;--warn:#a2412f;--soft:#e7efe9}
+@media (prefers-color-scheme:dark){:root{--bg:#141a1c;--card:#1d2528;--ink:#e8ece9;--sub:#9fb0ad;--line:#33403f;--accent:#3fb3a2;--accent-ink:#0d1716;--warn:#e88a73;--soft:#23312f;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 system-ui,-apple-system,"Hiragino Sans","Noto Sans JP","Yu Gothic UI",sans-serif}
+main{max-width:720px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:clamp(22px,5.4vw,30px);line-height:1.4;margin:8px 0 6px}
+.lead{color:var(--sub);margin:0 0 20px}
+h2{font-size:19px;margin:0 0 10px}
+section.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 16px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input,select,textarea{font:inherit;color:inherit;background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:9px 10px;min-width:0}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+input[type=checkbox]{width:18px;height:18px;padding:0;accent-color:var(--accent);flex:0 0 auto}
+input[type=file]{width:100%;padding:8px;background:var(--card)}
+textarea{width:100%;display:block;resize:vertical;line-height:1.6}
+[aria-invalid=true]{border-color:var(--warn);outline-color:var(--warn);box-shadow:inset 0 0 0 1px var(--warn)}
+button{font:inherit;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;padding:9px 14px;cursor:pointer}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+button:disabled{opacity:.45;cursor:default}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.muted{color:var(--sub);font-size:14px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px;max-width:calc(100% - 32px);text-align:center;z-index:10}
+.cta{border:2px solid var(--accent);background:var(--soft)}
+.cta a.btn{display:inline-block;background:var(--accent);color:var(--accent-ink);text-decoration:none;font-weight:700;padding:10px 16px;border-radius:9px;margin-top:6px}
+details{border-top:1px solid var(--line);padding:10px 0}
+summary{cursor:pointer;font-weight:600}
+footer{color:var(--sub);font-size:13px;text-align:center;margin-top:30px}
+a{color:var(--accent)}
+ol.how{margin:0;padding-left:1.4em}
+ol.how li{margin:4px 0}
+/* srt */
+.tabs{display:flex;gap:6px;margin:0 0 12px}
+.tabs button{flex:1;padding:9px 6px;font-weight:600}
+.tabs button[aria-selected=true]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700;box-shadow:inset 0 -3px 0 rgba(0,0,0,.25)}
+.lbl{display:block;font-weight:600;margin:0 0 4px}
+.check{display:flex;gap:8px;align-items:flex-start;margin:8px 0}
+.check input{margin-top:4px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:10px;margin:10px 0}
+.grid label{display:flex;flex-direction:column;justify-content:flex-end;gap:2px;font-size:14px;color:var(--sub)}
+.grid input{color:var(--ink);width:100%}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:12px;margin:0 0 14px}
+.drop.over{border-color:var(--accent);background:var(--soft)}
+.toolbar{margin:0 0 8px}
+.toolbar button{padding:7px 12px;font-size:15px}
+.list.long{max-height:72vh;overflow-y:auto;border:1px solid var(--line);border-radius:10px;padding:0 10px}
+.cue{border-top:1px dashed var(--line);padding:12px 0}
+.cue:first-child{border-top:0}
+.cue-head{display:flex;align-items:center;gap:6px}
+.no{flex:0 0 auto;min-width:32px;height:26px;padding:0 7px;border-radius:999px;background:var(--soft);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
+.cue.warn .no{background:var(--warn);color:var(--card)}
+.t{flex:1 1 0;width:0;max-width:160px;font-size:15px;padding:7px 8px;font-variant-numeric:tabular-nums}
+.arr{color:var(--sub);flex:0 0 auto}
+.tx{margin-top:6px}
+.cue-foot{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap}
+.dur{font-size:14px;color:var(--sub);font-variant-numeric:tabular-nums}
+.tools{display:flex;gap:4px;flex-wrap:wrap}
+.tools button{padding:4px 10px;font-size:14px}
+.cue-warn{margin:6px 0 0;color:var(--warn);font-size:14px;font-weight:600}
+.warns{margin:8px 0 0;padding:0;list-style:none}
+.warns li{display:flex;gap:8px;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--line);font-size:15px}
+.warns li:last-child{border-bottom:0}
+.warns button{flex:0 0 auto;padding:2px 10px;font-size:14px;font-variant-numeric:tabular-nums}
+.okmsg{color:var(--accent);font-weight:600;margin:8px 0 0}
+.ngmsg{color:var(--warn);font-weight:600;margin:8px 0 0}
+#preview,.ex{font:14px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,"Noto Sans Mono CJK JP",monospace;white-space:pre;overflow:auto}
+.ex{background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:10px 12px;margin:10px 0}
+.fname{display:flex;align-items:center;gap:6px}
+.fname input{flex:1}
+.mt{margin-top:12px}
+</style>
+</head>
+<body>
+<main>
+<h1>SRT字幕ファイル作成ツール</h1>
+<p class="lead">台本を貼ると字幕のタイミングを自動で振り、<strong>SRTファイル</strong>として書き出せます。手入力や既存の.srtの編集、時刻のずらしにも対応。登録不要・無料で、データはこの端末の中だけで処理します。</p>
+
+<section class="card">
+<h2>1. 字幕のもとを入れる</h2>
+<div class="tabs" role="tablist" aria-label="入れ方">
+<button type="button" role="tab" id="tabScript" aria-controls="paneScript" aria-selected="true">台本から作る</button>
+<button type="button" role="tab" id="tabImport" aria-controls="paneImport" aria-selected="false">SRTを読み込む</button>
+</div>
+<div id="paneScript" role="tabpanel" aria-labelledby="tabScript">
+<label class="lbl" for="script">台本（1行が1つの字幕になります）</label>
+<textarea id="script" rows="7" placeholder="こんにちは、紙町です。&#10;今日は字幕ファイルの作り方を紹介します。&#10;まず台本を1行ずつに分けておきます。"></textarea>
+<label class="check"><input type="checkbox" id="block"><span>空行で区切る（続けて書いた行は、1つの字幕の中の改行になります）</span></label>
+<div class="grid">
+<label>最初の開始時刻<input id="startAt" type="text" autocomplete="off" spellcheck="false"></label>
+<label>1秒あたり文字数<input id="cps" type="number" min="1" max="30" step="0.5" inputmode="decimal"></label>
+<label>字幕の間隔（秒）<input id="gap" type="number" min="0" max="10" step="0.1" inputmode="decimal"></label>
+<label>最短表示（秒）<input id="min" type="number" min="0.1" max="60" step="0.1" inputmode="decimal"></label>
+<label>最長表示（秒）<input id="max" type="number" min="0.1" max="60" step="0.1" inputmode="decimal"></label>
+</div>
+<p class="muted" id="scriptInfo" aria-live="polite"></p>
+<div class="row">
+<button type="button" class="primary" id="mkReplace">一覧を置き換えて作る</button>
+<button type="button" id="mkAppend">一覧の最後に追加</button>
+</div>
+<p class="muted" style="margin:10px 0 0">表示時間は「文字数÷1秒あたりの文字数」を、最短〜最長の範囲に収めて決めます。ニュースの読み上げは1分間に約300字（1秒あたり約5文字）と言われます。話す速さに合わせて調整し、細かい時刻は下の一覧で直してください。</p>
+</div>
+<div id="paneImport" role="tabpanel" aria-labelledby="tabImport" hidden>
+<div class="drop" id="drop">
+<label class="lbl" for="file">.srtファイルを選ぶ</label>
+<input type="file" id="file" accept=".srt,.txt,text/plain,application/x-subrip">
+<p class="muted" style="margin:6px 0 0">ここにファイルをドラッグしても読み込めます。文字コード（UTF-8／Shift_JIS／BOM付きUTF-16）は自動で判別します。</p>
+</div>
+<label class="lbl" for="paste">または、SRTの中身を貼り付け</label>
+<textarea id="paste" rows="6" spellcheck="false" placeholder="1&#10;00:00:01,000 --> 00:00:03,000&#10;字幕の本文"></textarea>
+<div class="row mt"><button type="button" class="primary" id="pasteGo">貼り付けた内容を読み込む</button></div>
+<p class="muted" style="margin:10px 0 0">読み込むと、今の一覧は置き換わります（「元に戻す」で戻せます）。番号の抜けや余分な空行、ミリ秒の前がピリオドの時刻もそのまま読み込めます。</p>
+</div>
+</section>
+
+<section class="card" id="listCard">
+<h2>2. 字幕の一覧 <span class="muted" id="count"></span></h2>
+<div class="row toolbar">
+<button type="button" id="addTop">＋ 字幕を追加</button>
+<button type="button" id="sort">時刻順に並べる</button>
+<button type="button" id="undo" disabled>元に戻す</button>
+<button type="button" id="clear">すべて消す</button>
+</div>
+<p class="muted" id="clearConfirm" hidden>一覧をすべて消しますか？ <button type="button" id="clearYes">消す</button> <button type="button" id="clearNo">やめる</button></p>
+<p class="muted" style="margin:0 0 6px">時刻は「00:00:01,500」でも「1.5」（秒）でも入れられます。本文の中で改行すると、字幕の中の改行になります。</p>
+<div id="list" class="list"></div>
+<div class="row mt"><button type="button" class="primary" id="addBottom">＋ 字幕を追加</button></div>
+</section>
+
+<section class="card">
+<h2>3. 時刻をまとめてずらす</h2>
+<div class="grid">
+<label>ずらす量（ミリ秒）<input id="shiftMs" type="number" step="1" value="0" inputmode="numeric"></label>
+<label>対象（この番号以降）<input id="shiftFrom" type="number" min="1" step="1" value="1" inputmode="numeric"></label>
+</div>
+<div class="row"><button type="button" class="primary" id="shiftGo">ずらす</button></div>
+<p class="muted" style="margin:10px 0 0">プラスで後ろへ（遅く表示）、マイナスで前へ（早く表示）。1秒＝1000ミリ秒です。0秒より前になる時刻は0秒にそろえます。</p>
+</section>
+
+<section class="card">
+<h2>4. チェック</h2>
+<div class="grid">
+<label>1行の文字数の目安<input id="maxChars" type="number" min="5" max="80" step="1" inputmode="numeric"></label>
+</div>
+<p class="muted" style="margin:0">全角1文字を1、半角1文字を0.5として数えます。終了が開始より前、前の字幕との重なり、空の本文、長すぎる行などを一覧にします。</p>
+<div id="checkOut" aria-live="polite"></div>
+</section>
+
+<section class="card">
+<h2>5. 書き出し</h2>
+<div class="fname"><label class="lbl" for="fname" style="margin:0">ファイル名</label><input id="fname" type="text" autocomplete="off" spellcheck="false"><span>.srt</span></div>
+<label class="check"><input type="checkbox" id="bom"><span>先頭にBOMを付ける（古いソフトで文字化けするとき）</span></label>
+<p class="muted" id="expInfo" style="margin:0 0 8px"></p>
+<div class="row">
+<button type="button" class="primary" id="dl">.srtをダウンロード</button>
+<button type="button" id="copy">テキストをコピー</button>
+</div>
+<label class="lbl mt" for="preview">プレビュー（書き出される内容）</label>
+<textarea id="preview" rows="10" readonly spellcheck="false"></textarea>
+<p class="muted" style="margin:6px 0 0">文字コードはUTF-8、改行はCRLF（Windows形式）で書き出します。</p>
+</section>
+
+<section class="card">
+<h2>使い方</h2>
+<ol class="how">
+<li>台本があるときは「台本から作る」に1行1字幕で貼り、「一覧を置き換えて作る」を押します。既存のSRTを直すときは「SRTを読み込む」から。</li>
+<li>「字幕の一覧」で時刻と本文を直します。時刻は 1.5 のような秒でも入れられます。</li>
+<li>動画とずれているときは「時刻をまとめてずらす」を使います。「チェック」に注意が出たら、番号のボタンで該当の字幕へ移動して直します。</li>
+<li>「.srtをダウンロード」で保存し、動画編集ソフトやYouTubeに読み込みます。</li>
+</ol>
+</section>
+
+<section class="card">
+<h2>SRTファイルとは（書式の例）</h2>
+<p style="margin:0">SRT（.srt）は、字幕の表示時刻と本文だけを書いたテキストファイルです。1つの字幕は次の4つでできています。</p>
+<ol class="how mt">
+<li>通し番号（1から順に）</li>
+<li>表示時刻「開始 --> 終了」。時:分:秒,ミリ秒 の形で、時・分・秒は2桁、ミリ秒は3桁。ミリ秒の前は<strong>カンマ</strong>です。</li>
+<li>本文（1〜2行。改行はそのまま画面での改行になります）</li>
+<li>空行（次の字幕との区切り）</li>
+</ol>
+<pre class="ex">1
+00:00:01,000 --> 00:00:03,500
+こんにちは。
+
+2
+00:00:04,000 --> 00:00:06,200
+字幕の中で改行すると
+2行で表示されます。</pre>
+<p class="muted" style="margin:0">よく似た WebVTT（.vtt）形式は、先頭に「WEBVTT」と書き、ミリ秒の前がピリオドになるなどの違いがあります。</p>
+</section>
+
+<section class="card cta">
+<h2>原稿を読む画面と収録の進行表もいるなら</h2>
+<p style="margin:0 0 6px"><strong>声の制作卓</strong>は、文字を自動で送る<strong>朗読プロンプター</strong>（速度変更・一時停止・手動送り・鏡用の左右反転）、各場面の尺から入り・終わりを計算する<strong>収録進行表</strong>（印刷・CSV保存）、手入力した時刻と本文から作る<strong>字幕SRT</strong>（重なり・逆転のチェック、字幕内改行に対応）をまとめたオフライン版です。</p>
+<a class="btn" href="https://kamimachi-press.booth.pm/items/9190113" rel="noopener">声の制作卓を見る（BOOTH・880円）</a>
+<p class="muted" style="margin:8px 0 0">無料見本（朗読進行表のPDF）もダウンロードできます。パソコン版のGoogle Chromeで使う道具です。</p>
+</section>
+
+<section class="card">
+<h2>よくある質問</h2>
+<details><summary>作ったSRTファイルはどこで使えますか？</summary><p>YouTube Studioの字幕のアップロード、VLCなどの動画プレーヤー、Premiere ProやDaVinci Resolveなどの動画編集ソフトで読み込めます。動画と同じ名前（例：movie.mp4 と movie.srt）にして同じフォルダーに置くと、自動で字幕を表示するプレーヤーもあります。</p></details>
+<details><summary>書き出したSRTが文字化けします。</summary><p>このツールはUTF-8で書き出します。古いソフトで文字化けするときは、「先頭にBOMを付ける」にチェックして書き出し直してください。読み込みはUTF-8・Shift_JIS・UTF-16（BOM付き）を自動で判別します。</p></details>
+<details><summary>字幕1枚あたり何文字くらいが読みやすいですか？</summary><p>映画の字幕では「1秒4文字・1行13〜16文字・2行まで」がよく使われる目安です。話し言葉に合わせる動画の字幕ではもう少し多くても読めますが、1行が長すぎると画面の端まで広がるので、チェック欄の「1行の文字数の目安」で確認できます。</p></details>
+<details><summary>時刻はどの形式で入力できますか？</summary><p>「00:00:01,500」のほか、「1.5」（秒）、「1:02.5」（分:秒）、「0:01:02.5」（時:分:秒）でも入力できます。欄から離れると、SRTの形式（時:分:秒,ミリ秒）に自動でそろえます。</p></details>
+<details><summary>字幕全体が動画とずれています。</summary><p>「時刻をまとめてずらす」で、ミリ秒単位で全体を前後に動かせます。途中から（例：12番以降だけ）ずらすこともできます。0秒より前になる時刻は0秒にそろえます。</p></details>
+<details><summary>入力した字幕はどこかに送信されますか？</summary><p>送信されません。読み込んだファイルも含めてブラウザの中だけで処理し、作業内容はこの端末に自動で保存されます。</p></details>
+</section>
+
+<footer>紙町活版所 ・ <a href="../">ほかの無料ツール</a></footer>
+</main>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script id="core">
+/* Pure SRT logic (no DOM). Times are integer milliseconds; null = unreadable. */
+var Srt=(function(){
+  function half(s){return String(s==null?'':s).replace(/[！-～]/g,function(c){return String.fromCharCode(c.charCodeAt(0)-65248)})}
+  function fracMs(f){return f?Math.round(Number('0.'+f)*1000):0}
+  // "00:00:01,500" "0:01:02.5" "1:02.5" "1.5" "90" -> ms
+  function parseTime(s){
+    s=half(s).trim();var m,h=0,mi=0,se=0,f;
+    if((m=/^(\d+):(\d{1,2}):(\d{1,2})(?:[.,](\d+))?$/.exec(s))){h=+m[1];mi=+m[2];se=+m[3];f=m[4];if(mi>59||se>59)return null}
+    else if((m=/^(\d+):(\d{1,2})(?:[.,](\d+))?$/.exec(s))){mi=+m[1];se=+m[2];f=m[3];if(se>59)return null}
+    else if((m=/^(\d+)?(?:[.,](\d+))?$/.exec(s))&&(m[1]||m[2])){se=+(m[1]||0);f=m[2]}
+    else return null;
+    return ((h*60+mi)*60+se)*1000+fracMs(f);
+  }
+  function pad(n,w){n=String(n);while(n.length<w)n='0'+n;return n}
+  function formatTime(ms){ms=Math.max(0,Math.round(ms||0));return pad(Math.floor(ms/3600000),2)+':'+pad(Math.floor(ms/60000)%60,2)+':'+pad(Math.floor(ms/1000)%60,2)+','+pad(ms%1000,3)}
+  // trims line ends, drops blank lines (a blank line would end the cue in SRT)
+  function cleanText(t){return String(t==null?'':t).replace(/\r\n?/g,'\n').split('\n').map(function(l){return l.replace(/\s+$/,'')}).filter(function(l){return l.trim()!==''}).join('\n')}
+  var T='([0-9\\uFF10-\\uFF19:\\uFF1A.,\\uFF0C\\uFF0E]+)';
+  var TL=new RegExp('^\\s*'+T+'\\s*-->\\s*'+T);
+  function parseSrt(text){
+    var lines=String(text==null?'':text).replace(/^﻿/,'').replace(/\r\n?/g,'\n').split('\n');
+    var items=[],cur=null,skipped=0;
+    function close(){if(cur){items.push({start:cur.s,end:cur.e,text:cleanText(cur.l.join('\n'))});cur=null}}
+    for(var i=0;i<lines.length;i++){
+      var ln=lines[i].replace(/^﻿/,''),m=TL.exec(ln),a=null,b=null;
+      if(m&&/[:\uFF1A]/.test(m[1])&&/[:\uFF1A]/.test(m[2])){a=parseTime(m[1]);b=parseTime(m[2])} // time lines always use colons
+      if(a!=null&&b!=null){
+        // a number right before a time line is the next cue's index, not text
+        if(cur&&cur.l.length&&/^\s*\d+\s*$/.test(cur.l[cur.l.length-1]))cur.l.pop();
+        close();cur={s:a,e:b,l:[]};
+      }else if(cur)cur.l.push(ln);
+      else if(ln.trim()&&!/^\s*\d+\s*$/.test(ln))skipped++;
+    }
+    close();
+    return {items:items,skipped:skipped};
+  }
+  function exportable(it){return it.start!=null&&it.end!=null&&cleanText(it.text)!==''}
+  function buildSrt(items){
+    var out=[];
+    items.forEach(function(it){if(!exportable(it))return;out.push((out.length+1)+'\r\n'+formatTime(it.start)+' --> '+formatTime(it.end)+'\r\n'+cleanText(it.text).replace(/\n/g,'\r\n'))});
+    return out.length?out.join('\r\n\r\n')+'\r\n':'';
+  }
+  function copy(it){var c={};for(var k in it)c[k]=it[k];return c}
+  // shift cues from index `from` by `delta` ms; never below 0
+  function shift(items,delta,from){
+    delta=Math.round(Number(delta)||0);from=Math.max(0,Math.floor(Number(from)||0));var clamped=0,moved=0;
+    var out=items.map(function(it,i){
+      var c=copy(it);if(i<from)return c;moved++;
+      if(c.start!=null){var s=c.start+delta;if(s<0){s=0;clamped++}c.start=s}
+      if(c.end!=null){c.end=Math.max(0,c.end+delta)}
+      return c;
+    });
+    return {items:out,clamped:clamped,moved:moved};
+  }
+  // full-width = 1, half-width (ASCII / half-width kana) = 0.5
+  function lineWidth(s){var w=0;for(var ch of String(s)){var c=ch.codePointAt(0);w+=(c<=0x7E||(c>=0xFF61&&c<=0xFF9F))?0.5:1}return w}
+  function sec(ms){return String(Math.round(ms)/1000)}
+  function check(items,opt){
+    var maxW=opt&&opt.maxChars>0?opt.maxChars:0,out=[];
+    function add(i,kind,msg){out.push({i:i,kind:kind,msg:msg})}
+    items.forEach(function(it,i){
+      var ok=it.start!=null&&it.end!=null;
+      if(!ok)add(i,'time','時刻が読めません');
+      else if(it.end<it.start)add(i,'reverse','終了が開始より前です');
+      else if(it.end===it.start)add(i,'zero','表示時間が0秒です');
+      var pv=items[i-1];
+      if(pv&&it.start!=null&&pv.start!=null&&it.start<pv.start)add(i,'order','開始が前の字幕より早くなっています（「時刻順に並べる」で直せます）');
+      var tx=cleanText(it.text);
+      if(!tx)add(i,'empty','本文が空です（書き出しでは省きます）');
+      else{
+        var ls=tx.split('\n');
+        ls.forEach(function(l,k){var w=lineWidth(l);if(maxW&&w>maxW)add(i,'long',(ls.length>1?(k+1)+'行目が':'')+w+'文字あります（目安'+maxW+'文字）')});
+        if(ls.length>2)add(i,'lines',ls.length+'行あります（2行までが読みやすい目安です）');
+      }
+    });
+    // overlaps: sweep valid cues in start order, compare with the latest end so far
+    var idx=[];items.forEach(function(it,i){if(it.start!=null&&it.end!=null&&it.end>it.start)idx.push(i)});
+    idx.sort(function(a,b){return items[a].start-items[b].start||a-b});
+    var maxEnd=-1,maxI=-1;
+    idx.forEach(function(i){
+      var it=items[i];
+      if(maxI>=0&&it.start<maxEnd)add(i,'overlap',(maxI+1)+'番と'+sec(Math.min(maxEnd,it.end)-it.start)+'秒重なっています');
+      if(it.end>maxEnd){maxEnd=it.end;maxI=i}
+    });
+    out.sort(function(a,b){return a.i-b.i});
+    return out;
+  }
+  // script -> subtitle texts (one per line, or blank-line separated blocks)
+  function scriptUnits(text,block){
+    var t=String(text==null?'':text).replace(/^﻿/,'').replace(/\r\n?/g,'\n');
+    if(block)return t.split(/\n[ \t　]*\n/).map(function(b){return cleanText(b.split('\n').map(function(l){return l.trim()}).join('\n'))}).filter(Boolean);
+    return t.split('\n').map(function(l){return l.trim()}).filter(Boolean);
+  }
+  function charCount(s){return Array.from(String(s).replace(/\s/g,'')).length}
+  // o: {start, cps, gap, min, max} (ms except cps)
+  function autoTime(units,o){
+    var cps=o.cps>0?o.cps:6,min=Math.max(100,Math.round(o.min||0)),max=o.max>0?Math.max(min,Math.round(o.max)):Infinity,gap=Math.max(0,Math.round(o.gap||0)),t=Math.max(0,Math.round(o.start||0));
+    return units.map(function(u){
+      var d=Math.round(charCount(u)/cps*100)*10;d=Math.min(max,Math.max(min,d));
+      var it={start:t,end:t+d,text:u};t+=d+gap;return it;
+    });
+  }
+  return {parseTime:parseTime,formatTime:formatTime,cleanText:cleanText,parseSrt:parseSrt,buildSrt:buildSrt,exportable:exportable,shift:shift,lineWidth:lineWidth,check:check,scriptUnits:scriptUnits,charCount:charCount,autoTime:autoTime};
+})();
+</script>
+<script>
+(function(){
+var KEY='kamimachi-srt-v1';
+var $=function(id){return document.getElementById(id)};
+var OPT={cps:6,gap:0.3,min:1,max:7,startAt:'0',block:false,maxChars:16,name:'subtitles',bom:false,tab:'script'};
+var st={items:[],opt:JSON.parse(JSON.stringify(OPT)),script:''};
+var undoSnap=null;
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function toast(msg){var t=$('toast');t.textContent=msg;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){t.hidden=true},2600)}
+function fs(ms){return String(Math.round(ms)/1000)}
+function num(v){return typeof v==='number'&&isFinite(v)&&v>=0?Math.round(v):null}
+function cleanItem(it){
+  var o={start:num(it&&it.start),end:num(it&&it.end),text:String(it&&it.text!=null?it.text:'')};
+  if(o.start==null&&it&&typeof it.sIn==='string')o.sIn=it.sIn;
+  if(o.end==null&&it&&typeof it.eIn==='string')o.eIn=it.eIn;
+  return o;
+}
+function sample(){return [{start:1000,end:3500,text:'（例）最初の字幕です。'},{start:4000,end:6500,text:'（例）字幕の中で改行すると\n2行で表示されます。'}]}
+function load(){
+  var s=null;try{s=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}
+  if(s&&typeof s==='object'){
+    if(Array.isArray(s.items))st.items=s.items.map(cleanItem);
+    if(s.opt&&typeof s.opt==='object')for(var k in OPT){if(typeof s.opt[k]===typeof OPT[k])st.opt[k]=s.opt[k]}
+    if(typeof s.script==='string')st.script=s.script;
+  }else st.items=sample();
+}
+var saveT=0,saveWarned=false;
+function save(){clearTimeout(saveT);try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){if(!saveWarned){saveWarned=true;toast('容量が大きいため、自動保存できませんでした')}}}
+function saveSoon(){clearTimeout(saveT);saveT=setTimeout(save,400)}
+window.addEventListener('pagehide',save);
+document.addEventListener('visibilitychange',function(){if(document.hidden)save()});
+
+function snapshot(){undoSnap=JSON.stringify(st.items);$('undo').disabled=false}
+
+/* ---------- list ---------- */
+function durText(it){return it.start!=null&&it.end!=null?fs(it.end-it.start)+'秒':'—'}
+function rowsFor(t){return Math.min(6,Math.max(2,(String(t).match(/\n/g)||[]).length+1))}
+function rowHtml(it,i){
+  var n=i+1,sv=it.start!=null?Srt.formatTime(it.start):(it.sIn||''),ev=it.end!=null?Srt.formatTime(it.end):(it.eIn||'');
+  return '<div class="cue" data-i="'+i+'"><div class="cue-head"><span class="no">'+n+'</span>'+
+    '<input class="t" data-f="start" value="'+esc(sv)+'" aria-label="'+n+'番の開始時刻" autocomplete="off" spellcheck="false"'+(it.start==null?' aria-invalid="true"':'')+'>'+
+    '<span class="arr" aria-hidden="true">→</span>'+
+    '<input class="t" data-f="end" value="'+esc(ev)+'" aria-label="'+n+'番の終了時刻" autocomplete="off" spellcheck="false"'+(it.end==null?' aria-invalid="true"':'')+'></div>'+
+    '<textarea class="tx" data-f="text" rows="'+rowsFor(it.text)+'" aria-label="'+n+'番の本文">'+esc(it.text)+'</textarea>'+
+    '<div class="cue-foot"><span class="dur">'+durText(it)+'</span><span class="tools">'+
+    '<button type="button" data-a="up" aria-label="'+n+'番を上へ"'+(i?'':' disabled')+'>↑</button>'+
+    '<button type="button" data-a="down" aria-label="'+n+'番を下へ"'+(i<st.items.length-1?'':' disabled')+'>↓</button>'+
+    '<button type="button" data-a="ins" aria-label="'+n+'番の後に字幕を追加">＋後に追加</button>'+
+    '<button type="button" data-a="del" aria-label="'+n+'番を削除">削除</button></span></div>'+
+    '<p class="cue-warn" hidden></p></div>';
+}
+function renderList(){
+  var list=$('list');
+  if(!st.items.length){list.innerHTML='<p class="muted">まだありません。「＋ 字幕を追加」、または上の「台本から作る」「SRTを読み込む」から始めてください。</p>'}
+  else list.innerHTML=st.items.map(rowHtml).join('');
+  list.classList.toggle('long',st.items.length>12);
+  $('count').textContent='（'+st.items.length+'件）';
+  changed(true);
+}
+function rowEl(i){return $('list').querySelector('.cue[data-i="'+i+'"]')}
+function newAfter(i){
+  var p=st.items[i],nx=st.items[i+1],s=0;
+  if(p)s=p.end!=null?p.end:(p.start!=null?p.start:0);
+  var e=s+2000;if(nx&&nx.start!=null&&nx.start>s)e=Math.min(e,nx.start);
+  return {start:s,end:e,text:''};
+}
+function lastEnd(){var m=-1;st.items.forEach(function(it){if(it.end!=null&&it.end>m)m=it.end});return m}
+function addAt(i){ // insert after index i (-1 = top)
+  st.items.splice(i+1,0,newAfter(i));renderList();
+  var r=rowEl(i+1);if(r){r.scrollIntoView({block:'center'});r.querySelector('textarea').focus()}
+}
+function act(a,i){
+  var it=st.items;
+  if(a==='up'&&i>0){var t=it[i-1];it[i-1]=it[i];it[i]=t;renderList();focusTool(i-1,'up')}
+  else if(a==='down'&&i<it.length-1){var u=it[i+1];it[i+1]=it[i];it[i]=u;renderList();focusTool(i+1,'down')}
+  else if(a==='ins'){addAt(i)}
+  else if(a==='del'){snapshot();it.splice(i,1);renderList();toast((i+1)+'番を削除しました（元に戻せます）');var r=rowEl(Math.min(i,it.length-1));if(r)r.querySelector('[data-a=del]').focus()}
+}
+function focusTool(i,a){var r=rowEl(i);if(!r)return;var b=r.querySelector('[data-a='+a+']');if(b&&!b.disabled)b.focus();else r.querySelector('[data-a=ins]').focus()}
+
+var list=$('list');
+list.addEventListener('input',function(e){
+  var el=e.target,row=el.closest('.cue');if(!row)return;
+  var it=st.items[+row.dataset.i],f=el.dataset.f;if(!it)return;
+  if(undoSnap){undoSnap=null;$('undo').disabled=true} // undo only right after a bulk change, never over later edits
+  if(f==='text'){it.text=el.value;el.rows=rowsFor(el.value)}
+  else if(f==='start'||f==='end'){
+    var v=Srt.parseTime(el.value),raw=f==='start'?'sIn':'eIn';
+    if(v==null){it[f]=null;it[raw]=el.value;el.setAttribute('aria-invalid','true')}
+    else{it[f]=v;delete it[raw];el.removeAttribute('aria-invalid')}
+    row.querySelector('.dur').textContent=durText(it);
+  }
+  changed();
+});
+list.addEventListener('change',function(e){
+  var el=e.target,f=el.dataset.f;if(f!=='start'&&f!=='end')return;
+  var it=st.items[+el.closest('.cue').dataset.i];if(it&&it[f]!=null)el.value=Srt.formatTime(it[f]);
+});
+list.addEventListener('click',function(e){var b=e.target.closest('button[data-a]');if(b)act(b.dataset.a,+b.closest('.cue').dataset.i)});
+
+$('addTop').onclick=function(){addAt(st.items.length-1)};
+$('addBottom').onclick=function(){addAt(st.items.length-1)};
+$('sort').onclick=function(){
+  snapshot();
+  st.items=st.items.map(function(it,i){return [it,i]}).sort(function(a,b){var x=a[0].start,y=b[0].start;if(x==null&&y==null)return a[1]-b[1];if(x==null)return 1;if(y==null)return -1;return x-y||a[1]-b[1]}).map(function(p){return p[0]});
+  renderList();toast('開始時刻の順に並べました');
+};
+$('undo').onclick=function(){if(!undoSnap)return;st.items=JSON.parse(undoSnap).map(cleanItem);undoSnap=null;this.disabled=true;renderList();toast('元に戻しました')};
+$('clear').onclick=function(){$('clearConfirm').hidden=false};
+$('clearNo').onclick=function(){$('clearConfirm').hidden=true};
+$('clearYes').onclick=function(){snapshot();st.items=[];$('clearConfirm').hidden=true;renderList();toast('消しました（元に戻せます）')};
+
+/* ---------- check & export (debounced) ---------- */
+var chkT=0;
+function changed(now){saveSoon();clearTimeout(chkT);if(now)refreshChecks();else chkT=setTimeout(refreshChecks,250)}
+var lastSrt='';
+function refreshChecks(){
+  var warns=Srt.check(st.items,{maxChars:st.opt.maxChars}),by={};
+  warns.forEach(function(w){(by[w.i]=by[w.i]||[]).push(w.msg)});
+  Array.prototype.forEach.call($('list').querySelectorAll('.cue'),function(r){
+    var i=+r.dataset.i,p=r.querySelector('.cue-warn'),m=by[i];
+    if(m){p.hidden=false;p.textContent='注意：'+m.join('／');r.classList.add('warn')}else if(!p.hidden||r.classList.contains('warn')){p.hidden=true;p.textContent='';r.classList.remove('warn')}
+  });
+  var out=$('checkOut');
+  if(!st.items.length)out.innerHTML='<p class="muted mt">字幕がまだありません。</p>';
+  else if(!warns.length)out.innerHTML='<p class="okmsg">問題は見つかりませんでした（'+st.items.length+'件）。</p>';
+  else{
+    var h='<p class="ngmsg">注意が'+warns.length+'件あります。番号を押すとその字幕へ移動します。</p><ul class="warns">';
+    warns.slice(0,300).forEach(function(w){h+='<li><button type="button" class="jump" data-i="'+w.i+'" aria-label="'+(w.i+1)+'番へ移動">'+(w.i+1)+'番</button><span>'+esc(w.msg)+'</span></li>'});
+    if(warns.length>300)h+='<li class="muted">ほか'+(warns.length-300)+'件</li>';
+    out.innerHTML=h+'</ul>';
+  }
+  lastSrt=Srt.buildSrt(st.items);
+  $('preview').value=lastSrt;
+  var n=st.items.filter(Srt.exportable).length,skip=st.items.length-n;
+  $('expInfo').textContent=n+'件の字幕を書き出します'+(skip?'（本文が空・時刻が読めない'+skip+'件は省きます）':'')+'。';
+}
+$('checkOut').addEventListener('click',function(e){
+  var b=e.target.closest('.jump');if(!b)return;
+  var r=rowEl(+b.dataset.i);if(r){r.scrollIntoView({block:'center'});r.querySelector('input').focus()}
+});
+
+function fileName(){var n=String(st.opt.name||'').trim().replace(/\.srt$/i,'').replace(/[\\\/:*?"<>|\u0000-\u001f]/g,'_');return (n||'subtitles')+'.srt'}
+$('dl').onclick=function(){
+  var txt=Srt.buildSrt(st.items);if(!txt){toast('書き出せる字幕がありません');return}
+  var blob=new Blob([st.opt.bom?'﻿':'',txt],{type:'application/x-subrip;charset=utf-8'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=fileName();document.body.appendChild(a);a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},1000);
+  toast(fileName()+' を保存しました');
+};
+function copyText(t,msg){
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){toast(msg)},function(){fallback(t,msg)})}else fallback(t,msg);
+}
+function fallback(t,msg){var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();try{document.execCommand('copy');toast(msg)}catch(e){toast('コピーできませんでした')}a.remove()}
+$('copy').onclick=function(){var t=Srt.buildSrt(st.items);if(!t){toast('書き出せる字幕がありません');return}copyText(t,'SRTの内容をコピーしました')};
+
+/* ---------- script -> timing ---------- */
+function autoOpts(start){
+  return {start:start,cps:Number(st.opt.cps),gap:Number(st.opt.gap)*1000,min:Number(st.opt.min)*1000,max:Number(st.opt.max)*1000};
+}
+function scriptPreview(){
+  var units=Srt.scriptUnits(st.script,st.opt.block),s=Srt.parseTime(st.opt.startAt);
+  if(s==null){$('scriptInfo').textContent='最初の開始時刻が読めません（例：0、1.5、00:00:05,000）。';return null}
+  if(!units.length){$('scriptInfo').textContent='台本を貼ると、ここに字幕の数と全体の長さが出ます。';return null}
+  var items=Srt.autoTime(units,autoOpts(s)),last=items[items.length-1];
+  $('scriptInfo').textContent=items.length+'件の字幕になります（'+Srt.formatTime(items[0].start)+' 〜 '+Srt.formatTime(last.end)+'）。';
+  return items;
+}
+var scT=0;
+function scriptChanged(){saveSoon();clearTimeout(scT);scT=setTimeout(scriptPreview,200)}
+function makeFromScript(append){
+  var units=Srt.scriptUnits(st.script,st.opt.block);
+  if(!units.length){toast('台本が空です');$('script').focus();return}
+  var s=Srt.parseTime(st.opt.startAt);if(s==null){toast('最初の開始時刻が読めません');$('startAt').focus();return}
+  if(append){var le=lastEnd();if(le>=0)s=le+Math.max(0,Math.round(Number(st.opt.gap)*1000))}
+  var items=Srt.autoTime(units,autoOpts(s));
+  snapshot();
+  st.items=append?st.items.concat(items):items;
+  renderList();
+  toast(items.length+'件を'+(append?'追加':'作成')+'しました');
+  $('listCard').scrollIntoView({block:'start'});
+}
+$('mkReplace').onclick=function(){makeFromScript(false)};
+$('mkAppend').onclick=function(){makeFromScript(true)};
+$('script').addEventListener('input',function(){st.script=this.value;scriptChanged()});
+$('block').onchange=function(){st.opt.block=this.checked;scriptChanged()};
+$('startAt').addEventListener('input',function(){st.opt.startAt=this.value;if(Srt.parseTime(this.value)==null)this.setAttribute('aria-invalid','true');else this.removeAttribute('aria-invalid');scriptChanged()});
+$('startAt').addEventListener('change',function(){var v=Srt.parseTime(this.value);if(v!=null){this.value=st.opt.startAt=Srt.formatTime(v);scriptChanged()}});
+[['cps',1,30],['gap',0,10],['min',0.1,60],['max',0.1,60]].forEach(function(d){
+  var el=$(d[0]);
+  el.addEventListener('input',function(){var v=Number(el.value);if(el.value!==''&&isFinite(v)&&v>=d[1]&&v<=d[2]){st.opt[d[0]]=v;el.removeAttribute('aria-invalid');scriptChanged()}else el.setAttribute('aria-invalid','true')});
+  el.addEventListener('change',function(){el.value=st.opt[d[0]];el.removeAttribute('aria-invalid')});
+});
+
+/* ---------- import ---------- */
+function decode(buf){
+  var u=new Uint8Array(buf);
+  try{
+    if(u[0]===0xFF&&u[1]===0xFE)return new TextDecoder('utf-16le').decode(u);
+    if(u[0]===0xFE&&u[1]===0xFF)return new TextDecoder('utf-16be').decode(u);
+  }catch(e){}
+  try{return new TextDecoder('utf-8',{fatal:true}).decode(u)}catch(e){}
+  try{return new TextDecoder('shift_jis').decode(u)}catch(e){}
+  return new TextDecoder('utf-8').decode(u);
+}
+function importText(text,label){
+  var r=Srt.parseSrt(text);
+  if(!r.items.length){toast('字幕が見つかりませんでした。「00:00:01,000 --> 00:00:03,000」の行があるか確認してください');return false}
+  snapshot();st.items=r.items;renderList();
+  toast((label?label+'から':'')+r.items.length+'件を読み込みました'+(r.skipped?'（先頭の'+r.skipped+'行は読み飛ばしました）':''));
+  $('listCard').scrollIntoView({block:'start'});
+  return true;
+}
+function readFile(f){
+  if(!f)return;
+  if(f.size>20*1024*1024){toast('ファイルが大きすぎます（20MBまで）');return}
+  var base=f.name.replace(/\.[^.]+$/,'');
+  var fr=new FileReader();
+  fr.onload=function(){if(importText(decode(fr.result),f.name)){st.opt.name=base;$('fname').value=base;saveSoon()}};
+  fr.onerror=function(){toast('ファイルを読めませんでした')};
+  fr.readAsArrayBuffer(f);
+}
+$('file').onchange=function(){readFile(this.files[0]);this.value=''};
+var drop=$('drop');
+['dragenter','dragover'].forEach(function(t){drop.addEventListener(t,function(e){e.preventDefault();drop.classList.add('over')})});
+['dragleave','drop'].forEach(function(t){drop.addEventListener(t,function(e){e.preventDefault();drop.classList.remove('over')})});
+drop.addEventListener('drop',function(e){var f=e.dataTransfer&&e.dataTransfer.files[0];readFile(f)});
+$('pasteGo').onclick=function(){var t=$('paste').value;if(!t.trim()){toast('貼り付け欄が空です');$('paste').focus();return}if(importText(t,''))$('paste').value=''};
+
+/* ---------- shift ---------- */
+$('shiftGo').onclick=function(){
+  var d=Number($('shiftMs').value),from=Math.floor(Number($('shiftFrom').value)||1);
+  if(!isFinite(d)||Math.round(d)===0){toast('ずらす量をミリ秒で入れてください（例：-1500、2000）');$('shiftMs').focus();return}
+  if(from<1||from>st.items.length){toast('対象の番号は1〜'+st.items.length+'で入れてください');$('shiftFrom').focus();return}
+  snapshot();
+  var r=Srt.shift(st.items,d,from-1);st.items=r.items;renderList();
+  toast(r.moved+'件を'+fs(Math.abs(Math.round(d)))+'秒'+(d>0?'遅らせ':'早め')+'ました'+(r.clamped?'（'+r.clamped+'件は0秒にそろえました）':''));
+};
+
+/* ---------- options ---------- */
+$('maxChars').addEventListener('input',function(){var v=Math.round(Number(this.value));if(v>=5&&v<=80){st.opt.maxChars=v;this.removeAttribute('aria-invalid');changed()}else this.setAttribute('aria-invalid','true')});
+$('maxChars').addEventListener('change',function(){this.value=st.opt.maxChars;this.removeAttribute('aria-invalid')});
+$('fname').addEventListener('input',function(){st.opt.name=this.value;saveSoon()});
+$('bom').onchange=function(){st.opt.bom=this.checked;saveSoon()};
+function setTab(t){
+  st.opt.tab=t;var s=t==='script';
+  $('tabScript').setAttribute('aria-selected',s);$('tabImport').setAttribute('aria-selected',!s);
+  $('paneScript').hidden=!s;$('paneImport').hidden=s;saveSoon();
+}
+$('tabScript').onclick=function(){setTab('script')};
+$('tabImport').onclick=function(){setTab('import')};
+
+load();
+$('script').value=st.script;$('block').checked=st.opt.block;$('startAt').value=st.opt.startAt;
+['cps','gap','min','max','maxChars'].forEach(function(k){$(k).value=st.opt[k]});
+$('fname').value=st.opt.name;$('bom').checked=st.opt.bom;
+setTab(st.opt.tab==='import'?'import':'script');
+renderList();scriptPreview();
+})();
+</script>
+</body>
+</html>

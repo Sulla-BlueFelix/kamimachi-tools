@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>値札・プライスカード作成｜同人誌・フリマ用をA4で印刷【無料・登録不要】</title>
+<meta name="description" content="品名と価格を入れるだけで、同人誌即売会・フリマ・ハンドメイドイベント用の値札（プライスカード）をA4に並べて印刷できます。名刺サイズやA4に8面など、切り取り線付き。0円は「無料配布」と表示。登録不要・無料。">
+<link rel="canonical" href="https://sulla-bluefelix.github.io/kamimachi-tools/nefuda/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="値札・プライスカードメーカー【無料・登録不要】">
+<meta property="og:description" content="品名と価格を入れるだけで、即売会・フリマ用の値札をA4に並べて印刷。切り取り線付き。">
+<meta property="og:url" content="https://sulla-bluefelix.github.io/kamimachi-tools/nefuda/">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"WebApplication","name":"値札・プライスカードメーカー","url":"https://sulla-bluefelix.github.io/kamimachi-tools/nefuda/","applicationCategory":"DesignApplication","operatingSystem":"Any","inLanguage":"ja","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"}},
+{"@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"どのサイズを選べばいいですか？","acceptedAnswer":{"@type":"Answer","text":"本の上や前に置く値札なら、名刺サイズ（91×55mm）が扱いやすく、名刺用のカードスタンドにも立てられます。机の前から読ませたいときはA4に8面、新刊を目立たせたいときはA4に4面・2面、缶バッジやアクセサリーなどの小物にはミニ（60×40mm）が向いています。"}},
+{"@type":"Question","name":"印刷するとサイズがずれます。","acceptedAnswer":{"@type":"Answer","text":"印刷画面で用紙を「A4」、倍率を「100%」（または「既定」）にして、「用紙に合わせる」「ページに合わせる」をオフにしてください。余白は「なし」か「既定」を選びます。これで画面に表示しているmm寸法どおりに印刷されます。"}},
+{"@type":"Question","name":"A4に8面なのに105×74mmではないのはなぜですか？","acceptedAnswer":{"@type":"Answer","text":"A4をちょうど8等分すると105×74mmですが、家庭用プリンターの多くは用紙の端の数mmに印刷できません。端が欠けないように、周りに6mm以上の余白を残して98×70mmで並べています。寸法を決めたい場合は「自由（mm指定）」も使えますが、同じく余白を残して並べるため、105×74mmではA4に4面になります。"}},
+{"@type":"Question","name":"品名の文字が小さくなってしまいます。","acceptedAnswer":{"@type":"Answer","text":"品名が長いと、枠に収まるまで自動で文字を小さくします。巻数・判型・ページ数などは「ひとこと」に分けると、品名を大きく表示できます。大きいサイズや縦置きを選ぶのも効果があります。"}},
+{"@type":"Question","name":"0円の品物や、価格を出さない札は作れますか？","acceptedAnswer":{"@type":"Answer","text":"価格を0にすると「無料配布」と表示します。価格を空欄にすると価格を表示しないので、見本誌やお知らせの札にも使えます。"}},
+{"@type":"Question","name":"入力した内容は保存されますか？","acceptedAnswer":{"@type":"Answer","text":"この端末のブラウザに自動で保存され、次に同じブラウザで開くと続きから使えます。どこにも送信されません。別のスマホやパソコンには引き継がれないので、ご注意ください。"}}
+]}]}
+</script>
+<style id="pageCss">@page{size:A4 portrait;margin:0}</style>
+<style>
+:root{--bg:#f6f3ec;--card:#fffdf8;--ink:#1d2b30;--sub:#5b6a6c;--line:#d9d3c5;--accent:#0b6b62;--accent-ink:#fff;--warn:#a2412f;--soft:#e7efe9}
+@media (prefers-color-scheme:dark){:root{--bg:#141a1c;--card:#1d2528;--ink:#e8ece9;--sub:#9fb0ad;--line:#33403f;--accent:#3fb3a2;--accent-ink:#0d1716;--warn:#e88a73;--soft:#23312f;color-scheme:dark}}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 system-ui,-apple-system,"Hiragino Sans","Noto Sans JP","Yu Gothic UI",sans-serif}
+main{max-width:720px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:clamp(22px,5.4vw,30px);line-height:1.4;margin:8px 0 6px}
+.lead{color:var(--sub);margin:0 0 20px}
+h2{font-size:19px;margin:0 0 10px}
+section.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 16px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input,select{font:inherit;color:inherit;background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:9px 10px;min-width:0}
+input:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px}
+button{font:inherit;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;padding:9px 14px;cursor:pointer}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+button:disabled{opacity:.4;cursor:default}
+.muted{color:var(--sub);font-size:14px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px}
+.cta{border:2px solid var(--accent);background:var(--soft)}
+.cta a.btn{display:inline-block;background:var(--accent);color:var(--accent-ink);text-decoration:none;font-weight:700;padding:10px 16px;border-radius:9px;margin-top:6px}
+details{border-top:1px solid var(--line);padding:10px 0}
+summary{cursor:pointer;font-weight:600}
+footer{color:var(--sub);font-size:13px;text-align:center;margin-top:30px}
+a{color:var(--accent)}
+ol.steps{margin:0;padding-left:1.4em}
+ol.steps li{margin:4px 0}
+/* editor */
+.field{display:flex;flex-direction:column;gap:4px;margin:0 0 12px}
+.item{border-top:1px dashed var(--line);padding:12px 0}
+.item:first-child{border-top:0;padding-top:4px}
+.item-head{display:flex;gap:8px;align-items:center}
+.num{flex:none;width:26px;height:26px;border-radius:50%;background:var(--soft);color:var(--accent);font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center}
+.item-head .iname{flex:1 1 auto;font-weight:600}
+.item-fields{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1.25fr) minmax(0,.75fr);gap:8px;margin:8px 0 0}
+.fl{display:flex;flex-direction:column;gap:2px;min-width:0}
+.fl>.cap{font-size:12px;color:var(--sub);line-height:1.4}
+.fl input{width:100%}
+.yen{display:flex;align-items:center;gap:4px}
+.yen input{flex:1 1 auto}
+.yen i{font-style:normal;font-size:14px;color:var(--sub)}
+.item-note{margin:8px 0 0}
+.item-acts{display:flex;justify-content:flex-end;gap:6px;margin:8px 0 0}
+.item-acts button{padding:5px 10px;font-size:14px;color:var(--sub)}
+.opts{border:0;margin:0 0 12px;padding:0}
+.opts legend{font-weight:600;padding:0;margin:0 0 6px}
+.sizes{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:6px}
+.sizes label{display:flex;gap:8px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:8px 10px;cursor:pointer;line-height:1.45;background:var(--bg)}
+.sizes label:has(input:checked){border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.sizes input{margin-top:4px;flex:none}
+.sizes small{display:block;color:var(--sub);font-size:13px}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg label{display:flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer;background:var(--bg)}
+.seg label:has(input:checked){border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.custom{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin:8px 0 0}
+.custom label{display:flex;align-items:center;gap:6px}
+.custom input{width:84px}
+.check{display:flex;gap:8px;align-items:center}
+.check input{width:18px;height:18px}
+.err{color:var(--warn);font-size:14px;margin:6px 0 0}
+.summary{font-weight:600;margin:0 0 10px}
+/* preview */
+.preview{margin-top:14px;display:flex;flex-direction:column;gap:14px}
+.pv{position:relative;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.18),0 6px 20px rgba(0,0,0,.08);background:#fff}
+.pvlabel{font-size:13px;color:var(--sub);margin:0 0 -8px}
+.sheet{position:relative;background:#fff;color:#111;transform-origin:0 0;overflow:hidden}
+.sheet svg.cuts{position:absolute;left:0;top:0}
+.tag{position:absolute;display:flex;flex-direction:column;overflow:hidden;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","BIZ UDPGothic","Yu Gothic",Meiryo,"Noto Sans JP",system-ui,sans-serif;color:#111;text-align:center}
+.tag .frame{position:absolute;border:.35mm solid #222;border-radius:2mm;pointer-events:none}
+.t-top{display:flex;justify-content:space-between;align-items:center;gap:1.5mm;line-height:1.25;flex:none;position:relative}
+.t-lab{border:.3mm solid #111;border-radius:1mm;padding:0 .9mm;font-weight:700;white-space:nowrap;flex:none;max-width:60%;overflow:hidden}
+.t-cir{color:#444;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-left:auto;min-width:0}
+.t-name{flex:1 1 0;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.t-name span{display:block;max-width:100%;font-weight:700;line-height:1.22;word-break:auto-phrase;line-break:strict;text-wrap:balance}
+.t-name.brk span{overflow-wrap:anywhere;word-break:normal}
+.t-note{flex:none;overflow:hidden;position:relative}
+.t-note span{display:block;line-height:1.3;overflow-wrap:anywhere;color:#333}
+.t-price{flex:none;white-space:nowrap;overflow:hidden;position:relative;line-height:1.1}
+.t-price span{display:inline-block;font-weight:800;letter-spacing:.01em}
+.t-price small{font-size:.55em;font-weight:700;margin-left:.08em}
+.t-price .free{font-weight:800}
+#measure{position:fixed;left:0;top:0;visibility:hidden;pointer-events:none;z-index:-1;width:0;height:0;overflow:visible}
+@media print{
+  html,body{background:#fff!important;color:#000!important}
+  main{max-width:none;margin:0;padding:0}
+  main>*:not(#previewCard),.toast,#measure{display:none!important}
+  #previewCard{border:0;padding:0;margin:0;background:none;border-radius:0}
+  #previewCard>*:not(#preview){display:none!important}
+  .preview{margin:0;display:block}
+  .pvlabel{display:none}
+  .pv{width:auto!important;height:auto!important;box-shadow:none;overflow:visible;break-after:page;page-break-after:always}
+  .pv:last-child{break-after:auto;page-break-after:auto}
+  .sheet{transform:none!important}
+}
+</style>
+</head>
+<body>
+<main>
+<h1>値札・プライスカードメーカー（同人誌即売会・フリマ・ハンドメイドイベント向け）</h1>
+<p class="lead">品名と価格を入れると、<strong>切り取り線付きの値札をA4に並べて</strong>印刷できます。名刺サイズからA4に2面の大きな札まで。登録不要・無料です。</p>
+
+<section class="card">
+<h2>1. 品物を入れる</h2>
+<label class="field"><span>サークル名・お店の名前など（任意・すべての札の右上に小さく入ります）</span><input id="circle" type="text" maxlength="30" placeholder="例：紙町文庫"></label>
+<div id="items"></div>
+<datalist id="labelList"><option value="新刊"><option value="既刊"><option value="再販"><option value="残りわずか"><option value="限定"><option value="セット"><option value="おすすめ"></datalist>
+<div class="row" style="margin-top:8px">
+<button class="primary" id="addItem" type="button">＋ 品物を追加</button>
+<button id="reset" type="button">すべて消す</button>
+</div>
+<p class="muted" id="resetConfirm" hidden>入力した品物をすべて消しますか？ <button id="resetYes" type="button">消す</button> <button id="resetNo" type="button">やめる</button></p>
+<p class="muted" style="margin:8px 0 0">価格を0にすると「無料配布」、空欄にすると価格なしの札になります。ラベルは「新刊」「既刊」などを選ぶか、自由に入れられます。</p>
+</section>
+
+<section class="card">
+<h2>2. 大きさと向き</h2>
+<fieldset class="opts"><legend>値札の大きさ</legend><div class="sizes" id="sizes"></div>
+<div class="custom" id="customBox" hidden>
+<label>幅 <input id="cw" type="number" min="20" max="285" step="1" inputmode="decimal" aria-label="幅（mm）"> mm</label>
+<label>高さ <input id="ch" type="number" min="20" max="285" step="1" inputmode="decimal" aria-label="高さ（mm）"> mm</label>
+</div>
+<p class="err" id="sizeErr" hidden></p>
+</fieldset>
+<fieldset class="opts" id="orientBox"><legend>向き</legend><div class="seg">
+<label><input type="radio" name="orient" value="landscape"> 横置き</label>
+<label><input type="radio" name="orient" value="portrait"> 縦置き</label>
+</div></fieldset>
+<label class="check"><input type="checkbox" id="frame"> 札に枠線を付ける</label>
+</section>
+
+<section class="card" id="previewCard">
+<h2>3. プレビューと印刷</h2>
+<p class="summary" id="summary"></p>
+<button class="primary" id="print" type="button">印刷する</button>
+<p class="muted" style="margin:8px 0 0">印刷画面で用紙「A4」、倍率「100%」（または「既定」）、余白「なし」か「既定」を選ぶと、表示どおりの寸法で印刷されます。点線で切り離してください。</p>
+<div class="preview" id="preview" aria-label="印刷プレビュー"></div>
+</section>
+
+<section class="card">
+<h2>使い方</h2>
+<ol class="steps">
+<li>品名・価格・ひとことを入れます。同じ札を何枚も使うときは「枚数」を増やします。</li>
+<li>「↑」「↓」で並べ替えると、その順に印刷されます。</li>
+<li>大きさと向きを選び、プレビューで文字の大きさを確かめます。</li>
+<li>「印刷する」を押して、A4・倍率100%で印刷し、点線で切り離します。</li>
+</ol>
+<p class="muted" style="margin:10px 0 0">厚めの紙（はがき程度の厚さのマットな紙）に刷ると、カードスタンドに立てやすく、反りにくくなります。</p>
+</section>
+
+<section class="card cta">
+<h2>配置図と在庫帳もまとめて用意するなら</h2>
+<p style="margin:0 0 6px">机と品物の寸法をmmで入れると上から見た図を作り、はみ出しや品物同士の重なりを表示する<strong>「卓上配置図」</strong>と、持込数と残数から頒布数・金額を計算して終了後にCSVで保存できる<strong>「頒布在庫帳」</strong>を、A4の値札づくりと一緒にまとめた編集ツールを用意しています。パソコンのGoogle Chromeで開いて、オフラインで使えます。</p>
+<a class="btn" href="https://kamimachi-press.booth.pm/items/9189658" rel="noopener">机ひとつの即売会を見る（BOOTH・780円）</a>
+<p class="muted" style="margin:8px 0 0">無料見本（架空のサークルの卓上配置図・A4 PDF）もダウンロードできます。</p>
+</section>
+
+<section class="card">
+<h2>よくある質問</h2>
+<details><summary>どのサイズを選べばいいですか？</summary><p>本の上や前に置く値札なら、名刺サイズ（91×55mm）が扱いやすく、名刺用のカードスタンドにも立てられます。机の前から読ませたいときはA4に8面、新刊を目立たせたいときはA4に4面・2面、缶バッジやアクセサリーなどの小物にはミニ（60×40mm）が向いています。</p></details>
+<details><summary>印刷するとサイズがずれます。</summary><p>印刷画面で用紙を「A4」、倍率を「100%」（または「既定」）にして、「用紙に合わせる」「ページに合わせる」をオフにしてください。余白は「なし」か「既定」を選びます。これで画面に表示しているmm寸法どおりに印刷されます。</p></details>
+<details><summary>A4に8面なのに105×74mmではないのはなぜですか？</summary><p>A4をちょうど8等分すると105×74mmですが、家庭用プリンターの多くは用紙の端の数mmに印刷できません。端が欠けないように、周りに6mm以上の余白を残して98×70mmで並べています。寸法を決めたい場合は「自由（mm指定）」も使えますが、同じく余白を残して並べるため、105×74mmではA4に4面になります。</p></details>
+<details><summary>品名の文字が小さくなってしまいます。</summary><p>品名が長いと、枠に収まるまで自動で文字を小さくします。巻数・判型・ページ数などは「ひとこと」に分けると、品名を大きく表示できます。大きいサイズや縦置きを選ぶのも効果があります。</p></details>
+<details><summary>0円の品物や、価格を出さない札は作れますか？</summary><p>価格を0にすると「無料配布」と表示します。価格を空欄にすると価格を表示しないので、見本誌やお知らせの札にも使えます。</p></details>
+<details><summary>入力した内容は保存されますか？</summary><p>この端末のブラウザに自動で保存され、次に同じブラウザで開くと続きから使えます。どこにも送信されません。別のスマホやパソコンには引き継がれないので、ご注意ください。</p></details>
+</section>
+
+<footer>紙町活版所 ・ <a href="../">ほかの無料ツール</a></footer>
+</main>
+<div id="measure" aria-hidden="true"></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/*CORE-START*/
+var A4={w:210,h:297},MIN_MARGIN=6,CUT_EXT=4,MAX_ITEMS=60,MAX_COPIES=100,MAX_CARDS=1000;
+var SIZES=[
+  {key:'meishi',name:'名刺サイズ',w:91,h:55},
+  {key:'mini',name:'ミニ',w:60,h:40},
+  {key:'a4-8',name:'A4に8面',w:98,h:70},
+  {key:'a4-4',name:'A4に4面（ほぼA6）',w:140,h:98},
+  {key:'a4-2',name:'A4に2面（ほぼA5）',w:190,h:135},
+  {key:'custom',name:'自由（mm指定）'}
+];
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function fmtPrice(n){return n===0?'無料配布':String(n).replace(/\B(?=(\d{3})+(?!\d))/g,',')}
+function parsePrice(v){if(v===''||v==null)return null;var n=Math.floor(Number(v));if(!isFinite(n)||n<0)return null;return Math.min(n,9999999)}
+function clampNum(v,lo,hi,def){if(v===''||v==null)return def;v=Number(v);if(!isFinite(v))return def;return Math.min(hi,Math.max(lo,v))}
+// card size in mm for the current settings (null if invalid)
+function cardDims(s){
+  if(s.size==='custom'){var w=Number(s.cw),h=Number(s.ch);if(!(w>=20&&h>=20))return null;return {w:w,h:h}}
+  for(var i=0;i<SIZES.length;i++)if(SIZES[i].key===s.size){var z=SIZES[i];return s.orient==='portrait'?{w:z.h,h:z.w}:{w:z.w,h:z.h}}
+  return null;
+}
+// place as many cw x ch cards as fit on A4 (portrait or landscape, whichever holds more) with at least MIN_MARGIN mm around
+function layoutSheet(cw,ch,margin){
+  if(margin==null)margin=MIN_MARGIN;
+  var best=null,E=1e-9;
+  [[A4.w,A4.h,'portrait'],[A4.h,A4.w,'landscape']].forEach(function(p){
+    var cols=Math.floor((p[0]-2*margin)/cw+E),rows=Math.floor((p[1]-2*margin)/ch+E);
+    if(cols<1||rows<1)return;
+    if(!best||cols*rows>best.per)best={pageW:p[0],pageH:p[1],orient:p[2],cols:cols,rows:rows,per:cols*rows};
+  });
+  if(!best)return null;
+  best.cw=cw;best.ch=ch;
+  best.x0=(best.pageW-best.cols*cw)/2;best.y0=(best.pageH-best.rows*ch)/2;
+  best.xs=[];best.ys=[];
+  for(var i=0;i<=best.cols;i++)best.xs.push(best.x0+i*cw);
+  for(var j=0;j<=best.rows;j++)best.ys.push(best.y0+j*ch);
+  // cut lines run across the whole grid and a little into the margin, staying 3mm away from the paper edge
+  best.extX=Math.max(0,Math.min(CUT_EXT,best.x0-3));best.extY=Math.max(0,Math.min(CUT_EXT,best.y0-3));
+  return best;
+}
+function cellPos(L,k){var c=k%L.cols,r=(k-c)/L.cols;return {x:L.x0+c*L.cw,y:L.y0+r*L.ch}}
+// list of item indexes, one per printed card, in order
+function expandCards(items){var out=[];items.forEach(function(it,i){var n=Math.max(0,Math.min(MAX_COPIES,Math.floor(it.copies)||0));for(var k=0;k<n;k++)out.push(i)});return out}
+function cardMetrics(w,h){
+  var u=Math.min(h,w*0.8),cl=function(v,a,b){return Math.min(b,Math.max(a,v))};
+  return {u:u,pad:cl(u*0.085,2.6,9),topFs:cl(u*0.075,2.3,7),nameMax:u*0.22,nameMin:1.8,noteFs:cl(u*0.068,2.1,6.5),priceMax:u*0.27,priceMin:2.5,gap:u*0.025};
+}
+function tagHTML(it,circle,M,fs,frame,w,h){
+  var hasTop=!!(it.label||circle);
+  var s='<div class="tag" style="width:'+w+'mm;height:'+h+'mm;padding:'+M.pad+'mm;gap:'+M.gap+'mm">';
+  if(frame){var ins=Math.max(1.8,M.pad*0.45);s+='<div class="frame" style="left:'+ins+'mm;top:'+ins+'mm;right:'+ins+'mm;bottom:'+ins+'mm"></div>'}
+  if(hasTop)s+='<div class="t-top" style="font-size:'+M.topFs+'mm">'+(it.label?'<span class="t-lab">'+esc(it.label)+'</span>':'')+(circle?'<span class="t-cir">'+esc(circle)+'</span>':'')+'</div>';
+  s+='<div class="t-name'+(fs.brk?' brk':'')+'"><span style="font-size:'+fs.name+'mm">'+esc(it.name||'')+'</span></div>';
+  if(it.note)s+='<div class="t-note" style="max-height:'+(M.noteFs*1.3*2+0.2)+'mm"><span style="font-size:'+fs.note+'mm">'+esc(it.note)+'</span></div>';
+  if(it.price!=null)s+='<div class="t-price"><span style="font-size:'+fs.price+'mm">'+(it.price===0?'<span class="free">無料配布</span>':esc(fmtPrice(it.price))+'<small>円</small>')+'</span></div>';
+  return s+'</div>';
+}
+/*CORE-END*/
+(function(){
+var KEY='kamimachi-nefuda-v1';
+var $=function(id){return document.getElementById(id)};
+var uid=function(){return Math.random().toString(36).slice(2,9)};
+var PX=96/25.4;
+var state;
+
+function defaults(){return {circle:'',size:'meishi',orient:'landscape',cw:91,ch:55,frame:true,items:[
+  {id:uid(),name:'新刊のタイトル',price:500,note:'A5／36ページ',label:'新刊',copies:1},
+  {id:uid(),name:'既刊のタイトル',price:1000,note:'',label:'既刊',copies:1},
+  {id:uid(),name:'おまけペーパー',price:0,note:'ご自由にお持ちください',label:'',copies:1}
+]}}
+function sanitize(s){
+  var d=defaults();if(!s||typeof s!=='object')return d;
+  var o={circle:typeof s.circle==='string'?s.circle.slice(0,30):'',size:SIZES.some(function(z){return z.key===s.size})?s.size:'meishi',
+    orient:s.orient==='portrait'?'portrait':'landscape',cw:clampNum(s.cw,20,285,91),ch:clampNum(s.ch,20,285,55),frame:s.frame!==false,items:[]};
+  (Array.isArray(s.items)?s.items:[]).slice(0,MAX_ITEMS).forEach(function(it){if(!it||typeof it!=='object')return;
+    o.items.push({id:uid(),name:String(it.name||'').slice(0,40),price:parsePrice(it.price),note:String(it.note||'').slice(0,40),label:String(it.label||'').slice(0,10),copies:clampNum(Math.floor(it.copies),1,MAX_COPIES,1)})});
+  return o;
+}
+function load(){var s=null;try{s=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}state=s?sanitize(s):defaults()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+function toast(msg){var t=$('toast');t.textContent=msg;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){t.hidden=true},2200)}
+
+/* ---------- editor ---------- */
+function mk(tag,props){var e=document.createElement(tag);for(var k in props){if(k==='aria')e.setAttribute('aria-label',props[k]);else e[k]=props[k]}return e}
+function renderItems(){
+  var box=$('items');box.innerHTML='';
+  if(!state.items.length){box.innerHTML='<p class="muted">まだありません。「＋ 品物を追加」から入れてください。</p>';return}
+  state.items.forEach(function(it,i){
+    var n=i+1,d=mk('div',{className:'item'});
+    var head=mk('div',{className:'item-head'});
+    var num=mk('span',{className:'num',textContent:String(n)});num.setAttribute('aria-hidden','true');
+    var name=mk('input',{type:'text',className:'iname',value:it.name,maxLength:40,placeholder:'品名（例：新刊のタイトル）',aria:n+'番目の品名'});
+    name.oninput=function(){it.name=name.value;changed()};
+    head.append(num,name);
+    var cap=function(t){return mk('span',{className:'cap',textContent:t})};
+    var f=mk('div',{className:'item-fields'});
+    var lp=mk('label',{className:'fl'}),yw=mk('span',{className:'yen'});
+    var price=mk('input',{type:'number',className:'iprice',min:'0',step:'1',inputMode:'numeric',placeholder:'空欄で非表示',value:it.price==null?'':String(it.price),aria:n+'番目の価格（円）'});
+    price.oninput=function(){it.price=parsePrice(price.value);changed()};
+    yw.append(price,mk('i',{textContent:'円'}));lp.append(cap('価格'),yw);
+    var ll=mk('label',{className:'fl'}),lab=mk('input',{type:'text',className:'ilabel',maxLength:10,placeholder:'新刊・既刊など',value:it.label,aria:n+'番目のラベル（新刊・既刊など）'});
+    lab.setAttribute('list','labelList');lab.oninput=function(){it.label=lab.value;changed()};
+    ll.append(cap('ラベル（任意）'),lab);
+    var lc=mk('label',{className:'fl'}),cp=mk('input',{type:'number',className:'icopies',min:'1',max:String(MAX_COPIES),step:'1',inputMode:'numeric',value:String(it.copies),aria:n+'番目を印刷する枚数'});
+    cp.oninput=function(){var v=Math.floor(Number(cp.value));if(cp.value!==''&&isFinite(v)){it.copies=Math.min(MAX_COPIES,Math.max(1,v));changed()}};
+    cp.onchange=function(){cp.value=String(it.copies)};
+    lc.append(cap('枚数'),cp);
+    f.append(lp,ll,lc);
+    var nr=mk('label',{className:'fl item-note'});
+    var note=mk('input',{type:'text',className:'inote',maxLength:40,placeholder:'例：A5／36ページ',value:it.note,aria:n+'番目のひとこと'});
+    note.oninput=function(){it.note=note.value;changed()};
+    nr.append(cap('ひとこと（任意）'),note);
+    var acts=mk('div',{className:'item-acts'});
+    var up=mk('button',{type:'button',textContent:'↑ 上へ',aria:n+'番目を上へ',disabled:i===0});
+    up.onclick=function(){move(i,-1,'up')};
+    var dn=mk('button',{type:'button',textContent:'↓ 下へ',aria:n+'番目を下へ',disabled:i===state.items.length-1});
+    dn.onclick=function(){move(i,1,'dn')};
+    var del=mk('button',{type:'button',textContent:'削除',aria:n+'番目を削除'});
+    del.onclick=function(){state.items.splice(i,1);renderItems();changed(true)};
+    acts.append(up,dn,del);
+    d.append(head,f,nr,acts);box.appendChild(d);
+  });
+}
+function move(i,dir,which){
+  var j=i+dir;if(j<0||j>=state.items.length)return;
+  var t=state.items[i];state.items[i]=state.items[j];state.items[j]=t;
+  renderItems();changed(true);
+  var btns=$('items').querySelectorAll('.item')[j].querySelectorAll('.item-acts button');
+  var b=which==='up'?btns[0]:btns[1];if(b.disabled)b=which==='up'?btns[1]:btns[0];b.focus();
+}
+
+/* ---------- size options ---------- */
+function renderSizes(){
+  var box=$('sizes');box.innerHTML='';
+  SIZES.forEach(function(z){
+    var l=mk('label',{}),r=mk('input',{type:'radio',name:'size',value:z.key,checked:state.size===z.key});
+    r.onchange=function(){state.size=z.key;syncOptions();changed(true)};
+    var t=mk('span',{});var b=mk('b',{textContent:z.name});t.appendChild(b);
+    var sm=mk('small',{});sm.dataset.key=z.key;t.appendChild(sm);
+    l.append(r,t);box.appendChild(l);
+  });
+}
+function syncOptions(){
+  [].forEach.call(document.querySelectorAll('#sizes small'),function(sm){
+    var key=sm.dataset.key;
+    if(key==='custom'){sm.textContent='幅と高さを入れます';return}
+    var d=cardDims({size:key,orient:state.orient}),L=layoutSheet(d.w,d.h);
+    sm.textContent=d.w+'×'+d.h+'mm・A4 1枚に'+L.per+'面';
+  });
+  var custom=state.size==='custom';
+  $('customBox').hidden=!custom;$('orientBox').hidden=custom;
+  $('cw').value=state.cw;$('ch').value=state.ch;
+  [].forEach.call(document.querySelectorAll('input[name=orient]'),function(r){r.checked=r.value===state.orient});
+  $('frame').checked=state.frame;
+}
+
+/* ---------- preview ---------- */
+var lastLayout=null,timer=null;
+function changed(now){save();clearTimeout(timer);if(now)renderPreview();else timer=setTimeout(renderPreview,150)}
+
+function fitsBox(box,inner){return inner.offsetHeight<=box.clientHeight+0.5&&inner.scrollWidth<=box.clientWidth+0.5}
+function fitWidth(box,inner){return inner.offsetWidth<=box.clientWidth+0.5}
+function search(inner,lo,hi,ok){
+  inner.style.fontSize=hi+'mm';if(ok())return hi;
+  inner.style.fontSize=lo+'mm';if(!ok())return lo;
+  for(var k=0;k<12;k++){var mid=(lo+hi)/2;inner.style.fontSize=mid+'mm';if(ok())lo=mid;else hi=mid}
+  return Math.floor(lo*100)/100;
+}
+// measure one card per item off-screen and return the largest font sizes that fit
+function measure(items,M,w,h){
+  var box=$('measure'),out=[];
+  box.innerHTML=items.map(function(it){return tagHTML(it,state.circle.trim(),M,{name:M.nameMax,note:M.noteFs,price:M.priceMax},state.frame,w,h)}).join('');
+  [].forEach.call(box.children,function(tag){
+    var r={name:M.nameMax,note:M.noteFs,price:M.priceMax};
+    var p=tag.querySelector('.t-price');
+    if(p){var ps=p.firstChild;r.price=search(ps,M.priceMin,M.priceMax,function(){return fitWidth(p,ps)})}
+    var n=tag.querySelector('.t-note');
+    if(n){var ns=n.firstChild;r.note=search(ns,1.6,M.noteFs,function(){return ns.offsetHeight<=n.clientHeight+0.5})}
+    var nm=tag.querySelector('.t-name'),s=nm.firstChild,fit=function(){return fitsBox(nm,s)};
+    r.name=search(s,Math.max(M.nameMin,M.nameMax*0.35),M.nameMax,fit);
+    s.style.fontSize=r.name+'mm';
+    if(!fit()){ // a word too long for the card unless the text gets tiny: allow breaking inside words
+      nm.classList.add('brk');r.brk=true;r.name=search(s,M.nameMin,M.nameMax,fit);
+    }else if(s.offsetHeight>r.name*1.22*PX*1.5){
+      // wrapped: if one line is possible at 75% of that size or more, a single line reads better
+      var one=search(s,M.nameMin,r.name,function(){return fit()&&s.offsetHeight<=parseFloat(s.style.fontSize)*1.22*PX*1.5});
+      s.style.fontSize=one+'mm';
+      if(one>=r.name*0.75&&s.offsetHeight<=one*1.22*PX*1.5)r.name=one;
+    }
+    out.push(r);
+  });
+  box.innerHTML='';
+  return out;
+}
+function renderPreview(){
+  var d=cardDims(state),err=$('sizeErr'),pv=$('preview'),L=d&&layoutSheet(d.w,d.h);
+  err.hidden=true;
+  if(!L){
+    err.textContent='この大きさはA4に収まりません。幅・高さは20mm以上で、短いほうの辺を198mm以下、長いほうの辺を285mm以下にしてください。';
+    err.hidden=false;pv.innerHTML='';$('summary').textContent='大きさを直してください。';lastLayout=null;return;
+  }
+  var items=state.items.map(function(it){return {name:it.name.trim(),price:it.price,note:it.note.trim(),label:it.label.trim(),copies:it.copies}});
+  var cards=expandCards(items),over=cards.length>MAX_CARDS;
+  if(over)cards=cards.slice(0,MAX_CARDS);
+  var pages=Math.ceil(cards.length/L.per);
+  $('summary').textContent=cards.length?('全部で'+cards.length+'枚 → A4 '+pages+'ページ（1ページに'+L.per+'面・'+(L.orient==='portrait'?'A4縦':'A4横')+'）'+(over?' ※'+MAX_CARDS+'枚までにしています':'')):'品物を入れると、ここにプレビューが出ます。';
+  $('pageCss').textContent='@page{size:A4 '+L.orient+';margin:0}';
+  if(!cards.length){pv.innerHTML='';lastLayout=null;return}
+  var M=cardMetrics(d.w,d.h),fs=measure(items,M,d.w,d.h),circle=state.circle.trim();
+  var h='';
+  for(var p=0;p<pages;p++){
+    h+='<p class="pvlabel">'+(p+1)+' / '+pages+'ページ</p><div class="pv"><div class="sheet" style="width:'+L.pageW+'mm;height:'+(L.pageH-0.5)+'mm">';
+    h+=cutsSVG(L,Math.min(L.per,cards.length-p*L.per));
+    for(var k=0;k<L.per;k++){
+      var idx=p*L.per+k;if(idx>=cards.length)break;
+      var pos=cellPos(L,k),it=items[cards[idx]];
+      h+=tagHTML(it,circle,M,fs[cards[idx]],state.frame,d.w,d.h).replace('<div class="tag" style="','<div class="tag" data-i="'+cards[idx]+'" style="left:'+r3(pos.x)+'mm;top:'+r3(pos.y)+'mm;');
+    }
+    h+='</div></div>';
+  }
+  pv.innerHTML=h;lastLayout=L;scalePreview();
+}
+function r3(v){return Math.round(v*1000)/1000}
+function cutsSVG(L,n){
+  // only the rows actually used on this page get cut lines
+  var rows=Math.min(L.rows,Math.ceil(n/L.cols)),xs=L.xs,ys=L.ys.slice(0,rows+1);
+  var s='<svg class="cuts" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+L.pageW+' '+L.pageH+'" style="width:'+L.pageW+'mm;height:'+L.pageH+'mm" aria-hidden="true"><g stroke="#9a9a9a" stroke-width="0.2" stroke-dasharray="1 0.8" fill="none">';
+  var top=ys[0]-L.extY,bot=ys[ys.length-1]+L.extY,lft=xs[0]-L.extX,rgt=xs[xs.length-1]+L.extX;
+  xs.forEach(function(x){s+='<line x1="'+r3(x)+'" y1="'+r3(top)+'" x2="'+r3(x)+'" y2="'+r3(bot)+'"/>'});
+  ys.forEach(function(y){s+='<line x1="'+r3(lft)+'" y1="'+r3(y)+'" x2="'+r3(rgt)+'" y2="'+r3(y)+'"/>'});
+  return s+'</g></svg>';
+}
+function scalePreview(){
+  if(!lastLayout)return;
+  var pv=$('preview'),W=pv.clientWidth,pw=lastLayout.pageW*PX,ph=(lastLayout.pageH-0.5)*PX,k=Math.min(1,W/pw);
+  [].forEach.call(pv.querySelectorAll('.pv'),function(x){x.style.width=(pw*k)+'px';x.style.height=(ph*k)+'px';x.firstChild.style.transform='scale('+k+')'});
+}
+window.addEventListener('resize',function(){clearTimeout(scalePreview.t);scalePreview.t=setTimeout(scalePreview,80)});
+
+/* ---------- events ---------- */
+$('circle').oninput=function(){state.circle=$('circle').value;changed()};
+$('addItem').onclick=function(){
+  if(state.items.length>=MAX_ITEMS){toast(MAX_ITEMS+'品までです');return}
+  state.items.push({id:uid(),name:'',price:null,note:'',label:'',copies:1});
+  renderItems();changed(true);
+  var names=document.querySelectorAll('#items .iname');if(names.length)names[names.length-1].focus();
+};
+$('reset').onclick=function(){$('resetConfirm').hidden=false};
+$('resetNo').onclick=function(){$('resetConfirm').hidden=true};
+$('resetYes').onclick=function(){state.items=[];state.circle='';$('circle').value='';$('resetConfirm').hidden=true;renderItems();changed(true)};
+[].forEach.call(document.querySelectorAll('input[name=orient]'),function(r){r.onchange=function(){state.orient=r.value;syncOptions();changed(true)}});
+$('cw').onchange=$('ch').onchange=function(){state.cw=clampNum($('cw').value,20,285,state.cw);state.ch=clampNum($('ch').value,20,285,state.ch);syncOptions();changed(true)};
+$('frame').onchange=function(){state.frame=$('frame').checked;changed(true)};
+$('print').onclick=function(){
+  if(!lastLayout){toast(state.items.length?'大きさを直してください':'先に品物を入れてください');return}
+  clearTimeout(timer);renderPreview();window.print();
+};
+
+load();
+$('circle').value=state.circle;
+renderSizes();syncOptions();renderItems();renderPreview();
+})();
+</script>
+</body>
+</html>

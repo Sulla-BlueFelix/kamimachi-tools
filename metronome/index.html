@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>変拍子メトロノーム（オンライン）｜7/8拍子・ポリリズム対応【無料・登録不要】</title>
+<meta name="description" content="7/8拍子（2+2+3・3+2+2）や5/8・11/8などの変拍子を、まとまりの頭にアクセントを付けて鳴らせるオンラインメトロノーム。3対2・4対3のポリリズムも高音と低音で練習できます。BPM30〜300、タップテンポ対応。">
+<link rel="canonical" href="https://sulla-bluefelix.github.io/kamimachi-tools/metronome/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="変拍子・ポリリズム対応メトロノーム【無料・登録不要】">
+<meta property="og:description" content="3+2+2などのまとまりにアクセントを付けて鳴らせる変拍子メトロノーム。3対2などのポリリズムも高音・低音の2声で。">
+<meta property="og:url" content="https://sulla-bluefelix.github.io/kamimachi-tools/metronome/">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"WebApplication","name":"変拍子・ポリリズム対応のオンラインメトロノーム","url":"https://sulla-bluefelix.github.io/kamimachi-tools/metronome/","applicationCategory":"MultimediaApplication","operatingSystem":"Any","inLanguage":"ja","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"}},
+{"@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"7/8拍子は「2+2+3」と「3+2+2」のどちらで数えればいいですか？","acceptedAnswer":{"@type":"Answer","text":"曲によって違います。楽譜の8分音符のつなぎ方（連桁）が「2・2・3」なら2+2+3、「3・2・2」なら3+2+2です。迷ったら両方のプリセットを鳴らして、曲のアクセントに合うほうを選んでください。"}},
+{"@type":"Question","name":"BPMは何の音符の速さですか？","acceptedAnswer":{"@type":"Answer","text":"変拍子モードでは「BPMの基準」で選んだ音符1つ分の速さです（初期設定は8分音符）。楽譜に「♩=60」とある7/8拍子なら、8分音符基準でBPM 120にすると同じ速さになります。ポリリズムモードでは、低音または高音の1打の速さです。"}},
+{"@type":"Question","name":"ポリリズム（3対2など）はどう練習すればいいですか？","acceptedAnswer":{"@type":"Answer","text":"遅めのBPMで両方の音を聞き、片手ずつ合わせてから両手にします。慣れたら「高音を鳴らす」か「低音を鳴らす」のチェックを外し、消した側を自分で叩いて、周期の頭でぴったりそろうか確かめます。"}},
+{"@type":"Question","name":"iPhoneで音が出ません。","acceptedAnswer":{"@type":"Answer","text":"本体の消音（マナーモード）がオンだと、ブラウザの音が鳴らない場合があります。消音を解除して音量を上げ、もう一度「再生」を押してください。iPhoneやiPadでは、再生ボタンを押した操作をきっかけに音を出す仕組みのため、ページを開いただけでは鳴りません。"}},
+{"@type":"Question","name":"別のタブやアプリに切り替えるとテンポが乱れます。","acceptedAnswer":{"@type":"Answer","text":"ブラウザは裏側にあるページの処理を間引くため、表示していない間は音が遅れたり途切れたりすることがあります。練習中はこのページを前面に出したままにしてください。"}},
+{"@type":"Question","name":"設定や音はどこかに送信されますか？","acceptedAnswer":{"@type":"Answer","text":"送信されません。音はブラウザの中で合成しており、BPMや拍子の設定はこの端末にだけ保存されます。"}}
+]}]}
+</script>
+<style>
+:root{--bg:#f6f3ec;--card:#fffdf8;--ink:#1d2b30;--sub:#5b6a6c;--line:#d9d3c5;--accent:#0b6b62;--accent-ink:#fff;--warn:#a2412f;--soft:#e7efe9}
+@media (prefers-color-scheme:dark){:root{--bg:#141a1c;--card:#1d2528;--ink:#e8ece9;--sub:#9fb0ad;--line:#33403f;--accent:#3fb3a2;--accent-ink:#0d1716;--warn:#e88a73;--soft:#23312f;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 system-ui,-apple-system,"Hiragino Sans","Noto Sans JP","Yu Gothic UI",sans-serif}
+main{max-width:720px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:clamp(22px,5.4vw,30px);line-height:1.4;margin:8px 0 6px}
+.lead{color:var(--sub);margin:0 0 20px}
+h2{font-size:19px;margin:0 0 10px}
+section.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 16px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input,select{font:inherit;color:inherit;background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:9px 10px;min-width:0}
+input:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px}
+input[type=range]{width:100%;padding:0;border:0;background:none;accent-color:var(--accent);height:30px}
+input[type=checkbox]{width:18px;height:18px;padding:0;accent-color:var(--accent);flex:0 0 auto}
+button{font:inherit;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;padding:9px 14px;cursor:pointer}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+.chips button{padding:5px 11px;font-size:14px;border-radius:999px;background:var(--soft);border-color:transparent}
+.chips button[aria-pressed=true]{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.muted{color:var(--sub);font-size:14px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px}
+.cta{border:2px solid var(--accent);background:var(--soft)}
+.cta a.btn{display:inline-block;background:var(--accent);color:var(--accent-ink);text-decoration:none;font-weight:700;padding:10px 16px;border-radius:9px;margin-top:6px}
+details{border-top:1px solid var(--line);padding:10px 0}
+summary{cursor:pointer;font-weight:600}
+footer{color:var(--sub);font-size:13px;text-align:center;margin-top:30px}
+a{color:var(--accent)}
+ol.how{margin:0;padding-left:1.4em}
+ol.how li{margin:4px 0}
+/* metronome */
+.tabs{display:flex;gap:6px;margin:0 0 12px}
+.tabs button{flex:1;padding:9px 6px;font-weight:600}
+.tabs button[aria-selected=true]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700;box-shadow:inset 0 -3px 0 rgba(0,0,0,.25)}
+.stage{border:1px solid var(--line);border-radius:12px;background:var(--bg);padding:8px 10px 10px;margin:0 0 8px}
+.stage-head{display:flex;justify-content:space-between;gap:8px;font-size:14px;color:var(--sub);font-variant-numeric:tabular-nums}
+.stage-head b{color:var(--ink)}
+.beats{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px 12px;min-height:120px;padding:8px 0}
+.grp{display:flex;align-items:center;gap:6px;padding:6px 8px;border:1px dashed var(--line);border-radius:14px}
+.cell{display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;border:2px solid var(--line);font-size:14px;color:var(--sub);background:var(--card);transition:transform .06s;font-variant-numeric:tabular-nums}
+.cell.l1{width:38px;height:38px;border-color:var(--accent);color:var(--ink);font-weight:700}
+.cell.l2{width:46px;height:46px;border-width:3px;border-color:var(--ink);color:var(--ink);font-weight:700;font-size:16px}
+.cell.mute{border-style:dashed;opacity:.55}
+.cell.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);transform:scale(1.15);opacity:1}
+.poly{position:relative;min-height:120px;padding:10px 0;display:flex;flex-direction:column;justify-content:center}
+.prow{display:flex;align-items:center;height:48px}
+.plab{flex:0 0 52px;font-size:13px;color:var(--sub);line-height:1.3}
+.plab b{display:block;color:var(--ink);font-size:16px}
+.lane{position:relative;flex:1;height:100%;margin:0 14px}
+.lane::before{content:"";position:absolute;left:-8px;right:-8px;top:50%;border-top:1px solid var(--line)}
+.dot{position:absolute;top:50%;width:22px;height:22px;transform:translate(-50%,-50%);border:2px solid var(--accent);border-radius:50%;background:var(--card);z-index:1;transition:transform .06s}
+.dot.d0{width:26px;height:26px;border-width:3px}
+.lane.lo .dot{border-radius:5px;border-color:var(--ink)}
+.dot.on{background:var(--accent);transform:translate(-50%,-50%) scale(1.2)}
+.lane.lo .dot.on{background:var(--ink)}
+.ov{position:absolute;top:6px;bottom:6px;left:66px;right:14px;pointer-events:none}
+.guide{position:absolute;top:0;bottom:0;border-left:2px dotted var(--sub);opacity:.45}
+.ph{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:var(--warn);opacity:.85}
+.summary{margin:0 0 12px;font-weight:600;text-align:center;font-variant-numeric:tabular-nums}
+.ctrl{justify-content:center;margin:0 0 14px}
+.play{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:18px;padding:12px 22px;min-width:150px}
+.play svg{width:18px;height:18px;fill:currentColor}
+.tap{font-size:17px;padding:12px 22px;min-width:110px}
+.field{margin:0 0 12px}
+.field>label{display:block;font-weight:600;margin:0 0 4px}
+.bpmrow{display:flex;gap:6px;align-items:center;justify-content:center}
+.bpmrow .step{flex:0 0 46px;padding:9px 0;font-variant-numeric:tabular-nums}
+#bpm{width:88px;text-align:center;font-size:22px;font-weight:700;padding:6px 4px;font-variant-numeric:tabular-nums}
+#groups{width:100%;font-size:18px;letter-spacing:.05em}
+.check{display:flex;gap:8px;align-items:center;margin:6px 0}
+.err{color:var(--warn);font-weight:600}
+.info{background:var(--soft);border-radius:10px;padding:10px 12px;margin:12px 0 0;font-size:15px}
+.pick{display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin:0 0 12px}
+.pick label{display:flex;flex-direction:column;font-size:14px;color:var(--sub)}
+.pick select{font-size:18px;min-width:76px}
+.pick .vs{padding:0 2px 10px;font-weight:700}
+.nw{display:inline-block}
+@media (max-width:480px){
+.beats{gap:8px;padding:6px 0}
+.grp{gap:4px;padding:5px 6px}
+.cell{width:28px;height:28px;font-size:13px}
+.cell.l1{width:34px;height:34px}
+.cell.l2{width:40px;height:40px;font-size:15px}
+.stage{padding:8px 6px 8px}
+}
+</style>
+</head>
+<body>
+<main>
+<h1>変拍子・ポリリズム対応の<span class="nw">オンラインメトロノーム</span></h1>
+<p class="lead">「3+2+2」のように拍のまとまりを入れると、<strong>各まとまりの頭にアクセント</strong>を付けて鳴らします。3対2などのポリリズムは高音と低音の2声で。登録不要・無料、ブラウザだけで動きます。</p>
+
+<section class="card" id="player">
+<div class="tabs" role="tablist" aria-label="モード">
+<button type="button" role="tab" id="tabMeter" aria-controls="panelMeter" aria-selected="true">変拍子</button>
+<button type="button" role="tab" id="tabPoly" aria-controls="panelPoly" aria-selected="false">ポリリズム</button>
+</div>
+<div class="stage" aria-hidden="true">
+<div class="stage-head"><span id="sigLabel"></span><span id="barNo"></span></div>
+<div id="beats" class="beats"></div>
+</div>
+<p class="summary" id="summary" aria-live="polite"></p>
+<div class="row ctrl">
+<button class="primary play" id="play" type="button" aria-pressed="false"><svg viewBox="0 0 20 20" aria-hidden="true"><path id="playIcon" d="M5 3l12 7-12 7z"/></svg><span id="playText">再生</span></button>
+<button class="tap" id="tap" type="button" aria-describedby="tapHint">タップ</button>
+</div>
+<div class="field">
+<label for="bpm">BPM <span class="muted" id="bpmUnit"></span></label>
+<div class="bpmrow">
+<button type="button" class="step" data-d="-5" aria-label="BPMを5下げる">−5</button>
+<button type="button" class="step" data-d="-1" aria-label="BPMを1下げる">−1</button>
+<input id="bpm" type="number" min="30" max="300" step="1" inputmode="numeric">
+<button type="button" class="step" data-d="1" aria-label="BPMを1上げる">+1</button>
+<button type="button" class="step" data-d="5" aria-label="BPMを5上げる">+5</button>
+</div>
+<input id="bpmRange" type="range" min="30" max="300" step="1" aria-label="BPM（スライダー）">
+<p class="muted" id="tapHint" style="margin:0">タップは、BPMの基準の音符に合わせて4回ほど続けて押すと速さが入ります。</p>
+</div>
+<div class="field">
+<label for="vol">音量 <span class="muted" id="volOut"></span></label>
+<input id="vol" type="range" min="0" max="100" step="1">
+</div>
+<p class="muted" style="margin:0">スペースキーで再生／停止、Tキーでタップできます（入力欄にカーソルがあるときは除きます）。</p>
+</section>
+
+<section class="card" id="panelMeter" role="tabpanel" aria-labelledby="tabMeter">
+<h2>変拍子の設定</h2>
+<div class="chips" id="presets" aria-label="拍子のプリセット"></div>
+<div class="field">
+<label for="groups">拍のまとまり（数字を＋でつなぐ）</label>
+<input id="groups" type="text" placeholder="例：3+2+2" autocomplete="off" spellcheck="false" aria-describedby="groupsMsg">
+<p id="groupsMsg" class="muted" style="margin:4px 0 0">1つのまとまりは1〜16、合計32拍まで。「3 2 2」のように空白区切りでも入ります。</p>
+</div>
+<div class="field">
+<label for="unit">BPMの基準（数字1つ分の音符）</label>
+<select id="unit"><option value="e">♪ 8分音符</option><option value="q">♩ 4分音符</option></select>
+</div>
+<label class="check"><input type="checkbox" id="headsOnly">まとまりの頭だけ鳴らす（間の拍は無音）</label>
+<p class="info" id="meterInfo"></p>
+<p class="muted" style="margin:10px 0 0">表示の見方：いちばん大きい丸が小節の頭（最も強い音）、中くらいの丸がまとまりの頭（強い音）、小さい丸がそのほかの拍（弱い音）です。点線の丸は無音の拍です。</p>
+</section>
+
+<section class="card" id="panelPoly" role="tabpanel" aria-labelledby="tabPoly" hidden>
+<h2>ポリリズムの設定</h2>
+<div class="chips" id="polyPresets" aria-label="ポリリズムのプリセット"></div>
+<div class="pick">
+<label>高音（A）<select id="polyA"></select></label>
+<span class="vs">対</span>
+<label>低音（B）<select id="polyB"></select></label>
+<button type="button" id="swap">入れ替え</button>
+</div>
+<div class="field">
+<label for="base">BPMの基準</label>
+<select id="base"><option value="lo">低音（B）の1打</option><option value="hi">高音（A）の1打</option></select>
+</div>
+<label class="check"><input type="checkbox" id="hiOn">高音（丸）を鳴らす</label>
+<label class="check"><input type="checkbox" id="loOn">低音（四角）を鳴らす</label>
+<p class="info" id="polyInfo"></p>
+</section>
+
+<section class="card">
+<h2>使い方</h2>
+<ol class="how">
+<li>上の「変拍子」か「ポリリズム」を選びます。</li>
+<li>変拍子はプリセットを押すか、「3+2+2」のようにまとまりを入力します。ポリリズムは高音と低音の数を選びます。</li>
+<li>BPMを数字・スライダー・タップで合わせて「再生」を押します。</li>
+<li>慣れてきたら「まとまりの頭だけ鳴らす」や片方の声を消す設定にして、鳴らない拍を自分で数える練習に使えます。</li>
+</ol>
+</section>
+
+<section class="card cta">
+<h2>練習用の音源として持ち歩くなら</h2>
+<p style="margin:0 0 6px">この無料版は、その場で鳴らすところまでです。<strong>拍の標本室</strong>は、変拍子・ポリリズムに加えて、<strong>速さを指定した順に切り替える「階段テンポ」</strong>も組めるオフライン版で、3種類とも試聴と<strong>WAV保存</strong>ができます。</p>
+<a class="btn" href="https://kamimachi-press.booth.pm/items/9189947" rel="noopener">拍の標本室を見る（BOOTH・780円）</a>
+<p class="muted" style="margin:8px 0 0">無料見本（3＋2＋2の試聴音源・WAV）もダウンロードできます。パソコン版のGoogle Chromeで使う道具です。</p>
+</section>
+
+<section class="card">
+<h2>よくある質問</h2>
+<details><summary>7/8拍子は「2+2+3」と「3+2+2」のどちらで数えればいいですか？</summary><p>曲によって違います。楽譜の8分音符のつなぎ方（連桁）が「2・2・3」なら2+2+3、「3・2・2」なら3+2+2です。迷ったら両方のプリセットを鳴らして、曲のアクセントに合うほうを選んでください。</p></details>
+<details><summary>BPMは何の音符の速さですか？</summary><p>変拍子モードでは「BPMの基準」で選んだ音符1つ分の速さです（初期設定は8分音符）。楽譜に「♩=60」とある7/8拍子なら、8分音符基準でBPM 120にすると同じ速さになります。ポリリズムモードでは、低音または高音の1打の速さです。</p></details>
+<details><summary>ポリリズム（3対2など）はどう練習すればいいですか？</summary><p>遅めのBPMで両方の音を聞き、片手ずつ合わせてから両手にします。慣れたら「高音を鳴らす」か「低音を鳴らす」のチェックを外し、消した側を自分で叩いて、周期の頭でぴったりそろうか確かめます。</p></details>
+<details><summary>iPhoneで音が出ません。</summary><p>本体の消音（マナーモード）がオンだと、ブラウザの音が鳴らない場合があります。消音を解除して音量を上げ、もう一度「再生」を押してください。iPhoneやiPadでは、再生ボタンを押した操作をきっかけに音を出す仕組みのため、ページを開いただけでは鳴りません。</p></details>
+<details><summary>別のタブやアプリに切り替えるとテンポが乱れます。</summary><p>ブラウザは裏側にあるページの処理を間引くため、表示していない間は音が遅れたり途切れたりすることがあります。練習中はこのページを前面に出したままにしてください。</p></details>
+<details><summary>設定や音はどこかに送信されますか？</summary><p>送信されません。音はブラウザの中で合成しており、BPMや拍子の設定はこの端末にだけ保存されます。</p></details>
+</section>
+
+<footer>紙町活版所 ・ <a href="../">ほかの無料ツール</a></footer>
+</main>
+<div class="toast" id="toast" hidden></div>
+
+<script id="core">
+/* Pure timing logic (no DOM / audio). Times are in seconds. */
+var Core=(function(){
+  var MIN=30,MAX=300;
+  function clampBpm(v){v=Math.round(Number(v));if(!isFinite(v))return null;return v<MIN?MIN:v>MAX?MAX:v}
+  function gcd(a,b){while(b){var t=a%b;a=b;b=t}return a}
+  function lcm(a,b){return a/gcd(a,b)*b}
+  // "3+2+2", "3 2 2", "３＋２＋２" -> [3,2,2]; null if invalid
+  function parseGroups(s){
+    s=String(s==null?'':s).replace(/[０-９]/g,function(c){return String.fromCharCode(c.charCodeAt(0)-65248)});
+    s=s.replace(/[＋+,、，・\s\-ー－]+/g,'+').replace(/^\++|\++$/g,'');
+    if(!/^\d+(\+\d+)*$/.test(s))return null;
+    var g=s.split('+').map(Number),sum=0;
+    if(g.length>16)return null;
+    for(var i=0;i<g.length;i++){if(g[i]<1||g[i]>16)return null;sum+=g[i]}
+    return sum>32?null:g;
+  }
+  // accent level per pulse: 2 = bar head, 1 = group head, 0 = other
+  function levels(groups){var o=[];groups.forEach(function(n,gi){for(var k=0;k<n;k++)o.push(k?0:(gi?1:2))});return o}
+  function meterPattern(groups,bpm){
+    var sec=60/bpm,ev=[],i=0;
+    groups.forEach(function(n,gi){for(var k=0;k<n;k++){ev.push({t:i*sec,i:i,g:gi,k:k,level:k?0:(gi?1:2)});i++}});
+    return {kind:'meter',key:'m:'+groups.join('+'),groups:groups.slice(),cycle:i*sec,events:ev};
+  }
+  // one cycle = B beats of the low voice (base 'lo') or A beats of the high voice (base 'hi')
+  function polyCycle(a,b,bpm,base){return (base==='hi'?a:b)*60/bpm}
+  function polyPattern(a,b,bpm,base){
+    var cyc=polyCycle(a,b,bpm,base),L=lcm(a,b),sa=L/a,sb=L/b,ev=[];
+    for(var p=0;p<L;p++){var h=p%sa===0,l=p%sb===0;if(h||l)ev.push({t:p*cyc/L,p:p,hi:h?p/sa:-1,lo:l?p/sb:-1})}
+    return {kind:'poly',key:'p:'+a+':'+b,a:a,b:b,L:L,cycle:cyc,events:ev};
+  }
+  // scheduler cursor: walks a pattern event by event
+  function makeCursor(t0){return {pos:0,time:t0,cycle:0,lastTime:null,lastPos:0}}
+  function gapAfter(pat,pos){var n=pat.events.length;return pos+1<n?pat.events[pos+1].t-pat.events[pos].t:pat.cycle-pat.events[pos].t}
+  function step(cur,pat){
+    var ev=pat.events[cur.pos],out={time:cur.time,pos:cur.pos,cycle:cur.cycle,key:pat.key,ev:ev};
+    cur.lastTime=cur.time;cur.lastPos=cur.pos;cur.time+=gapAfter(pat,cur.pos);cur.pos++;
+    if(cur.pos>=pat.events.length){cur.pos=0;cur.cycle++}
+    return out;
+  }
+  // same shape, new tempo: next event = last played event + new gap
+  function retime(cur,pat,now){
+    if(cur.lastTime!=null)cur.time=cur.lastTime+gapAfter(pat,cur.lastPos);
+    if(now!=null&&cur.time<now)cur.time=now;
+    return cur;
+  }
+  // shape changed: start a new bar at the next event time
+  function restart(cur,now){
+    if(cur.pos!==0){cur.pos=0;cur.cycle++}
+    cur.lastTime=null;
+    if(now!=null&&cur.time<now)cur.time=now;
+    return cur;
+  }
+  // tap tempo: times in ms; a pause over 2.6 s (slower than 30 BPM) starts over; keeps the last 8 taps
+  function pushTap(times,t){if(times.length&&(t-times[times.length-1]>2600||t<=times[times.length-1]))times.length=0;times.push(t);if(times.length>8)times.shift();return times}
+  function tapBpm(times){if(!times||times.length<2)return null;var avg=(times[times.length-1]-times[0])/(times.length-1);return avg>0?clampBpm(60000/avg):null}
+  return {MIN:MIN,MAX:MAX,clampBpm:clampBpm,gcd:gcd,lcm:lcm,parseGroups:parseGroups,levels:levels,meterPattern:meterPattern,polyCycle:polyCycle,polyPattern:polyPattern,makeCursor:makeCursor,gapAfter:gapAfter,step:step,retime:retime,restart:restart,pushTap:pushTap,tapBpm:tapBpm};
+})();
+</script>
+<script>
+(function(){
+var KEY='kamimachi-metronome-v1';
+var $=function(id){return document.getElementById(id)};
+var DEF={mode:'meter',bpm:120,groups:'2+2+3',unit:'e',headsOnly:false,a:3,b:2,base:'lo',hiOn:true,loOn:true,vol:80};
+var st=JSON.parse(JSON.stringify(DEF));
+var PRESETS=[['4/4','4','q'],['3/4','3','q'],['5/4（3+2）','3+2','q'],['5/8（3+2）','3+2','e'],['5/8（2+3）','2+3','e'],['6/8（3+3）','3+3','e'],['7/8（2+2+3）','2+2+3','e'],['7/8（3+2+2）','3+2+2','e'],['7/8（2+3+2）','2+3+2','e'],['9/8（2+2+2+3）','2+2+2+3','e'],['9/8（3+3+3）','3+3+3','e'],['11/8（3+3+3+2）','3+3+3+2','e'],['7/4（4+3）','4+3','q']];
+var POLY=[[3,2],[2,3],[4,3],[3,4],[5,4],[5,3],[7,4]];
+
+function load(){
+  try{var s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&typeof s==='object'){for(var k in DEF){if(k in s&&typeof s[k]===typeof DEF[k])st[k]=s[k]}}}catch(e){}
+  st.bpm=Core.clampBpm(st.bpm)||DEF.bpm;
+  var g=Core.parseGroups(st.groups);st.groups=g?g.join('+'):DEF.groups;
+  if(st.unit!=='e'&&st.unit!=='q')st.unit='e';
+  if(st.mode!=='meter'&&st.mode!=='poly')st.mode='meter';
+  if(st.base!=='lo'&&st.base!=='hi')st.base='lo';
+  st.a=Math.round(st.a);st.b=Math.round(st.b);
+  if(!(st.a>=2&&st.a<=9&&st.b>=2&&st.b<=9&&st.a!==st.b)){st.a=3;st.b=2}
+  st.vol=Math.min(100,Math.max(0,Math.round(st.vol)||0));
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}}
+function toast(msg){var t=$('toast');t.textContent=msg;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){t.hidden=true},2200)}
+function fs(x){return String(Math.round(x*1000)/1000)}
+function f1(x){return String(Math.round(x*10)/10)}
+
+/* ---------- audio ---------- */
+var AC=window.AudioContext||window.webkitAudioContext,ctx=null,master=null,bus=null;
+function ensureCtx(){
+  if(!AC)return null;
+  if(!ctx){
+    try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}
+    try{ctx=new AC()}catch(e){return null}
+    master=ctx.createGain();master.connect(ctx.destination);setVolume();
+  }
+  if(ctx.state!=='running'){try{var p=ctx.resume();if(p&&p.catch)p.catch(function(){})}catch(e){}}
+  return ctx;
+}
+// iOS: play a silent buffer inside the user's tap so later scheduled sounds are allowed
+function unlock(){try{var b=ctx.createBuffer(1,1,22050),s=ctx.createBufferSource();s.buffer=b;s.connect(ctx.destination);s.start(0)}catch(e){}}
+function setVolume(){if(master){var v=st.vol/100;master.gain.setValueAtTime(v*v,ctx.currentTime)}}
+function blip(t,freq,peak,dur,type){
+  var o=ctx.createOscillator(),g=ctx.createGain();
+  o.type=type||'sine';o.frequency.setValueAtTime(freq,t);
+  g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(peak,t+0.002);g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  o.connect(g);g.connect(bus);o.start(t);o.stop(t+dur+0.02);
+}
+function sound(e){
+  var ev=e.ev,t=e.time;
+  if(e.key.charAt(0)==='m'){
+    if(ev.level===2)blip(t,1568,0.5,0.07);
+    else if(ev.level===1)blip(t,1175,0.4,0.06);
+    else if(!st.headsOnly)blip(t,880,0.26,0.045);
+  }else{
+    if(ev.hi>=0&&st.hiOn)blip(t,1320,ev.p===0?0.45:0.36,0.06,'sine');
+    if(ev.lo>=0&&st.loOn)blip(t,440,ev.p===0?0.5:0.42,0.09,'triangle');
+  }
+}
+
+/* ---------- scheduler (lookahead) ---------- */
+var playing=false,timer=0,raf=0,cur=null,pat=null,vis=[],cycleStart=0;
+var LOOKAHEAD=0.12,LOOKAHEAD_HIDDEN=1.5,TICK=25;
+function buildPattern(){
+  if(st.mode==='meter')return Core.meterPattern(Core.parseGroups(st.groups),st.bpm);
+  return Core.polyPattern(st.a,st.b,st.bpm,st.base);
+}
+function tick(){
+  if(!playing)return;
+  // timers can stall (background tab, sleep): resync instead of firing a burst of late clicks
+  if(cur.time<ctx.currentTime-0.05){cur.time=ctx.currentTime+0.03;cur.lastTime=null;vis=[]}
+  var lim=ctx.currentTime+(document.hidden?LOOKAHEAD_HIDDEN:LOOKAHEAD),n=0;
+  while(cur.time<lim&&n++<400){var e=Core.step(cur,pat);sound(e);vis.push(e)}
+  if(vis.length>3000)vis.splice(0,vis.length-3000);
+  timer=setTimeout(tick,TICK);
+}
+function start(){
+  if(!ensureCtx()){toast('このブラウザでは音を鳴らせません');return}
+  unlock();
+  bus=ctx.createGain();bus.connect(master);
+  pat=buildPattern();cur=Core.makeCursor(ctx.currentTime+0.06);vis=[];cycleStart=cur.time;
+  playing=true;setPlayUi();tick();raf=requestAnimationFrame(draw);
+}
+function stop(){
+  playing=false;clearTimeout(timer);cancelAnimationFrame(raf);
+  if(bus){var b=bus,now=ctx.currentTime;try{b.gain.setValueAtTime(1,now);b.gain.linearRampToValueAtTime(0,now+0.02)}catch(e){}setTimeout(function(){try{b.disconnect()}catch(e){}},120);bus=null}
+  vis=[];clearMarks();$('barNo').textContent='';setPlayUi();
+}
+function toggle(){playing?stop():start()}
+function setPlayUi(){
+  $('play').setAttribute('aria-pressed',playing?'true':'false');
+  $('playText').textContent=playing?'停止':'再生';
+  $('playIcon').setAttribute('d',playing?'M4 4h12v12H4z':'M5 3l12 7-12 7z');
+}
+
+/* ---------- display ---------- */
+var disp={key:null,cells:[],hi:[],lo:[],ph:null,lastCell:null,lastHi:null,lastLo:null};
+function renderStage(){
+  var box=$('beats');box.innerHTML='';
+  disp={key:pat.key,cells:[],hi:[],lo:[],ph:null,lastCell:null,lastHi:null,lastLo:null};
+  if(pat.kind==='meter'){
+    box.className='beats';var grp=null;
+    pat.events.forEach(function(ev){
+      if(ev.k===0){grp=document.createElement('div');grp.className='grp';box.appendChild(grp)}
+      var c=document.createElement('span');c.className='cell l'+ev.level+(st.headsOnly&&ev.level===0?' mute':'');c.textContent=ev.k+1;
+      grp.appendChild(c);disp.cells.push(c);
+    });
+  }else{
+    box.className='poly';
+    [['hi','高音',pat.a],['lo','低音',pat.b]].forEach(function(r){
+      var row=document.createElement('div');row.className='prow';
+      var lab=document.createElement('span');lab.className='plab';lab.innerHTML=r[1]+'<b>'+r[2]+'</b>';
+      var lane=document.createElement('div');lane.className='lane '+r[0];
+      for(var i=0;i<r[2];i++){var d=document.createElement('span');d.className='dot'+(i?'':' d0');d.style.left=(i/r[2]*100)+'%';lane.appendChild(d);disp[r[0]].push(d)}
+      if(!(r[0]==='hi'?st.hiOn:st.loOn))lane.style.opacity='.4';
+      row.append(lab,lane);box.appendChild(row);
+    });
+    var ov=document.createElement('div');ov.className='ov';
+    var g=Core.gcd(pat.a,pat.b);
+    for(var j=0;j<g;j++){var gl=document.createElement('span');gl.className='guide';gl.style.left=(j/g*100)+'%';ov.appendChild(gl)}
+    var ph=document.createElement('span');ph.className='ph';ph.hidden=true;ov.appendChild(ph);disp.ph=ph;
+    box.appendChild(ov);
+  }
+}
+function clearMarks(){
+  [disp.lastCell,disp.lastHi,disp.lastLo].forEach(function(x){if(x)x.classList.remove('on')});
+  disp.lastCell=disp.lastHi=disp.lastLo=null;if(disp.ph)disp.ph.hidden=true;
+}
+function mark(slot,el){if(disp[slot]===el)return;if(disp[slot])disp[slot].classList.remove('on');if(el)el.classList.add('on');disp[slot]=el}
+function show(e){
+  if(e.key!==disp.key)return;
+  $('barNo').innerHTML=(e.key.charAt(0)==='m'?'小節 ':'周期 ')+'<b>'+(e.cycle+1)+'</b>';
+  if(e.key.charAt(0)==='m'){mark('lastCell',disp.cells[e.ev.i])}
+  else{
+    if(e.pos===0)cycleStart=e.time;
+    if(e.ev.hi>=0)mark('lastHi',disp.hi[e.ev.hi]);
+    if(e.ev.lo>=0)mark('lastLo',disp.lo[e.ev.lo]);
+  }
+}
+function draw(){
+  if(!playing)return;
+  var lat=ctx.outputLatency||ctx.baseLatency||0,now=ctx.currentTime-lat,last=null;
+  while(vis.length&&vis[0].time<=now){last=vis.shift();if(last.pos===0&&last.key.charAt(0)==='p')cycleStart=last.time}
+  if(last)show(last);
+  if(disp.ph&&pat.kind==='poly'&&now>=cycleStart){var x=(now-cycleStart)/pat.cycle;if(x>=0&&x<1){disp.ph.hidden=false;disp.ph.style.left=(x*100)+'%'}}
+  raf=requestAnimationFrame(draw);
+}
+
+/* ---------- texts ---------- */
+function texts(){
+  var u=st.unit==='e'?'♪':'♩';
+  if(st.mode==='meter'){
+    var g=Core.parseGroups(st.groups),n=g.reduce(function(s,x){return s+x},0),den=st.unit==='e'?8:4,bar=n*60/st.bpm;
+    var heads=[],i=1;g.forEach(function(x){heads.push(i);i+=x});
+    $('sigLabel').innerHTML='<b>'+n+'/'+den+'拍子</b>（'+g.join('+')+'）';
+    $('summary').textContent=n+'/'+den+'拍子（'+g.join('+')+'）・'+u+'='+st.bpm+'・1小節 '+fs(bar)+'秒';
+    $('bpmUnit').textContent=st.unit==='e'?'（♪ 8分音符1つの速さ）':'（♩ 4分音符1つの速さ）';
+    $('meterInfo').textContent='1小節は'+(st.unit==='e'?'8分音符':'4分音符')+'×'+n+'つで '+fs(bar)+'秒、1拍は '+fs(60/st.bpm)+'秒です。'+
+      (st.unit==='e'?'♩（4分音符）で数えるとBPM '+f1(st.bpm/2):'♪（8分音符）で数えるとBPM '+st.bpm*2)+' にあたります。'+
+      'アクセントは '+heads.join('・')+' 拍目で、1拍目がいちばん強くなります。';
+  }else{
+    var a=st.a,b=st.b,c=Core.polyCycle(a,b,st.bpm,st.base),L=Core.lcm(a,b),hp=[],lp=[],both=[];
+    for(var p=0;p<L;p++){var h=p%(L/a)===0,l=p%(L/b)===0;if(h)hp.push(p+1);if(l)lp.push(p+1);if(h&&l)both.push(p+1)}
+    var baseTxt=st.base==='lo'?'低音1打':'高音1打';
+    $('sigLabel').innerHTML='<b>'+a+'対'+b+'</b>（高音'+a+'・低音'+b+'）';
+    $('summary').textContent=a+'対'+b+'・1周期 '+fs(c)+'秒（'+baseTxt+' = BPM '+st.bpm+'）';
+    $('bpmUnit').textContent=st.base==='lo'?'（低音の1打の速さ）':'（高音の1打の速さ）';
+    $('polyInfo').textContent='1周期は 低音'+b+'打 ＝ 高音'+a+'打 ＝ '+fs(c)+'秒です（BPM '+st.bpm+'を'+baseTxt+'として計算）。高音は '+fs(c/a)+'秒ごと、低音は '+fs(c/b)+'秒ごとに鳴ります。'+
+      '1周期を'+L+'等分して数えると、高音は '+hp.join('・')+' 番目、低音は '+lp.join('・')+' 番目で鳴り、両方がそろうのは '+both.join('・')+' 番目です。';
+  }
+}
+
+/* ---------- state changes ---------- */
+function refresh(forceStage){
+  var np=buildPattern(),changed=!pat||np.key!==pat.key;
+  if(playing){if(changed)Core.restart(cur,ctx.currentTime+0.01);else Core.retime(cur,np,ctx.currentTime+0.005)}
+  pat=np;
+  if(changed||forceStage)renderStage();
+  syncControls();texts();save();
+}
+function syncControls(){
+  $('tabMeter').setAttribute('aria-selected',st.mode==='meter');$('tabPoly').setAttribute('aria-selected',st.mode==='poly');
+  $('panelMeter').hidden=st.mode!=='meter';$('panelPoly').hidden=st.mode!=='poly';
+  if(document.activeElement!==$('bpm'))$('bpm').value=st.bpm;
+  $('bpmRange').value=st.bpm;$('vol').value=st.vol;$('volOut').textContent=st.vol+'%';
+  if(document.activeElement!==$('groups'))$('groups').value=st.groups;
+  $('unit').value=st.unit;$('headsOnly').checked=st.headsOnly;
+  $('polyA').value=st.a;$('polyB').value=st.b;$('base').value=st.base;$('hiOn').checked=st.hiOn;$('loOn').checked=st.loOn;
+  Array.prototype.forEach.call($('presets').children,function(btn){btn.setAttribute('aria-pressed',btn.dataset.g===st.groups&&btn.dataset.u===st.unit)});
+  Array.prototype.forEach.call($('polyPresets').children,function(btn){btn.setAttribute('aria-pressed',+btn.dataset.a===st.a&&+btn.dataset.b===st.b)});
+}
+function setBpm(v,fromInput){v=Core.clampBpm(v);if(v==null)return;st.bpm=v;if(!fromInput)$('bpm').value=v;refresh()}
+
+/* ---------- controls ---------- */
+PRESETS.forEach(function(p){var b=document.createElement('button');b.type='button';b.textContent=p[0];b.dataset.g=p[1];b.dataset.u=p[2];
+  b.onclick=function(){st.groups=p[1];st.unit=p[2];$('groups').value=p[1];groupsMsg(true);refresh()};$('presets').appendChild(b)});
+POLY.forEach(function(p){var b=document.createElement('button');b.type='button';b.textContent=p[0]+'対'+p[1];b.dataset.a=p[0];b.dataset.b=p[1];
+  b.onclick=function(){st.a=p[0];st.b=p[1];refresh()};$('polyPresets').appendChild(b)});
+for(var i=2;i<=9;i++){['polyA','polyB'].forEach(function(id){var o=document.createElement('option');o.value=o.textContent=i;$(id).appendChild(o)})}
+
+$('tabMeter').onclick=function(){st.mode='meter';refresh()};
+$('tabPoly').onclick=function(){st.mode='poly';refresh()};
+$('play').onclick=toggle;
+Array.prototype.forEach.call(document.querySelectorAll('.step'),function(b){b.onclick=function(){setBpm(st.bpm+Number(b.dataset.d))}});
+$('bpm').addEventListener('input',function(){var v=Number(this.value);if(this.value!==''&&v>=Core.MIN&&v<=Core.MAX)setBpm(v,true)});
+$('bpm').addEventListener('change',function(){setBpm(Core.clampBpm(this.value)||st.bpm)});
+$('bpm').addEventListener('blur',function(){this.value=st.bpm});
+$('bpmRange').addEventListener('input',function(){setBpm(this.value)});
+$('vol').addEventListener('input',function(){st.vol=Number(this.value);setVolume();$('volOut').textContent=st.vol+'%';save()});
+function groupsMsg(ok){var m=$('groupsMsg');if(ok){m.className='muted';m.textContent='1つのまとまりは1〜16、合計32拍まで。「3 2 2」のように空白区切りでも入ります。';$('groups').removeAttribute('aria-invalid')}else{m.className='err';m.textContent='読み取れません。「3+2+2」のように、1〜16の数字を＋でつないでください（合計32拍まで）。';$('groups').setAttribute('aria-invalid','true')}}
+$('groups').addEventListener('input',function(){var g=Core.parseGroups(this.value);groupsMsg(!!g||this.value.trim()==='');if(g){st.groups=g.join('+');refresh()}});
+$('groups').addEventListener('blur',function(){this.value=st.groups;groupsMsg(true)});
+$('unit').onchange=function(){st.unit=this.value;refresh()};
+$('headsOnly').onchange=function(){st.headsOnly=this.checked;refresh(true)};
+function setPair(which,v){
+  v=Number(v);var other=which==='a'?'b':'a';
+  if(v===st[other])st[other]=st[which]; // picking the other side's number swaps them
+  st[which]=v;refresh();
+}
+$('polyA').onchange=function(){setPair('a',this.value)};
+$('polyB').onchange=function(){setPair('b',this.value)};
+$('swap').onclick=function(){var t=st.a;st.a=st.b;st.b=t;refresh()};
+$('base').onchange=function(){st.base=this.value;refresh()};
+$('hiOn').onchange=function(){st.hiOn=this.checked;refresh(true)};
+$('loOn').onchange=function(){st.loOn=this.checked;refresh(true)};
+
+var taps=[];
+function tap(){
+  Core.pushTap(taps,performance.now());
+  var v=Core.tapBpm(taps);
+  if(v){setBpm(v)}else{toast('続けてタップすると速さが入ります')}
+}
+$('tap').addEventListener('pointerdown',function(e){if(e.button===0||e.pointerType!=='mouse')tap()});
+$('tap').addEventListener('click',function(e){if(e.detail===0)tap()}); // keyboard activation
+
+function typing(t){var tag=t&&t.tagName;return tag==='TEXTAREA'||tag==='SELECT'||tag==='SUMMARY'||(t&&t.isContentEditable)||(tag==='INPUT'&&t.type!=='range')}
+document.addEventListener('keydown',function(e){
+  if(e.ctrlKey||e.metaKey||e.altKey)return;
+  if(e.key===' '||e.code==='Space'){
+    if(typing(e.target))return;
+    e.preventDefault();if(!e.repeat)toggle();
+  }else if((e.key==='t'||e.key==='T')&&!typing(e.target)&&!e.repeat){tap()}
+});
+document.addEventListener('keyup',function(e){if((e.key===' '||e.code==='Space')&&!typing(e.target))e.preventDefault()});
+
+load();refresh(true);
+})();
+</script>
+</body>
+</html>

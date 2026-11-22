@@ -1,0 +1,831 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>クロスステッチ図案作成ツール｜画像・写真から図案に変換【無料・登録不要】</title>
+<meta name="description" content="写真やイラストを選ぶだけで、クロスステッチの図案に変換します。目数と色数を決めると、記号つきの図案、色ごとの目数、14ctなどでの仕上がりサイズを表示。大きな図案もA4数枚に分けて印刷できます。画像は送信しません。">
+<link rel="canonical" href="https://sulla-bluefelix.github.io/kamimachi-tools/cross-stitch/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="クロスステッチ図案作成ツール【無料・登録不要】">
+<meta property="og:description" content="写真やイラストを、記号つきのクロスステッチ図案に変換。色ごとの目数と仕上がりサイズも表示します。">
+<meta property="og:url" content="https://sulla-bluefelix.github.io/kamimachi-tools/cross-stitch/">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"WebApplication","name":"クロスステッチ図案作成ツール","url":"https://sulla-bluefelix.github.io/kamimachi-tools/cross-stitch/","applicationCategory":"DesignApplication","operatingSystem":"Any","inLanguage":"ja","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"}},
+{"@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"DMCなど刺繍糸の色番号は出ますか？","acceptedAnswer":{"@type":"Answer","text":"出しません。画面の色と実際の糸の色の対応を正確に確かめられないためです。色の一覧の色見本とHEXを参考に、手芸店の色見本帳や手持ちの糸と見比べて、近い色を選んでください。画面の色は機種や明るさで実物と違って見えることがあります。"}},
+{"@type":"Question","name":"目数と色数はどれくらいにすればいいですか？","acceptedAnswer":{"@type":"Answer","text":"目安として、アイコンのようなイラストは横30〜60目・4〜10色、人や動物の写真は横80〜120目・12〜20色にすると形が残りやすくなります。目数が少ないと細部がつぶれ、色数が多いと糸の種類と色替えが増えます。まず少なめで作り、足りないところだけ増やすのがおすすめです。"}},
+{"@type":"Question","name":"布のカウント（ct）とは何ですか？","acceptedAnswer":{"@type":"Answer","text":"1インチ（2.54cm）あたりの目の数です。14ctなら1cmに約5.5目で、仕上がりの大きさは「目数÷カウント×2.54cm」で計算できます。28ctのリネンを2目ずつ刺す場合は、14ctと同じ大きさになります。"}},
+{"@type":"Question","name":"細かい点が散らばって刺しにくいときは？","acceptedAnswer":{"@type":"Answer","text":"「孤立した1目を減らす」をオンにすると、まわりに同じ色がない1目を、周囲で多い色に置き換えます。色数を減らす、元の画像の背景を単色にする、主役を大きくトリミングする、も効果があります。"}},
+{"@type":"Question","name":"選んだ画像はどこかに送信されますか？","acceptedAnswer":{"@type":"Answer","text":"送信されません。変換はすべてお使いのブラウザの中で行います。画像は保存もしないので、ページを閉じると消えます（目数や色数などの設定だけ、この端末に保存します）。"}},
+{"@type":"Question","name":"作った図案を配布・販売してもいいですか？","acceptedAnswer":{"@type":"Answer","text":"自分で撮った写真や自分で描いた絵から作った図案なら問題ありません。他の人が描いたイラストや写真、キャラクターなどを元にした図案を配ったり売ったりすると、著作権などの問題になることがあります。"}}
+]}]}
+</script>
+<style>
+:root{--bg:#f6f3ec;--card:#fffdf8;--ink:#1d2b30;--sub:#5b6a6c;--line:#d9d3c5;--accent:#0b6b62;--accent-ink:#fff;--warn:#a2412f;--soft:#e7efe9}
+@media (prefers-color-scheme:dark){:root{--bg:#141a1c;--card:#1d2528;--ink:#e8ece9;--sub:#9fb0ad;--line:#33403f;--accent:#3fb3a2;--accent-ink:#0d1716;--warn:#e88a73;--soft:#23312f;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 system-ui,-apple-system,"Hiragino Sans","Noto Sans JP","Yu Gothic UI",sans-serif}
+main{max-width:860px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:clamp(22px,5.4vw,30px);line-height:1.4;margin:8px 0 6px}
+.lead{color:var(--sub);margin:0 0 20px}
+h2{font-size:19px;margin:0 0 10px}
+section.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 16px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input,select{font:inherit;color:inherit;background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:9px 10px;min-width:0}
+input:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px}
+button{font:inherit;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;padding:9px 14px;cursor:pointer}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+button:disabled{opacity:.5;cursor:default}
+.muted{color:var(--sub);font-size:14px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px;max-width:calc(100% - 32px)}
+.cta{border:2px solid var(--accent);background:var(--soft)}
+.cta a.btn{display:inline-block;background:var(--accent);color:var(--accent-ink);text-decoration:none;font-weight:700;padding:10px 16px;border-radius:9px;margin-top:6px}
+details{border-top:1px solid var(--line);padding:10px 0}
+summary{cursor:pointer;font-weight:600}
+footer{color:var(--sub);font-size:13px;text-align:center;margin-top:30px}
+a{color:var(--accent)}
+ol.steps{margin:0;padding-left:1.4em}
+ol.steps li{margin:4px 0}
+
+.drop{display:flex;gap:14px;align-items:center;border:2px dashed var(--line);border-radius:12px;padding:14px;cursor:pointer;background:var(--bg)}
+.drop.over{border-color:var(--accent);background:var(--soft)}
+.drop:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+.drop img{width:76px;height:76px;object-fit:contain;border-radius:8px;background:#fff;border:1px solid var(--line);flex:none}
+.drop .t{min-width:0}
+.vh{position:absolute;width:1px;height:1px;padding:0;margin:-1px;border:0;opacity:0;overflow:hidden;clip:rect(0 0 0 0)}
+.field{margin:0 0 14px}
+.field>label,.lbl{font-weight:600;display:block;margin-bottom:2px}
+input[type=range]{flex:1 1 160px;padding:0;border:0;background:none;accent-color:var(--accent);height:32px}
+input[type=range]:focus{outline-offset:3px}
+.num{width:78px}
+.check{display:flex;gap:8px;align-items:flex-start;margin:8px 0;cursor:pointer}
+.check input{margin-top:6px;flex:none;width:18px;height:18px;accent-color:var(--accent)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg label{position:relative;display:block}
+.seg label+label{border-left:1px solid var(--line)}
+.seg input{position:absolute;opacity:0;width:1px;height:1px}
+.seg span{display:block;padding:7px 12px;font-size:14px;cursor:pointer;white-space:nowrap}
+.seg input:checked+span{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.seg input:focus-visible+span{outline:2px solid var(--ink);outline-offset:-4px}
+.toolbar{justify-content:space-between;margin-bottom:10px}
+.zoom button{min-width:44px;padding:7px 10px}
+.chartWrap{overflow:auto;max-height:72vh;border:1px solid var(--line);border-radius:10px;background:#fff;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.chartWrap canvas{display:block;touch-action:pan-x pan-y pinch-zoom}
+.info{min-height:1.7em;margin:8px 0 0}
+.info svg{width:18px;height:18px;vertical-align:-4px;border:1px solid var(--line);border-radius:3px}
+.stats{display:flex;flex-wrap:wrap;gap:6px 18px;margin:0 0 10px}
+.stats b{font-size:18px}
+.sizebox{background:var(--soft);border-radius:10px;padding:10px 12px;margin:10px 0 14px}
+.sizebox .big{font-size:20px;font-weight:700}
+table.pal{width:100%;border-collapse:collapse;font-size:15px}
+table.pal th,table.pal td{padding:5px 6px;border-bottom:1px solid var(--line);text-align:left}
+table.pal th{font-size:13px;color:var(--sub);font-weight:600}
+table.pal td.n,table.pal th.n{text-align:right;font-variant-numeric:tabular-nums}
+table.pal code{font-size:14px}
+.symbtn{padding:2px;border-radius:7px;line-height:0;background:#fff}
+.symbtn svg,.sw svg{width:26px;height:26px;display:block}
+.symbtn[aria-pressed=true]{outline:3px solid var(--accent);outline-offset:1px}
+.sw{display:inline-block;border-radius:5px;overflow:hidden;border:1px solid var(--line);line-height:0;vertical-align:middle}
+.note{border-left:3px solid var(--accent);padding:2px 0 2px 10px;margin:12px 0 0}
+#printArea{display:none}
+
+@media print{
+  @page{size:A4 portrait;margin:8mm}
+  :root{--bg:#fff;--ink:#000;--line:#999}
+  html,body{background:#fff!important;color:#000!important}
+  main,.toast{display:none!important}
+  #printArea{display:block;font:9.5pt/1.5 system-ui,-apple-system,"Hiragino Sans","Noto Sans JP","Yu Gothic UI",sans-serif;color:#000}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+#printArea .ppage{break-after:page;page-break-after:always}
+#printArea .ppage:last-child{break-after:auto;page-break-after:auto}
+#printArea h1{font-size:15pt;margin:0 0 2mm}
+#printArea .phead{display:flex;justify-content:space-between;gap:4mm;font-size:9pt;margin:0 0 1.5mm;height:5mm;align-items:baseline}
+#printArea .pnote{font-size:8pt;color:#444;margin:1mm 0 0}
+#printArea .psumrow{display:flex;gap:6mm;align-items:flex-start;margin:3mm 0}
+#printArea .pthumb{max-width:80mm;max-height:80mm;border:0.3mm solid #999;image-rendering:pixelated}
+#printArea table{border-collapse:collapse}
+#printArea .ptbl td,#printArea .ptbl th{border:0.2mm solid #999;padding:0.6mm 2mm;text-align:left}
+#printArea .ptbl td.n{text-align:right}
+#printArea .ptbl svg{width:5mm;height:5mm;display:block}
+#printArea .pmap td{border:0.3mm solid #666;width:14mm;height:8mm;text-align:center;font-size:8pt}
+#printArea h2{font-size:11pt;margin:4mm 0 1.5mm}
+</style>
+</head>
+<body>
+<main>
+<h1>画像・写真からクロスステッチ図案を作成</h1>
+<p class="lead">写真やイラストを選ぶと、<strong>記号つきのクロスステッチ図案</strong>に変換します。色ごとの目数と仕上がりサイズもわかり、A4で印刷できます。登録不要・無料。画像は送信せず、この端末の中だけで処理します。</p>
+
+<section class="card">
+<h2>1. 画像を選ぶ</h2>
+<label class="drop" id="drop" for="file">
+<img id="srcThumb" alt="元の画像">
+<span class="t"><strong>画像を選ぶ</strong>（タップ、またはここにドラッグ）<br><span class="muted">JPEG・PNG・WebPなど。貼り付け（Ctrl+V）もできます。</span></span>
+</label>
+<input type="file" id="file" accept="image/*" class="vh">
+<p class="muted" id="srcInfo" style="margin:8px 0 0">いまは見本の画像を表示しています。ご自分の画像を選ぶと置き換わります。</p>
+</section>
+
+<section class="card">
+<h2>2. 目数と色数</h2>
+<div class="field">
+<label for="wRange">横の目数（20〜150目）</label>
+<div class="row"><input type="range" id="wRange" min="20" max="150" step="1"><input type="number" class="num" id="wNum" min="20" max="150" step="1" inputmode="numeric" aria-label="横の目数（数値で入力）"><span>目</span></div>
+<p class="muted" id="hNote" style="margin:2px 0 0"></p>
+</div>
+<div class="field">
+<label for="kRange">色数（2〜24色）</label>
+<div class="row"><input type="range" id="kRange" min="2" max="24" step="1"><input type="number" class="num" id="kNum" min="2" max="24" step="1" inputmode="numeric" aria-label="色数（数値で入力）"><span>色</span></div>
+<p class="muted" style="margin:2px 0 0">見た目の近さ（Lab色空間）で色をまとめます。実際に使われた色が指定より少なくなることがあります。</p>
+</div>
+<label class="check"><input type="checkbox" id="optBg"><span>背景を刺さない<br><span class="muted">画像のふちとつながっている背景色のマスを「刺さない」にします。</span></span></label>
+<label class="check"><input type="checkbox" id="optClean"><span>孤立した1目を減らす<br><span class="muted">まわりに同じ色がない1目を、周囲で多い色に置き換えます。写真で細かい点が多いときに。</span></span></label>
+</section>
+
+<section class="card">
+<h2>3. 図案</h2>
+<div class="row toolbar">
+<div class="seg" role="radiogroup" aria-label="図案の表示">
+<label><input type="radio" name="view" value="both"><span>カラー＋記号</span></label><label><input type="radio" name="view" value="color"><span>カラー</span></label><label><input type="radio" name="view" value="bw"><span>白黒記号</span></label>
+</div>
+<div class="row zoom">
+<button type="button" id="zoomOut" aria-label="縮小">−</button>
+<button type="button" id="zoomIn" aria-label="拡大">＋</button>
+<button type="button" id="zoomFit">全体</button>
+</div>
+</div>
+<div class="chartWrap" id="chartWrap"><canvas id="chart" role="img" aria-label="クロスステッチ図案"></canvas></div>
+<p class="muted" id="symHint" style="margin:8px 0 0" hidden>この大きさでは記号を省いています。「＋」で拡大すると記号が出ます。</p>
+<p class="muted info" id="cellInfo" aria-live="polite">マスをタップすると、位置と色が出ます。</p>
+<p class="muted" style="margin:2px 0 0">太線は10目ごと、赤い線と三角は図案の中心です。白いマスは刺しません。</p>
+</section>
+
+<section class="card">
+<h2>4. 色の一覧と仕上がりサイズ</h2>
+<div class="stats" id="stats"></div>
+<div class="row">
+<label for="ct" class="lbl" style="margin:0">布の目の細かさ</label>
+<select id="ct">
+<option value="11">11ct（1cmに約4.3目）</option>
+<option value="14">14ct（1cmに約5.5目）</option>
+<option value="16">16ct（1cmに約6.3目）</option>
+<option value="18">18ct（1cmに約7.1目）</option>
+</select>
+</div>
+<div class="sizebox" id="sizeBox"></div>
+<p class="muted" style="margin:0 0 6px">記号を押すと、その色のマスだけを強調します。</p>
+<table class="pal"><thead><tr><th>記号</th><th>色見本</th><th>HEX</th><th class="n">目数</th></tr></thead><tbody id="palBody"></tbody></table>
+<p class="note muted">刺繍糸メーカーの色番号（DMCなど）は載せていません。近い色の糸は、色見本を見て選んでください。画面の色は、機種や明るさによって実物と違って見えることがあります。</p>
+</section>
+
+<section class="card">
+<h2>5. 印刷・保存</h2>
+<div class="row" style="margin-bottom:8px">
+<label for="pCell" class="lbl" style="margin:0">印刷のマス</label>
+<select id="pCell">
+<option value="2.5">2.5mm（枚数を少なく）</option>
+<option value="3">3mm（標準）</option>
+<option value="4">4mm（大きめ）</option>
+<option value="5">5mm（とても大きく）</option>
+</select>
+<label for="pMode" class="lbl" style="margin:0 0 0 6px">印刷の色</label>
+<select id="pMode">
+<option value="both">カラー＋記号</option>
+<option value="bw">白黒記号</option>
+</select>
+</div>
+<p id="pInfo" style="margin:0 0 10px"></p>
+<div class="row">
+<button class="primary" type="button" id="printBtn">印刷する（PDF保存もできます）</button>
+<button type="button" id="pngBtn">図案を画像で保存（PNG）</button>
+</div>
+<p class="muted" style="margin:8px 0 0">1枚目は色の一覧と仕上がりサイズ、2枚目からが図案です。ページの境目は2目ずつ重ねて印刷するので、貼り合わせても数え間違えにくくなります。印刷の設定で「倍率100%」「用紙A4」にしてください。</p>
+</section>
+
+<section class="card">
+<h2>使い方</h2>
+<ol class="steps">
+<li>画像を選びます。写真、イラスト、手描きの絵をスマホで撮ったものでも使えます。</li>
+<li>横の目数と色数を決めます。目数を増やすほど細かく、色数を増やすほど元の画像に近くなります。</li>
+<li>図案を拡大して確かめ、必要なら「背景を刺さない」「孤立した1目を減らす」を選びます。</li>
+<li>布の目の細かさを選んで仕上がりサイズを確かめ、印刷します。印刷画面でPDFとして保存もできます。</li>
+</ol>
+<p class="muted" style="margin:10px 0 0">コツ：主役を大きくトリミングして背景をすっきりさせると、少ない目数でも形が残ります。顔の目や口など小さな部分は、刺す前に図案の上で確かめておくと安心です。</p>
+</section>
+
+<section class="card cta">
+<h2>すぐ刺せる図案がほしいときは</h2>
+<p style="margin:0 0 6px">喫茶道具とコーヒーの苗を描いた<strong>オリジナル図案6柄</strong>（朝のカップ、細口のポット、手回しミル、八角のモカポット、窓辺のドリッパー、コーヒーの苗）を、<strong>カラー図案と白黒記号版のA4 PDF</strong>にまとめています。1マス1目のフルクロスステッチで、色別の目数と14ct・16ctでの仕上がり目安つきです。</p>
+<a class="btn" href="https://kamimachi-press.booth.pm/items/9190289" rel="noopener">一針喫茶を見る（BOOTH・600円）</a>
+<p class="muted" style="margin:8px 0 0">無料見本（「朝のカップ」1柄・A4 PDF 2ページ）もダウンロードできます。</p>
+</section>
+
+<section class="card">
+<h2>よくある質問</h2>
+<details><summary>DMCなど刺繍糸の色番号は出ますか？</summary><p>出しません。画面の色と実際の糸の色の対応を正確に確かめられないためです。色の一覧の色見本とHEXを参考に、手芸店の色見本帳や手持ちの糸と見比べて、近い色を選んでください。画面の色は機種や明るさで実物と違って見えることがあります。</p></details>
+<details><summary>目数と色数はどれくらいにすればいいですか？</summary><p>目安として、アイコンのようなイラストは横30〜60目・4〜10色、人や動物の写真は横80〜120目・12〜20色にすると形が残りやすくなります。目数が少ないと細部がつぶれ、色数が多いと糸の種類と色替えが増えます。まず少なめで作り、足りないところだけ増やすのがおすすめです。</p></details>
+<details><summary>布のカウント（ct）とは何ですか？</summary><p>1インチ（2.54cm）あたりの目の数です。14ctなら1cmに約5.5目で、仕上がりの大きさは「目数÷カウント×2.54cm」で計算できます。28ctのリネンを2目ずつ刺す場合は、14ctと同じ大きさになります。</p></details>
+<details><summary>細かい点が散らばって刺しにくいときは？</summary><p>「孤立した1目を減らす」をオンにすると、まわりに同じ色がない1目を、周囲で多い色に置き換えます。色数を減らす、元の画像の背景を単色にする、主役を大きくトリミングする、も効果があります。</p></details>
+<details><summary>選んだ画像はどこかに送信されますか？</summary><p>送信されません。変換はすべてお使いのブラウザの中で行います。画像は保存もしないので、ページを閉じると消えます（目数や色数などの設定だけ、この端末に保存します）。</p></details>
+<details><summary>作った図案を配布・販売してもいいですか？</summary><p>自分で撮った写真や自分で描いた絵から作った図案なら問題ありません。他の人が描いたイラストや写真、キャラクターなどを元にした図案を配ったり売ったりすると、著作権などの問題になることがあります。</p></details>
+</section>
+
+<footer>紙町活版所 ・ <a href="../">ほかの無料ツール</a></footer>
+</main>
+<div id="printArea"></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/*CORE-START*/
+var Core=(function(){
+  var LUT=new Float64Array(256);
+  for(var i=0;i<256;i++){var c=i/255;LUT[i]=c<=0.04045?c/12.92:Math.pow((c+0.055)/1.055,2.4)}
+  function toSrgb8(v){v=v<=0?0:v>=1?1:v;v=v<=0.0031308?12.92*v:1.055*Math.pow(v,1/2.4)-0.055;v=Math.round(v*255);return v<0?0:v>255?255:v}
+  var E=216/24389,K=24389/27;
+  function f(t){return t>E?Math.cbrt(t):(K*t+16)/116}
+  function linToLab(r,g,b,out,o){
+    var x=(0.4124564*r+0.3575761*g+0.1804375*b)/0.95047,
+        y=0.2126729*r+0.7151522*g+0.0721750*b,
+        z=(0.0193339*r+0.1191920*g+0.9503041*b)/1.08883;
+    var fx=f(x),fy=f(y),fz=f(z);
+    out[o]=116*fy-16;out[o+1]=500*(fx-fy);out[o+2]=200*(fy-fz);
+  }
+  function rgbToLab(r,g,b){var o=[0,0,0];linToLab(LUT[r],LUT[g],LUT[b],o,0);return o}
+  function labToRgb(L,a,b){
+    var fy=(L+16)/116,fx=fy+a/500,fz=fy-b/200,fx3=fx*fx*fx,fz3=fz*fz*fz;
+    var x=(fx3>E?fx3:(116*fx-16)/K)*0.95047,y=L>8?fy*fy*fy:L/K,z=(fz3>E?fz3:(116*fz-16)/K)*1.08883;
+    return [toSrgb8(3.2404542*x-1.5371385*y-0.4985314*z),toSrgb8(-0.9692660*x+1.8760108*y+0.0415560*z),toSrgb8(0.0556434*x-0.2040259*y+1.0572252*z)];
+  }
+  function hex(rgb){return '#'+rgb.map(function(v){return (v<16?'0':'')+v.toString(16)}).join('').toUpperCase()}
+
+  // Box-average an RGBA image (sw x sh) down/up to W x H cells, in linear light, weighted by alpha.
+  function resample(px,sw,sh,W,H){
+    var n=W*H,rgb=new Uint8Array(n*3),alpha=new Float32Array(n),xs=new Int32Array(W+1),ys=new Int32Array(H+1),i;
+    for(i=0;i<=W;i++)xs[i]=Math.floor(i*sw/W);
+    for(i=0;i<=H;i++)ys[i]=Math.floor(i*sh/H);
+    for(var cy=0;cy<H;cy++){
+      var y0=ys[cy],y1=Math.max(y0+1,ys[cy+1]);
+      for(var cx=0;cx<W;cx++){
+        var x0=xs[cx],x1=Math.max(x0+1,xs[cx+1]),sr=0,sg=0,sb=0,sa=0,cnt=0;
+        for(var y=y0;y<y1;y++){
+          var p=(y*sw+x0)*4;
+          for(var x=x0;x<x1;x++,p+=4){var a=px[p+3]/255;sr+=LUT[px[p]]*a;sg+=LUT[px[p+1]]*a;sb+=LUT[px[p+2]]*a;sa+=a;cnt++}
+        }
+        var o=cy*W+cx;alpha[o]=sa/cnt;
+        if(sa>0){rgb[o*3]=toSrgb8(sr/sa);rgb[o*3+1]=toSrgb8(sg/sa);rgb[o*3+2]=toSrgb8(sb/sa)}
+        else{rgb[o*3]=rgb[o*3+1]=rgb[o*3+2]=255}
+      }
+    }
+    return {W:W,H:H,rgb:rgb,alpha:alpha};
+  }
+
+  function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;var t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+
+  // Weighted k-means in Lab with k-means++ seeding.
+  function kmeans(lab,w,m,k,rand){
+    var C=new Float64Array(k*3),D=new Float64Array(m),tmp=new Float64Array(m),lbl=new Int32Array(m),i,j,tot=0;
+    function pick(wt,total){var r=rand()*total;for(var i=0;i<m;i++){r-=wt[i];if(r<0)return i}return m-1}
+    function setC(j,p){C[j*3]=lab[p*3];C[j*3+1]=lab[p*3+1];C[j*3+2]=lab[p*3+2]}
+    for(i=0;i<m;i++)tot+=w[i];
+    setC(0,pick(w,tot));
+    for(i=0;i<m;i++){var dl=lab[i*3]-C[0],da=lab[i*3+1]-C[1],db=lab[i*3+2]-C[2];D[i]=dl*dl+da*da+db*db}
+    var nc=1;
+    for(;nc<k;nc++){
+      var s=0;for(i=0;i<m;i++){tmp[i]=w[i]*D[i];s+=tmp[i]}
+      if(!(s>0))break;
+      var p=pick(tmp,s);setC(nc,p);
+      for(i=0;i<m;i++){dl=lab[i*3]-C[nc*3];da=lab[i*3+1]-C[nc*3+1];db=lab[i*3+2]-C[nc*3+2];var d=dl*dl+da*da+db*db;if(d<D[i])D[i]=d}
+    }
+    k=nc;
+    var sum=new Float64Array(k*3),cw=new Float64Array(k);
+    function assign(){
+      var changed=0;sum.fill(0);cw.fill(0);
+      for(var i=0;i<m;i++){
+        var o=i*3,best=0,bd=Infinity;
+        for(var j=0;j<k;j++){var dl=lab[o]-C[j*3],da=lab[o+1]-C[j*3+1],db=lab[o+2]-C[j*3+2],d=dl*dl+da*da+db*db;if(d<bd){bd=d;best=j}}
+        if(lbl[i]!==best){lbl[i]=best;changed++}
+        D[i]=bd;var wi=w[i];sum[best*3]+=lab[o]*wi;sum[best*3+1]+=lab[o+1]*wi;sum[best*3+2]+=lab[o+2]*wi;cw[best]+=wi;
+      }
+      return changed;
+    }
+    lbl.fill(-1);
+    for(var it=0;it<40;it++){
+      var ch=assign();
+      if(it>0&&ch<=m*0.0005)break;
+      for(j=0;j<k;j++){
+        if(cw[j]>0){C[j*3]=sum[j*3]/cw[j];C[j*3+1]=sum[j*3+1]/cw[j];C[j*3+2]=sum[j*3+2]/cw[j]}
+        else{var far=0,fd=-1;for(i=0;i<m;i++){var v=D[i]*w[i];if(v>fd){fd=v;far=i}}setC(j,far);D[far]=0}
+      }
+    }
+    assign();
+    var centers=[];
+    for(j=0;j<k;j++)centers.push(cw[j]>0?[sum[j*3]/cw[j],sum[j*3+1]/cw[j],sum[j*3+2]/cw[j]]:null);
+    return {centers:centers,labels:lbl};
+  }
+
+  // Reduce the cells to at most k colors. idx[i] = palette index, or -1 (not stitched: transparent).
+  function quantize(img,k,seed){
+    var n=img.W*img.H,rgb=img.rgb,alpha=img.alpha,map=new Map(),keys=[],wts=[],cellU=new Int32Array(n),i,u;
+    for(i=0;i<n;i++){
+      if(alpha[i]<0.5){cellU[i]=-1;continue}
+      var key=(rgb[i*3]<<16)|(rgb[i*3+1]<<8)|rgb[i*3+2];
+      u=map.get(key);
+      if(u===undefined){u=keys.length;map.set(key,u);keys.push(key);wts.push(0)}
+      wts[u]++;cellU[i]=u;
+    }
+    var m=keys.length,lab=new Float64Array(m*3),pal=[],labels;
+    for(u=0;u<m;u++){var kk=keys[u];linToLab(LUT[kk>>16&255],LUT[kk>>8&255],LUT[kk&255],lab,u*3)}
+    if(m<=k){
+      labels=new Int32Array(m);
+      for(u=0;u<m;u++){labels[u]=u;var q=keys[u];pal.push({rgb:[q>>16&255,q>>8&255,q&255]})}
+    }else{
+      // Train on colour bins (5 bits per channel, 4 if still many) to keep it fast, then assign the exact colours.
+      var bins=null;
+      for(var bits=5;bits>=4;bits--){
+        var sh=8-bits,bmap=new Map(),bl=[],bw=[],bOf=new Int32Array(m);
+        for(u=0;u<m;u++){
+          var q0=keys[u],bk=((q0>>16&255)>>sh)<<(2*bits)|((q0>>8&255)>>sh)<<bits|((q0&255)>>sh),bi=bmap.get(bk);
+          if(bi===undefined){bi=bw.length;bmap.set(bk,bi);bw.push(0);bl.push(0,0,0)}
+          var wu=wts[u];bw[bi]+=wu;bl[bi*3]+=lab[u*3]*wu;bl[bi*3+1]+=lab[u*3+1]*wu;bl[bi*3+2]+=lab[u*3+2]*wu;bOf[u]=bi;
+        }
+        bins={lab:Float64Array.from(bl),w:Float64Array.from(bw),n:bw.length};
+        if(bins.n<=12000)break;
+      }
+      for(var b=0;b<bins.n;b++){bins.lab[b*3]/=bins.w[b];bins.lab[b*3+1]/=bins.w[b];bins.lab[b*3+2]/=bins.w[b]}
+      var cs=kmeans(bins.lab,bins.w,bins.n,k,rng(seed||7)).centers.filter(Boolean),nc=cs.length;
+      // final step on the exact colours: nearest centre, then weighted mean
+      labels=new Int32Array(m);var acc=new Float64Array(nc*4);
+      for(u=0;u<m;u++){
+        var best=0,bd=Infinity;
+        for(var j=0;j<nc;j++){var dl=lab[u*3]-cs[j][0],da=lab[u*3+1]-cs[j][1],db=lab[u*3+2]-cs[j][2],d=dl*dl+da*da+db*db;if(d<bd){bd=d;best=j}}
+        labels[u]=best;acc[best*4]+=lab[u*3]*wts[u];acc[best*4+1]+=lab[u*3+1]*wts[u];acc[best*4+2]+=lab[u*3+2]*wts[u];acc[best*4+3]+=wts[u];
+      }
+      for(j=0;j<nc;j++){var aw=acc[j*4+3];pal.push({rgb:aw>0?labToRgb(acc[j*4]/aw,acc[j*4+1]/aw,acc[j*4+2]/aw):[255,255,255]})}
+    }
+    pal.forEach(function(p){p.lab=rgbToLab(p.rgb[0],p.rgb[1],p.rgb[2])});
+    var idx=new Int16Array(n);
+    for(i=0;i<n;i++)idx[i]=cellU[i]<0?-1:labels[cellU[i]];
+    return {W:img.W,H:img.H,idx:idx,pal:pal};
+  }
+
+  function dist2(a,b){var x=a[0]-b[0],y=a[1]-b[1],z=a[2]-b[2];return x*x+y*y+z*z}
+
+  // Replace stitches that share their color with none of their 8 neighbours.
+  function removeIsolated(md){
+    var W=md.W,H=md.H,src=md.idx,out=new Int16Array(src),P=md.pal.length,tally=new Int32Array(P),changed=0;
+    for(var y=0;y<H;y++)for(var x=0;x<W;x++){
+      var i=y*W+x,v=src[i];if(v<0)continue;
+      var same=false,any=false;tally.fill(0);
+      for(var dy=-1;dy<=1&&!same;dy++)for(var dx=-1;dx<=1;dx++){
+        if(!dx&&!dy)continue;var yy=y+dy,xx=x+dx;if(yy<0||yy>=H||xx<0||xx>=W)continue;
+        var u=src[yy*W+xx];if(u===v){same=true;break}if(u>=0){tally[u]++;any=true}
+      }
+      if(same||!any)continue;
+      var best=-1,bc=0,bd=Infinity;
+      for(var p=0;p<P;p++){if(!tally[p])continue;var d=dist2(md.pal[p].lab,md.pal[v].lab);if(tally[p]>bc||(tally[p]===bc&&d<bd)){best=p;bc=tally[p];bd=d}}
+      out[i]=best;changed++;
+    }
+    md.idx=out;return changed;
+  }
+
+  // Unstitch the most common border color, flood-filled (4-neighbour) from the border.
+  function removeBackground(md){
+    var W=md.W,H=md.H,idx=md.idx,cnt=new Int32Array(md.pal.length),border=[],i,x,y;
+    for(x=0;x<W;x++){border.push(x);if(H>1)border.push((H-1)*W+x)}
+    for(y=1;y<H-1;y++){border.push(y*W);if(W>1)border.push(y*W+W-1)}
+    border.forEach(function(i){if(idx[i]>=0)cnt[idx[i]]++});
+    var bg=-1,bc=0;for(i=0;i<cnt.length;i++)if(cnt[i]>bc){bc=cnt[i];bg=i}
+    if(bg<0)return -1;
+    var st=[];
+    border.forEach(function(i){if(idx[i]===bg){idx[i]=-1;st.push(i)}});
+    while(st.length){
+      var c=st.pop();x=c%W;y=(c-x)/W;
+      if(x>0&&idx[c-1]===bg){idx[c-1]=-1;st.push(c-1)}
+      if(x<W-1&&idx[c+1]===bg){idx[c+1]=-1;st.push(c+1)}
+      if(y>0&&idx[c-W]===bg){idx[c-W]=-1;st.push(c-W)}
+      if(y<H-1&&idx[c+W]===bg){idx[c+W]=-1;st.push(c+W)}
+    }
+    return bg;
+  }
+
+  // Drop unused colors, merge identical hex, sort by stitch count (desc), add count/hex/fg.
+  function compact(md){
+    var idx=md.idx,P=md.pal.length,cnt=new Array(P).fill(0),i;
+    for(i=0;i<idx.length;i++)if(idx[i]>=0)cnt[idx[i]]++;
+    var byHex={},merged=[],remap=new Int32Array(P).fill(-1);
+    for(var p=0;p<P;p++){
+      if(!cnt[p])continue;var h=hex(md.pal[p].rgb);
+      if(byHex[h]===undefined){byHex[h]=merged.length;merged.push({rgb:md.pal[p].rgb,lab:md.pal[p].lab,hex:h,count:0})}
+      remap[p]=byHex[h];merged[byHex[h]].count+=cnt[p];
+    }
+    var order=merged.map(function(_,j){return j}).sort(function(a,b){return merged[b].count-merged[a].count||merged[a].lab[0]-merged[b].lab[0]});
+    var rank=new Int32Array(merged.length);order.forEach(function(j,r){rank[j]=r});
+    for(i=0;i<idx.length;i++)if(idx[i]>=0)idx[i]=rank[remap[idx[i]]];
+    md.pal=order.map(function(j){var c=merged[j];c.fg=c.lab[0]>56?'#000':'#fff';return c});
+    return md;
+  }
+
+  function build(img,o){
+    var md=quantize(img,o.k,o.seed);
+    if(o.clean)removeIsolated(md);
+    if(o.bg)removeBackground(md);
+    compact(md);
+    var W=md.W,H=md.H,st=0,x0=W,y0=H,x1=-1,y1=-1;
+    for(var y=0;y<H;y++)for(var x=0;x<W;x++)if(md.idx[y*W+x]>=0){st++;if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}
+    md.stitched=st;md.bbox=st?{x0:x0,y0:y0,w:x1-x0+1,h:y1-y0+1}:null;
+    return md;
+  }
+
+  // Split [0,total) into nearly equal segments of at most `per`, consecutive ones overlapping by `ov`.
+  function splitAxis(total,per,ov){
+    if(total<=per)return [[0,total]];
+    if(ov>=per)ov=0;
+    var n=Math.ceil((total-ov)/(per-ov)),size=Math.ceil((total+(n-1)*ov)/n),res=[];
+    for(var i=0;i<n;i++){var s=i*(size-ov);res.push([s,Math.min(total,s+size)])}
+    return res;
+  }
+  function planPages(W,H,pc,pr,ov){
+    var cs=splitAxis(W,pc,ov),rs=splitAxis(H,pr,ov),pages=[];
+    rs.forEach(function(r,ri){cs.forEach(function(c,ci){pages.push({c0:c[0],c1:c[1],r0:r[0],r1:r[1],row:ri,col:ci})})});
+    return {pages:pages,cols:cs.length,rows:rs.length};
+  }
+  // A4 portrait, 8mm margins: 194 x 281mm. Labels take 9mm left + 3.5mm right, header + labels ~23mm.
+  function perPage(cell){return {pc:Math.floor(181.5/cell),pr:Math.floor(256/cell)}}
+  function finished(st,ct){return st/ct*2.54}
+
+  return {resample:resample,quantize:quantize,kmeans:kmeans,removeIsolated:removeIsolated,removeBackground:removeBackground,compact:compact,build:build,splitAxis:splitAxis,planPages:planPages,perPage:perPage,finished:finished,rgbToLab:rgbToLab,labToRgb:labToRgb,hex:hex};
+})();
+/*CORE-END*/
+
+(function(){
+var KEY='kamimachi-cross-stitch-v1',OV=2;
+var $=function(id){return document.getElementById(id)};
+var S={w:50,k:8,bg:false,clean:false,view:'both',ct:14,pcell:3,pmode:'both'};
+try{var saved=JSON.parse(localStorage.getItem(KEY)||'null');if(saved&&typeof saved==='object')for(var k in S)if(k in saved&&typeof saved[k]===typeof S[k])S[k]=saved[k]}catch(e){}
+S.w=clampInt(S.w,20,150,50);S.k=clampInt(S.k,2,24,8);
+if(['both','color','bw'].indexOf(S.view)<0)S.view='both';
+if([11,14,16,18].indexOf(S.ct)<0)S.ct=14;
+if([2.5,3,4,5].indexOf(S.pcell)<0)S.pcell=3;
+if(['both','bw'].indexOf(S.pmode)<0)S.pmode='both';
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function clampInt(v,a,b,d){v=Math.round(Number(v));return isFinite(v)?Math.min(b,Math.max(a,v)):d}
+function fmt(n){return n.toLocaleString('ja-JP')}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function toast(msg){var t=$('toast');t.textContent=msg;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){t.hidden=true},2600)}
+
+// ---- symbols (10x10 box): 'f' = filled path, 's' = stroked path ----
+function starPath(){var p=[];for(var i=0;i<10;i++){var r=i%2?1.75:4.2,a=-Math.PI/2+i*Math.PI/5;p.push((5+r*Math.cos(a)).toFixed(2)+' '+(5.5+r*Math.sin(a)).toFixed(2))}return 'M'+p.join('L')+'z'}
+var CIRC='M2 5a3 3 0 1 0 6 0a3 3 0 1 0-6 0z',SQ='M2.3 2.3h5.4v5.4h-5.4z';
+var SYM=[
+ [['s','M2.3 2.3L7.7 7.7M7.7 2.3L2.3 7.7']],
+ [['s',CIRC]],
+ [['s','M5 2.1L8.4 8H1.6z']],
+ [['s',SQ]],
+ [['s','M5 1.6V8.4M1.6 5H8.4']],
+ [['s','M5 1.7L8.3 5L5 8.3L1.7 5z']],
+ [['f','M1.8 5a3.2 3.2 0 1 0 6.4 0a3.2 3.2 0 1 0-6.4 0z']],
+ [['f','M2 2h6v6h-6z']],
+ [['f','M5 1.3L8.9 8.4H1.1z']],
+ [['s','M2.2 7.8L7.8 2.2']],
+ [['s','M1.9 3.5H8.1M1.9 6.5H8.1']],
+ [['f','M5 1L9 5L5 9L1 5z']],
+ [['s','M1.6 2H8.4L5 7.9z']],
+ [['f','M1.1 1.6H8.9L5 8.7z']],
+ [['f',starPath()]],
+ [['f','M5 2a3 3 0 0 0 0 6z'],['s',CIRC]],
+ [['s',CIRC+'M5 2V8M2 5H8']],
+ [['s',SQ+'M2.3 2.3L7.7 7.7M7.7 2.3L2.3 7.7']],
+ [['s',SQ],['f','M3.9 3.9h2.2v2.2h-2.2z']],
+ [['f','M5 8.7C2.2 6.7 1.2 5.3 1.2 3.8C1.2 2.5 2.2 1.6 3.3 1.6C4.1 1.6 4.7 2.1 5 2.7C5.3 2.1 5.9 1.6 6.7 1.6C7.8 1.6 8.8 2.5 8.8 3.8C8.8 5.3 7.8 6.7 5 8.7z']],
+ [['s','M2 2.3H8M5 2.3V8.2']],
+ [['s','M2.3 2.3H7.7L2.3 7.7H7.7']],
+ [['s','M3.5 1.8V8.2M6.5 1.8V8.2']],
+ [['f','M1.8 1.8V8.2H8.2z']]
+];
+var SW=1.15;
+var SYMP=SYM.map(function(parts){return parts.map(function(p){return {t:p[0],path:new Path2D(p[1])}})});
+function symParts(i,color){return SYM[i].map(function(p){return p[0]==='f'?'<path d="'+p[1]+'" fill="'+color+'"/>':'<path d="'+p[1]+'" fill="none" stroke="'+color+'" stroke-width="'+SW+'" stroke-linecap="round" stroke-linejoin="round"/>'}).join('')}
+function symSvg(i,fg,bg){return '<svg viewBox="0 0 10 10" aria-hidden="true" focusable="false"><rect width="10" height="10" fill="'+bg+'"/>'+symParts(i,fg)+'</svg>'}
+
+// ---- state ----
+var base=null,model=null,lists=null,zoom=0,hl=-1,thumbUrl=null,printDirty=true,lastCell=8;
+
+function setControls(){
+  $('wRange').value=$('wNum').value=S.w;$('kRange').value=$('kNum').value=S.k;
+  $('optBg').checked=S.bg;$('optClean').checked=S.clean;$('ct').value=String(S.ct);
+  $('pCell').value=String(S.pcell);$('pMode').value=S.pmode;
+  document.querySelectorAll('input[name=view]').forEach(function(r){r.checked=r.value===S.view});
+}
+
+function setImage(src,iw,ih){
+  var sc=Math.min(1,1200/Math.max(iw,ih)),sw=Math.max(1,Math.round(iw*sc)),sh=Math.max(1,Math.round(ih*sc));
+  var c=document.createElement('canvas');c.width=sw;c.height=sh;
+  var g=c.getContext('2d');g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';g.drawImage(src,0,0,sw,sh);
+  base={px:g.getImageData(0,0,sw,sh).data,sw:sw,sh:sh};
+  zoom=0;hl=-1;run();
+}
+
+function sampleCanvas(){
+  var c=document.createElement('canvas');c.width=c.height=360;var g=c.getContext('2d');
+  g.fillStyle='#f3ead8';g.fillRect(0,0,360,360);
+  g.strokeStyle='#b9ae9f';g.lineWidth=13;g.lineCap='round';
+  [130,175,220].forEach(function(x,i){g.beginPath();g.moveTo(x,118);g.bezierCurveTo(x-22,96,x+22,74,x+(i===1?-4:4),44);g.stroke()});
+  g.fillStyle='#c48a58';g.beginPath();g.ellipse(176,300,148,28,0,0,Math.PI*2);g.fill();
+  g.strokeStyle='#2c7a84';g.lineWidth=22;g.beginPath();g.arc(266,206,38,-Math.PI/2.1,Math.PI/2.1);g.stroke();
+  g.fillStyle='#2c7a84';g.beginPath();g.moveTo(76,138);g.lineTo(272,138);g.lineTo(262,256);g.quadraticCurveTo(258,296,214,296);g.lineTo(134,296);g.quadraticCurveTo(90,296,86,256);g.closePath();g.fill();
+  g.fillStyle='#5a3a26';g.beginPath();g.ellipse(174,140,96,15,0,0,Math.PI*2);g.fill();
+  g.fillStyle='#f6f1e6';g.beginPath();g.moveTo(174,252);g.bezierCurveTo(126,222,130,180,156,182);g.bezierCurveTo(166,182,172,190,174,198);g.bezierCurveTo(176,190,182,182,192,182);g.bezierCurveTo(218,180,222,222,174,252);g.fill();
+  g.fillStyle='#e0b94a';g.beginPath();g.arc(300,62,26,0,Math.PI*2);g.fill();
+  return c;
+}
+
+function run(){
+  if(!base)return;
+  var W=S.w,H=Math.max(1,Math.round(W*base.sh/base.sw)),note='';
+  if(H>300){H=300;W=Math.max(1,Math.round(300*base.sw/base.sh));note='縦に長い画像のため、横を'+W+'目にしています。'}
+  var img=Core.resample(base.px,base.sw,base.sh,W,H);
+  model=Core.build(img,{k:S.k,bg:S.bg,clean:S.clean,seed:7});
+  lists=model.pal.map(function(){return []});
+  for(var i=0;i<model.idx.length;i++)if(model.idx[i]>=0)lists[model.idx[i]].push(i);
+  if(hl>=model.pal.length)hl=-1;
+  $('hNote').textContent='縦は画像の比率から自動で '+H+' 目になります（図案 '+W+'×'+H+'目）。'+note;
+  printDirty=true;
+  draw();renderPalette();renderSize();renderPrintInfo();
+}
+
+// ---- chart drawing ----
+var ML=38,MT=28,MR=14,MB=14;
+function fitCell(){
+  if(!model)return 8;
+  var avail=$('chartWrap').clientWidth-ML-MR-2;
+  return Math.max(2,Math.min(32,Math.floor(avail/model.W)));
+}
+function curCell(){return zoom||fitCell()}
+
+function drawChart(cv,md,cell,view,hi,dpr){
+  var W=md.W,H=md.H,cw=ML+W*cell+MR,ch=MT+H*cell+MB,i,x,y,p;
+  cv.width=Math.round(cw*dpr);cv.height=Math.round(ch*dpr);
+  cv.style.width=cw+'px';cv.style.height=ch+'px';
+  var g=cv.getContext('2d'),X=new Float64Array(W+1),Y=new Float64Array(H+1);
+  for(i=0;i<=W;i++)X[i]=Math.round((ML+i*cell)*dpr);
+  for(i=0;i<=H;i++)Y[i]=Math.round((MT+i*cell)*dpr);
+  g.setTransform(1,0,0,1,0,0);g.fillStyle='#fff';g.fillRect(0,0,cv.width,cv.height);
+  var showColor=view!=='bw',showSym=view!=='color'&&cell>=6,ls=lists||[];
+  if(!lists||md!==model){ls=md.pal.map(function(){return []});for(i=0;i<md.idx.length;i++)if(md.idx[i]>=0)ls[md.idx[i]].push(i)}
+  if(showColor)for(p=0;p<md.pal.length;p++){g.fillStyle=md.pal[p].hex;ls[p].forEach(function(c){var x=c%W,y=(c-x)/W;g.fillRect(X[x],Y[y],X[x+1]-X[x],Y[y+1]-Y[y])})}
+  if(hi>=0&&showColor){g.fillStyle='rgba(255,255,255,.82)';for(p=0;p<md.pal.length;p++){if(p===hi)continue;ls[p].forEach(function(c){var x=c%W,y=(c-x)/W;g.fillRect(X[x],Y[y],X[x+1]-X[x],Y[y+1]-Y[y])})}}
+  if(showSym){
+    var sp=Math.max(4,Math.round(cell*dpr));
+    for(p=0;p<md.pal.length;p++){
+      var col=hi>=0&&p!==hi?'#c4c4c4':(showColor?md.pal[p].fg:'#111');
+      var s=document.createElement('canvas');s.width=s.height=sp;var sg=s.getContext('2d'),k=sp/10;
+      sg.setTransform(k,0,0,k,0,0);sg.fillStyle=sg.strokeStyle=col;sg.lineWidth=SW;sg.lineCap='round';sg.lineJoin='round';
+      SYMP[p%SYMP.length].forEach(function(q){if(q.t==='f')sg.fill(q.path);else sg.stroke(q.path)});
+      ls[p].forEach(function(c){var x=c%W,y=(c-x)/W;g.drawImage(s,X[x],Y[y],X[x+1]-X[x],Y[y+1]-Y[y])});
+    }
+  }
+  if(cell>=4){
+    g.strokeStyle='rgba(0,0,0,.24)';g.lineWidth=1;g.beginPath();
+    for(x=1;x<W;x++)if(x%10){g.moveTo(X[x]+.5,Y[0]);g.lineTo(X[x]+.5,Y[H])}
+    for(y=1;y<H;y++)if(y%10){g.moveTo(X[0],Y[y]+.5);g.lineTo(X[W],Y[y]+.5)}
+    g.stroke();
+  }
+  var lw=Math.max(1,Math.round(1.5*dpr)),off=lw%2?.5:0;
+  g.strokeStyle='rgba(0,0,0,.85)';g.lineWidth=lw;g.beginPath();
+  for(x=0;x<=W;x++)if(x%10===0||x===W){g.moveTo(X[x]+off,Y[0]);g.lineTo(X[x]+off,Y[H])}
+  for(y=0;y<=H;y++)if(y%10===0||y===H){g.moveTo(X[0],Y[y]+off);g.lineTo(X[W],Y[y]+off)}
+  g.stroke();
+  // center lines
+  var cx=(ML+W/2*cell)*dpr,cy=(MT+H/2*cell)*dpr;
+  g.strokeStyle='rgba(214,40,40,.9)';g.lineWidth=Math.max(1,Math.round(dpr*1.2));g.beginPath();
+  g.moveTo(cx,Y[0]);g.lineTo(cx,Y[H]);g.moveTo(X[0],cy);g.lineTo(X[W],cy);g.stroke();
+  // labels + arrows (css px)
+  g.setTransform(dpr,0,0,dpr,0,0);
+  var step=10;while(step*cell<24)step=step===10?20:step===20?50:100;
+  g.fillStyle='#444';g.font='11px system-ui,sans-serif';g.textAlign='center';g.textBaseline='alphabetic';
+  for(x=step;x<=W;x+=step)g.fillText(String(x),ML+x*cell,MT-5);
+  g.textAlign='right';g.textBaseline='middle';
+  for(y=step;y<=H;y+=step)g.fillText(String(y),ML-5,MT+y*cell);
+  var ax=ML+W/2*cell,ay=MT+H/2*cell,bx=ML+W*cell,by=MT+H*cell;
+  g.fillStyle='#d62828';
+  tri(g,[ax-5,2,ax+5,2,ax,10]);tri(g,[ax-5,by+12,ax+5,by+12,ax,by+4]);
+  tri(g,[2,ay-5,2,ay+5,10,ay]);tri(g,[bx+12,ay-5,bx+12,ay+5,bx+4,ay]);
+  return {cw:cw,ch:ch};
+}
+function tri(g,a){g.beginPath();g.moveTo(a[0],a[1]);g.lineTo(a[2],a[3]);g.lineTo(a[4],a[5]);g.closePath();g.fill()}
+
+function draw(){
+  if(!model)return;
+  var cv=$('chart'),cell=curCell(),dpr=Math.min(2,window.devicePixelRatio||1);
+  var cw=ML+model.W*cell+MR,ch=MT+model.H*cell+MB;
+  while(dpr>1&&cw*ch*dpr*dpr>40e6)dpr=Math.max(1,dpr-0.5);
+  lastCell=cell;
+  $('symHint').hidden=!(S.view!=='color'&&cell<6);
+  drawChart(cv,model,cell,S.view,hl,dpr);
+  cv.setAttribute('aria-label','クロスステッチ図案（横'+model.W+'目×縦'+model.H+'目、'+model.pal.length+'色）');
+  $('zoomIn').disabled=nextZoom(1)===cell;$('zoomOut').disabled=nextZoom(-1)===cell;
+}
+var ZOOMS=[2,3,4,5,6,8,10,12,14,16,20,24,28,32];
+function nextZoom(dir){
+  var c=curCell(),i;
+  if(dir>0){for(i=0;i<ZOOMS.length;i++)if(ZOOMS[i]>c&&(ML+model.W*ZOOMS[i])*(MT+model.H*ZOOMS[i])<=40e6)return ZOOMS[i];return c}
+  for(i=ZOOMS.length-1;i>=0;i--)if(ZOOMS[i]<c)return ZOOMS[i];return c;
+}
+function zoomTo(c){
+  if(!model)return;
+  var wrap=$('chartWrap'),old=curCell();
+  var mx=(wrap.scrollLeft+wrap.clientWidth/2-ML)/old,my=(wrap.scrollTop+wrap.clientHeight/2-MT)/old;
+  zoom=c;draw();
+  wrap.scrollLeft=ML+mx*c-wrap.clientWidth/2;wrap.scrollTop=MT+my*c-wrap.clientHeight/2;
+}
+
+// ---- palette / size ----
+function renderPalette(){
+  var b=$('palBody'),h='';
+  model.pal.forEach(function(p,i){
+    h+='<tr><td><button type="button" class="symbtn" data-i="'+i+'" aria-pressed="'+(hl===i)+'" aria-label="記号'+(i+1)+'の色だけ強調">'+symSvg(i,'#000','#fff')+'</button></td>'+
+       '<td><span class="sw">'+symSvg(i,p.fg,p.hex)+'</span></td><td><code>'+p.hex+'</code></td><td class="n">'+fmt(p.count)+'</td></tr>';
+  });
+  if(!model.pal.length)h='<tr><td colspan="4" class="muted">刺すマスがありません。「背景を刺さない」をオフにしてみてください。</td></tr>';
+  b.innerHTML=h;
+}
+function renderSize(){
+  var m=model,bb=m.bbox,ct=S.ct;
+  $('stats').innerHTML='<span>図案 <b>'+m.W+'×'+m.H+'</b> 目</span><span>刺す目数 <b>'+fmt(m.stitched)+'</b> 目</span><span><b>'+m.pal.length+'</b> 色</span>';
+  if(!bb){$('sizeBox').innerHTML='<span class="muted">刺すマスがありません。</span>';return}
+  var w=Core.finished(bb.w,ct),hh=Core.finished(bb.h,ct);
+  var part=(bb.w!==m.W||bb.h!==m.H)?'刺す範囲 '+bb.w+'×'+bb.h+'目の仕上がり':'仕上がり';
+  $('sizeBox').innerHTML='<div class="muted">'+part+'（'+ct+'ct）</div><div class="big">約 '+w.toFixed(1)+' × '+hh.toFixed(1)+' cm</div>'+
+    '<div class="muted">布は周りに5cmずつ足して、約 '+Math.ceil(w+10)+' × '+Math.ceil(hh+10)+' cm 以上あると、刺繍枠や額装に困りません（目安）。</div>';
+}
+function renderPrintInfo(){
+  if(!model){$('pInfo').textContent='';return}
+  var pp=Core.perPage(S.pcell),plan=Core.planPages(model.W,model.H,pp.pc,pp.pr,OV);
+  $('pInfo').innerHTML='A4で <strong>'+(plan.pages.length+1)+'枚</strong>（色の一覧1枚＋図案'+plan.pages.length+'枚'+(plan.pages.length>1?'・横'+plan.cols+'×縦'+plan.rows:'')+'）になります。';
+}
+
+// ---- print ----
+function n2(v){return Math.round(v*100)/100}
+function pageSvg(m,pg,cell,bw){
+  var L=9,T=7,R=3.5,B=3.5,cols=pg.c1-pg.c0,rows=pg.r1-pg.r0,gw=cols*cell,gh=rows*cell,w=n2(L+gw+R),h=n2(T+gh+B),P=m.pal.length,r,c,v;
+  var o=['<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'mm" height="'+h+'mm" viewBox="0 0 '+w+' '+h+'" font-family="sans-serif">'];
+  var fills=[],uses=[];for(var p=0;p<P;p++){fills.push([]);uses.push([])}
+  for(r=pg.r0;r<pg.r1;r++)for(c=pg.c0;c<pg.c1;c++){
+    v=m.idx[r*m.W+c];if(v<0)continue;
+    var x=n2(L+(c-pg.c0)*cell),y=n2(T+(r-pg.r0)*cell);
+    if(!bw)fills[v].push('M'+x+' '+y+'h'+cell+'v'+cell+'h-'+cell+'z');
+    uses[v].push('<use href="#ks'+v+'" x="'+x+'" y="'+y+'" width="'+cell+'" height="'+cell+'"/>');
+  }
+  if(!bw)for(p=0;p<P;p++)if(fills[p].length)o.push('<path fill="'+m.pal[p].hex+'" d="'+fills[p].join('')+'"/>');
+  for(p=0;p<P;p++)if(uses[p].length)o.push('<g color="'+(bw?'#000':m.pal[p].fg)+'">'+uses[p].join('')+'</g>');
+  var thin=[],thick=[],edge=[];
+  for(c=pg.c0;c<=pg.c1;c++){var s='M'+n2(L+(c-pg.c0)*cell)+' '+T+'V'+n2(T+gh);(c%10===0||c===m.W?thick:(c===pg.c0||c===pg.c1)?edge:thin).push(s)}
+  for(r=pg.r0;r<=pg.r1;r++){s='M'+L+' '+n2(T+(r-pg.r0)*cell)+'H'+n2(L+gw);(r%10===0||r===m.H?thick:(r===pg.r0||r===pg.r1)?edge:thin).push(s)}
+  o.push('<path d="'+thin.join('')+'" stroke="#8a8a8a" stroke-width="0.12" fill="none"/>');
+  if(edge.length)o.push('<path d="'+edge.join('')+'" stroke="#333" stroke-width="0.2" fill="none"/>');
+  o.push('<path d="'+thick.join('')+'" stroke="#000" stroke-width="0.42" fill="none"/>');
+  if(pg.c0>0)o.push('<rect x="'+L+'" y="'+(T-0.9)+'" width="'+n2(OV*cell)+'" height="0.9" fill="#9a9a9a"/>');
+  if(pg.r0>0)o.push('<rect x="'+(L-0.9)+'" y="'+T+'" width="0.9" height="'+n2(OV*cell)+'" fill="#9a9a9a"/>');
+  var cxm=m.W/2,cym=m.H/2;
+  if(cxm>=pg.c0&&cxm<=pg.c1){var ax=n2(L+(cxm-pg.c0)*cell);
+    o.push('<path d="M'+ax+' '+T+'V'+n2(T+gh)+'" stroke="#d62828" stroke-width="0.25"/>');
+    o.push('<path d="M'+n2(ax-1)+' 0.3H'+n2(ax+1)+'L'+ax+' 2.1zM'+n2(ax-1)+' '+n2(h-0.3)+'H'+n2(ax+1)+'L'+ax+' '+n2(h-2.1)+'z" fill="#d62828"/>')}
+  if(cym>=pg.r0&&cym<=pg.r1){var ay=n2(T+(cym-pg.r0)*cell);
+    o.push('<path d="M'+L+' '+ay+'H'+n2(L+gw)+'" stroke="#d62828" stroke-width="0.25"/>');
+    o.push('<path d="M0.3 '+n2(ay-1)+'V'+n2(ay+1)+'L2.1 '+ay+'zM'+n2(w-0.3)+' '+n2(ay-1)+'V'+n2(ay+1)+'L'+n2(w-2.1)+' '+ay+'z" fill="#d62828"/>')}
+  o.push('<g font-size="2.3" fill="#222">');
+  for(c=Math.max(10,Math.ceil(pg.c0/10)*10);c<=pg.c1;c+=10)o.push('<text x="'+n2(L+(c-pg.c0)*cell)+'" y="'+(T-1.4)+'" text-anchor="middle">'+c+'</text>');
+  for(r=Math.max(10,Math.ceil(pg.r0/10)*10);r<=pg.r1;r+=10)o.push('<text x="'+(L-1.3)+'" y="'+n2(T+(r-pg.r0)*cell+0.8)+'" text-anchor="end">'+r+'</text>');
+  o.push('</g></svg>');
+  return o.join('');
+}
+function thumbDataUrl(m){
+  var s=Math.max(1,Math.floor(480/Math.max(m.W,m.H))),c=document.createElement('canvas');c.width=m.W*s;c.height=m.H*s;
+  var g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);
+  for(var i=0;i<m.idx.length;i++){var v=m.idx[i];if(v<0)continue;var x=i%m.W,y=(i-x)/m.W;g.fillStyle=m.pal[v].hex;g.fillRect(x*s,y*s,s,s)}
+  return c.toDataURL('image/png');
+}
+function buildPrint(){
+  var pa=$('printArea');
+  if(!model||!model.stitched){pa.innerHTML='<div class="ppage"><p>刺すマスがないため、印刷する図案がありません。</p></div>';return}
+  var m=model,cell=S.pcell,bw=S.pmode==='bw',pp=Core.perPage(cell),plan=Core.planPages(m.W,m.H,pp.pc,pp.pr,OV),total=plan.pages.length+1,h=[];
+  h.push('<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>');
+  m.pal.forEach(function(p,i){h.push('<symbol id="ks'+i+'" viewBox="0 0 10 10">'+symParts(i,'currentColor')+'</symbol>')});
+  h.push('</defs></svg>');
+  var bb=m.bbox;
+  h.push('<div class="ppage"><div class="phead"><b>クロスステッチ図案　色の一覧</b><span>p.1/'+total+'</span></div>');
+  h.push('<h1>図案 '+m.W+'×'+m.H+'目・'+m.pal.length+'色・刺す目数 '+fmt(m.stitched)+'目</h1>');
+  h.push('<div class="psumrow"><img class="pthumb" alt="" src="'+thumbDataUrl(m)+'"><div>');
+  h.push('<h2>仕上がりサイズの目安'+(bb.w!==m.W||bb.h!==m.H?'（刺す範囲 '+bb.w+'×'+bb.h+'目）':'')+'</h2><table class="ptbl"><tbody>');
+  [11,14,16,18].forEach(function(ct){h.push('<tr><td>'+ct+'ct</td><td class="n">約 '+Core.finished(bb.w,ct).toFixed(1)+' × '+Core.finished(bb.h,ct).toFixed(1)+' cm</td></tr>')});
+  h.push('</tbody></table>');
+  if(plan.pages.length>1){
+    h.push('<h2>図案ページの並び</h2><table class="pmap"><tbody>');
+    for(var r=0;r<plan.rows;r++){h.push('<tr>');for(var c=0;c<plan.cols;c++)h.push('<td>図案'+(r*plan.cols+c+1)+'<br>p.'+(r*plan.cols+c+2)+'</td>');h.push('</tr>')}
+    h.push('</tbody></table>');
+  }
+  h.push('</div></div><h2>色の一覧</h2><table class="ptbl"><thead><tr><th>記号</th><th>色見本</th><th>HEX</th><th>目数</th><th>糸のメモ</th></tr></thead><tbody>');
+  m.pal.forEach(function(p,i){h.push('<tr><td>'+symSvg(i,'#000','#fff')+'</td><td>'+symSvg(i,p.fg,p.hex)+'</td><td>'+p.hex+'</td><td class="n">'+fmt(p.count)+'</td><td style="width:45mm"></td></tr>')});
+  h.push('</tbody></table><p class="pnote">刺繍糸メーカーの色番号は記載していません。色見本を見て近い色の糸を選び、「糸のメモ」欄に書き込んでお使いください。太線は10目ごと、赤い線と三角は図案の中心です。</p></div>');
+  plan.pages.forEach(function(pg,i){
+    var pos=plan.pages.length>1?'上から'+(pg.row+1)+'段目・左から'+(pg.col+1)+'枚目　':'';
+    h.push('<div class="ppage"><div class="phead"><b>図案 '+(i+1)+'/'+plan.pages.length+'</b><span>'+pos+'列 '+(pg.c0+1)+'–'+pg.c1+'・行 '+(pg.r0+1)+'–'+pg.r1+'</span><span>p.'+(i+2)+'/'+total+'</span></div>');
+    h.push(pageSvg(m,pg,cell,bw));
+    if(pg.c0>0||pg.r0>0)h.push('<p class="pnote">灰色の帯がある'+(pg.c0>0?'左の'+OV+'列':'')+(pg.c0>0&&pg.r0>0?'と':'')+(pg.r0>0?'上の'+OV+'行':'')+'は、となりのページと重なっています。</p>');
+    h.push('</div>');
+  });
+  pa.innerHTML=h.join('');
+  printDirty=false;
+}
+
+// ---- events ----
+var timer=null;
+function schedule(){clearTimeout(timer);timer=setTimeout(function(){save();run()},120)}
+function bindPair(range,num,key,a,b){
+  $(range).addEventListener('input',function(){S[key]=clampInt(this.value,a,b,S[key]);$(num).value=S[key];schedule()});
+  $(num).addEventListener('change',function(){S[key]=clampInt(this.value,a,b,S[key]);this.value=$(range).value=S[key];schedule()});
+}
+bindPair('wRange','wNum','w',20,150);bindPair('kRange','kNum','k',2,24);
+$('optBg').onchange=function(){S.bg=this.checked;schedule()};
+$('optClean').onchange=function(){S.clean=this.checked;schedule()};
+document.querySelectorAll('input[name=view]').forEach(function(r){r.onchange=function(){S.view=this.value;save();draw()}});
+$('ct').onchange=function(){S.ct=Number(this.value);save();renderSize()};
+$('pCell').onchange=function(){S.pcell=Number(this.value);save();printDirty=true;renderPrintInfo()};
+$('pMode').onchange=function(){S.pmode=this.value;save();printDirty=true};
+$('zoomIn').onclick=function(){zoomTo(nextZoom(1))};
+$('zoomOut').onclick=function(){zoomTo(nextZoom(-1))};
+$('zoomFit').onclick=function(){zoom=0;draw()};
+$('palBody').addEventListener('click',function(e){
+  var b=e.target.closest('.symbtn');if(!b)return;var i=Number(b.getAttribute('data-i'));
+  hl=hl===i?-1:i;draw();
+  document.querySelectorAll('.symbtn').forEach(function(x){x.setAttribute('aria-pressed',String(Number(x.getAttribute('data-i'))===hl))});
+});
+function cellAt(e){
+  var cv=$('chart'),r=cv.getBoundingClientRect(),cell=lastCell;
+  var c=Math.floor((e.clientX-r.left-ML)/cell),rr=Math.floor((e.clientY-r.top-MT)/cell);
+  return (model&&c>=0&&rr>=0&&c<model.W&&rr<model.H)?{c:c,r:rr}:null;
+}
+var CELL_HINT='マスをタップすると、位置と色が出ます。';
+function showCell(e){
+  var p=cellAt(e),el=$('cellInfo');
+  if(!p){el.textContent=CELL_HINT;return}
+  var v=model.idx[p.r*model.W+p.c];
+  el.innerHTML='列 '+(p.c+1)+'・行 '+(p.r+1)+'：'+(v<0?'刺さない':symSvg(v,model.pal[v].fg,model.pal[v].hex)+' '+model.pal[v].hex+'（'+fmt(model.pal[v].count)+'目）');
+}
+$('chart').addEventListener('pointermove',function(e){if(e.pointerType==='mouse')showCell(e)});
+$('chart').addEventListener('click',showCell);
+$('chart').addEventListener('pointerleave',function(e){if(e.pointerType==='mouse')$('cellInfo').textContent=CELL_HINT});
+var rt=null;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(function(){if(!zoom)draw()},150)});
+
+function loadFile(f){
+  if(!f)return;
+  if(f.type&&!/^image\//.test(f.type)){toast('画像ファイルを選んでください');return}
+  var url=URL.createObjectURL(f),img=new Image();
+  img.onload=function(){
+    try{
+      setImage(img,img.naturalWidth,img.naturalHeight);
+      if(thumbUrl)URL.revokeObjectURL(thumbUrl);thumbUrl=url;$('srcThumb').src=url;
+      $('srcInfo').textContent='「'+f.name+'」（'+img.naturalWidth+'×'+img.naturalHeight+'px）を読み込みました。画像は送信していません。';
+    }catch(e){URL.revokeObjectURL(url);toast('画像を読み込めませんでした')}
+  };
+  img.onerror=function(){URL.revokeObjectURL(url);toast('この画像は読み込めませんでした。HEICなどはJPEGかPNGにしてからお試しください')};
+  img.src=url;
+}
+$('file').onchange=function(){loadFile(this.files&&this.files[0]);this.value=''};
+var drop=$('drop');
+['dragenter','dragover'].forEach(function(t){drop.addEventListener(t,function(e){e.preventDefault();drop.classList.add('over')})});
+['dragleave','drop'].forEach(function(t){drop.addEventListener(t,function(e){e.preventDefault();drop.classList.remove('over')})});
+drop.addEventListener('drop',function(e){var f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];loadFile(f)});
+window.addEventListener('dragover',function(e){e.preventDefault()});
+window.addEventListener('drop',function(e){e.preventDefault()});
+document.addEventListener('paste',function(e){
+  var items=e.clipboardData&&e.clipboardData.items;if(!items)return;
+  for(var i=0;i<items.length;i++)if(items[i].kind==='file'&&/^image\//.test(items[i].type)){loadFile(items[i].getAsFile());e.preventDefault();return}
+});
+
+$('printBtn').onclick=function(){if(!model)return;buildPrint();window.print()};
+window.addEventListener('beforeprint',function(){if(printDirty)buildPrint()});
+$('pngBtn').onclick=function(){
+  if(!model)return;
+  var cell=Math.max(6,Math.min(20,Math.floor(3600/Math.max(model.W,model.H)))),cv=document.createElement('canvas');
+  drawChart(cv,model,cell,S.view,-1,1);
+  cv.toBlob(function(b){
+    if(!b){toast('画像を作れませんでした');return}
+    var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='cross-stitch-'+model.W+'x'+model.H+'.png';
+    document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},1500);
+    toast('PNGを保存しました');
+  },'image/png');
+};
+
+setControls();
+var sc=sampleCanvas();$('srcThumb').src=sc.toDataURL('image/png');
+setImage(sc,sc.width,sc.height);
+
+})();
+</script>
+</body>
+</html>

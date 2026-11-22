@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>旅行の持ち物チェックリスト｜人数・泊数で個数を自動計算【無料・登録不要】</title>
+<meta name="description" content="人数と泊数を入れて旅の種類（国内・海外・子連れ・温泉・キャンプ・出張など）を選ぶと、持ち物リストを作成。下着や着替えの枚数も自動で計算します。チェックしながら使え、A4印刷やLINEへのコピーもできます。">
+<link rel="canonical" href="https://sulla-bluefelix.github.io/kamimachi-tools/packing/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="旅行の持ち物チェックリスト【無料・登録不要】">
+<meta property="og:description" content="人数と泊数から、下着や着替えの個数まで自動で計算する持ち物リスト。チェックして印刷もできます。">
+<meta property="og:url" content="https://sulla-bluefelix.github.io/kamimachi-tools/packing/">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"WebApplication","name":"旅行の持ち物チェックリスト","url":"https://sulla-bluefelix.github.io/kamimachi-tools/packing/","applicationCategory":"TravelApplication","operatingSystem":"Any","inLanguage":"ja","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"}},
+{"@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"下着や着替えは何枚になりますか？","acceptedAnswer":{"@type":"Answer","text":"「人数×泊数」で数えます。2人で1泊2日なら2枚です。家を出るときに着ている分は数えていません。子どもの着替えと下着は、汚れたとき用に1日分多くなる「子ども×日数」にしています。数え方は「項目を編集」から変えられます。"}},
+{"@type":"Question","name":"日帰りのときはどうなりますか？","acceptedAnswer":{"@type":"Answer","text":"泊数を「日帰り」にすると、日数1・泊数0として計算します。下着やパジャマなど「人数×泊数」の項目は0になり、印刷とコピーから外れます。予備を持っていくなら、数え方を「1人1つ」に変えてください。"}},
+{"@type":"Question","name":"家族の分をまとめて作れますか？","acceptedAnswer":{"@type":"Answer","text":"作れます。人数に家族全員、「うち子ども」に子どもの人数を入れてください。歯ブラシなど1人1つのものは人数分、子どもの着替えは子どもの人数×日数で出ます。財布や常備薬のように全体で1つあればよいものは1になります。"}},
+{"@type":"Question","name":"海外旅行で気をつけることは？","acceptedAnswer":{"@type":"Answer","text":"パスポートの残りの有効期間、ビザや電子渡航認証、コンセントの形と電圧、機内に持ち込めるものは、渡航先や航空会社によって違います。リストには確認用の項目を入れていますが、必ず渡航先の公式情報や航空会社の案内で確かめてください。"}},
+{"@type":"Question","name":"リストは保存されますか？","acceptedAnswer":{"@type":"Answer","text":"この端末のブラウザに自動で保存します。どこにも送信しません。家族や友だちと共有するときは「テキストでコピー」でLINEなどに貼ってください。ブラウザのデータを消すと、リストも消えます。"}},
+{"@type":"Question","name":"印刷するとどうなりますか？","acceptedAnswer":{"@type":"Answer","text":"A4縦に2段組みで、チェック欄つきで印刷します。個数が0の項目は外し、最後に手書き用のメモ欄をつけます。項目が多いときは2枚になります。"}}
+]}]}
+</script>
+<style>
+:root{--bg:#f6f3ec;--card:#fffdf8;--ink:#1d2b30;--sub:#5b6a6c;--line:#d9d3c5;--accent:#0b6b62;--accent-ink:#fff;--warn:#a2412f;--soft:#e7efe9}
+@media (prefers-color-scheme:dark){:root{--bg:#141a1c;--card:#1d2528;--ink:#e8ece9;--sub:#9fb0ad;--line:#33403f;--accent:#3fb3a2;--accent-ink:#0d1716;--warn:#e88a73;--soft:#23312f;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.7 system-ui,-apple-system,"Hiragino Sans","Noto Sans JP","Yu Gothic UI",sans-serif}
+main{max-width:720px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:clamp(22px,5.4vw,30px);line-height:1.4;margin:8px 0 6px}
+.lead{color:var(--sub);margin:0 0 20px}
+h2{font-size:19px;margin:0 0 10px}
+h3{font-size:15px;margin:14px 0 6px}
+section.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 16px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input,select{font:inherit;color:inherit;background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:9px 10px;min-width:0}
+input:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px}
+button{font:inherit;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:9px;padding:9px 14px;cursor:pointer}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+button[aria-pressed=true]{background:var(--soft);border-color:var(--accent);font-weight:700}
+button.x{padding:6px 10px;color:var(--sub)}
+.muted{color:var(--sub);font-size:14px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-size:14px;max-width:calc(100% - 32px);z-index:5}
+.cta{border:2px solid var(--accent);background:var(--soft)}
+.cta a.btn{display:inline-block;background:var(--accent);color:var(--accent-ink);text-decoration:none;font-weight:700;padding:10px 16px;border-radius:9px;margin-top:6px}
+details{border-top:1px solid var(--line);padding:10px 0}
+summary{cursor:pointer;font-weight:600}
+footer{color:var(--sub);font-size:13px;text-align:center;margin-top:30px}
+a{color:var(--accent)}
+ol.steps{margin:0;padding-left:1.4em}
+ol.steps li{margin:4px 0}
+
+.conds{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.conds label{display:flex;flex-direction:column;font-weight:600;font-size:14px;gap:2px}
+.conds select{width:100%}
+.tlabel{display:flex;flex-direction:column;font-weight:600;font-size:14px;gap:2px;margin-top:12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{position:relative}
+.chip input{position:absolute;opacity:0;width:1px;height:1px}
+.chip span{display:inline-block;border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:6px 14px;cursor:pointer;font-size:15px}
+.chip input:checked+span{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:700}
+.chip input:checked+span::before{content:"✓ "}
+.chip input:focus-visible+span{outline:2px solid var(--ink);outline-offset:2px}
+.listHead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.listHead h2{margin:0}
+.bar{height:8px;background:var(--soft);border-radius:99px;overflow:hidden;margin:10px 0 2px}
+.bar span{display:block;height:100%;background:var(--accent);width:0;transition:width .2s}
+.cat h3{display:flex;justify-content:space-between;border-bottom:2px solid var(--line);padding-bottom:2px;margin:18px 0 0}
+.cat h3 .cnt{font-weight:400;color:var(--sub);font-size:13px}
+.cat ul{list-style:none;margin:0;padding:0}
+.item{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;padding:7px 0;border-bottom:1px solid var(--line)}
+.item label.it{display:flex;align-items:center;gap:10px;flex:1 1 0;min-width:0;cursor:pointer}
+.item input[type=checkbox]{width:22px;height:22px;flex:none;margin:0;accent-color:var(--accent)}
+.item .nm{overflow-wrap:anywhere}
+.item .q{flex:none;text-align:right;line-height:1.25;max-width:45%}
+.item .q b{font-size:18px;display:block}
+.item .q small{font-size:12px;color:var(--sub);display:block}
+.item.done .nm{text-decoration:line-through;color:var(--sub)}
+.item.zero .nm,.item.zero .q{color:var(--sub)}
+.item.zero input[type=checkbox]{opacity:.4}
+.item .nmIn{flex:1 1 0;padding:6px 8px}
+.item .ed{flex-basis:100%;display:flex;gap:6px;padding-left:32px;flex-wrap:wrap}
+.item .ed select{padding:6px 8px;font-size:14px}
+.addForm{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)}
+.addForm input[type=text]{flex:1 1 200px}
+.addForm select{flex:0 1 auto}
+.aside{margin:-4px 4px 16px}
+.confirm{margin:8px 0 0}
+#printArea{display:none}
+
+@media print{
+  @page{size:A4 portrait;margin:12mm}
+  html,body{background:#fff!important;color:#000!important}
+  main,.toast{display:none!important}
+  #printArea{display:block;color:#000;font:10pt/1.45 system-ui,-apple-system,"Hiragino Sans","Noto Sans JP","Yu Gothic UI",sans-serif}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+#printArea .ph{border-bottom:0.5mm solid #000;margin:0 0 4mm;padding-bottom:1.5mm;display:flex;justify-content:space-between;align-items:baseline;gap:6mm;flex-wrap:wrap}
+#printArea .ph h1{font-size:15pt;margin:0}
+#printArea .ph p{margin:0;font-size:9.5pt}
+#printArea .pcols{column-count:2;column-gap:9mm}
+#printArea .pcat{break-inside:avoid;page-break-inside:avoid;margin:0 0 4mm}
+#printArea .pcat h2{font-size:10.5pt;margin:0 0 1mm;padding:0 0 0.5mm;border-bottom:0.3mm solid #000}
+#printArea ul{list-style:none;margin:0;padding:0}
+#printArea li{display:flex;align-items:center;gap:2.2mm;padding:0.7mm 0;border-bottom:0.15mm dotted #999}
+#printArea .box{width:3.8mm;height:3.8mm;border:0.3mm solid #000;flex:none;font-size:8pt;line-height:3.4mm;text-align:center}
+#printArea .pn{flex:1}
+#printArea .pq{white-space:nowrap;font-weight:700}
+#printArea .line{flex:1;height:4.5mm}
+</style>
+</head>
+<body>
+<main>
+<h1>旅行の持ち物チェックリスト</h1>
+<p class="lead">人数と泊数を入れて旅の種類を選ぶと、持ち物リストを作り、<strong>下着や着替えの枚数まで自動で計算</strong>します。チェックしながら使え、A4に印刷もできます。登録不要・無料。内容はこの端末にだけ保存します。</p>
+
+<section class="card">
+<h2>1. 旅の条件</h2>
+<div class="conds">
+<label>人数<select id="people"></select></label>
+<label>うち子ども<select id="kids"></select></label>
+<label>泊数<select id="nights"></select></label>
+</div>
+<label class="tlabel">旅の名前（任意・印刷の見出しになります）<input id="title" type="text" maxlength="30" placeholder="例：夏の箱根旅行"></label>
+<h3>旅の形</h3>
+<div class="chips" id="presetsA"></div>
+<h3>目的・いっしょに行く人</h3>
+<div class="chips" id="presetsB"></div>
+<p class="muted" style="margin:10px 0 0">複数選ぶと、それぞれの持ち物が足されます。外すと、その種類だけの項目が消えます。</p>
+</section>
+
+<section class="card" id="listCard">
+<div class="listHead"><h2>2. 持ち物リスト</h2><span class="muted" id="summary"></span></div>
+<div class="bar" aria-hidden="true"><span id="barFill"></span></div>
+<p class="muted" id="progress" style="margin:0 0 8px" aria-live="polite"></p>
+<div class="row">
+<button type="button" id="editToggle" aria-pressed="false">項目を編集（数え方・名前・削除）</button>
+<button type="button" id="uncheckAll">チェックをすべて外す</button>
+</div>
+<p class="muted confirm" id="confirmBox" hidden><span id="confirmMsg"></span> <button type="button" id="confirmYes">はい</button> <button type="button" id="confirmNo">やめる</button></p>
+<div id="list"></div>
+<form class="addForm" id="addForm">
+<p class="muted" style="margin:0 0 6px">足りないものを追加</p>
+<div class="row">
+<input id="newName" type="text" maxlength="30" placeholder="例：カメラ" aria-label="追加する持ち物の名前">
+<select id="newCat" aria-label="追加する持ち物の分類"></select>
+<select id="newMode" aria-label="追加する持ち物の数え方"></select>
+<button class="primary" type="submit">追加</button>
+</div>
+</form>
+</section>
+
+<section class="card">
+<h2>3. 印刷・共有</h2>
+<div class="row">
+<button class="primary" type="button" id="printBtn">印刷する（A4・2段組み）</button>
+<button type="button" id="copyBtn">テキストでコピー（LINEに貼れます）</button>
+</div>
+<p class="muted" style="margin:8px 0 0">個数が0の項目（日帰りのときの下着など）は、印刷とコピーに含めません。チェック済みの項目には印刷でも✓が入ります。</p>
+<p class="muted" style="margin:6px 0 0"><button type="button" class="x" id="rebuild">リストを最初から作り直す</button></p>
+</section>
+
+<p class="muted aside">旅行のあとに：立て替えたお金の精算は、<a href="../warikan/">割り勘・立替精算ツール</a>で「誰が誰にいくら払うか」を計算できます。</p>
+
+<section class="card">
+<h2>使い方</h2>
+<ol class="steps">
+<li>人数・うち子ども・泊数を選びます（1泊2日なら「1泊2日」）。</li>
+<li>旅の形（日帰り・国内1泊・国内2〜3泊・海外・出張）と、目的（子連れ・温泉・キャンプなど）を選びます。複数選べます。</li>
+<li>いらない項目は「項目を編集」から削除し、足りないものは下の欄から追加します。数え方もここで変えられます。</li>
+<li>荷物に入れたらチェック。印刷して紙で使うことも、LINEに貼って家族で分担することもできます。</li>
+</ol>
+<p class="muted" style="margin:10px 0 0">数え方は4通りです。<strong>全体で1つ</strong>（財布・常備薬など）、<strong>1人1つ</strong>（歯ブラシ・パジャマなど）、<strong>人数×日数</strong>（マスク・ハンカチなど）、<strong>人数×泊数</strong>（下着・靴下など）。子ども用の項目は、同じ数え方を子どもの人数で計算します。</p>
+</section>
+
+<section class="card cta">
+<h2>旅のしおりと精算も、ひとつにまとめるなら</h2>
+<p style="margin:0 0 6px">全体・人数・人数×日数・人数×泊数の4通りで個数を出す<strong>荷造りチェック</strong>に加えて、移動と滞在を分で入れると到着・出発が連動する<strong>旅のしおり</strong>と、2〜12人の支払いを1円単位で精算する<strong>立替精算</strong>をまとめています。3つの道具とも、CSVと印刷に対応しています。</p>
+<a class="btn" href="https://kamimachi-press.booth.pm/items/9190079" rel="noopener">旅の段取り帳を見る（BOOTH・680円）</a>
+<p class="muted" style="margin:8px 0 0">無料見本（半日旅のしおり見本PDF）もダウンロードできます。</p>
+</section>
+
+<section class="card">
+<h2>よくある質問</h2>
+<details><summary>下着や着替えは何枚になりますか？</summary><p>「人数×泊数」で数えます。2人で1泊2日なら2枚です。家を出るときに着ている分は数えていません。子どもの着替えと下着は、汚れたとき用に1日分多くなる「子ども×日数」にしています。数え方は「項目を編集」から変えられます。</p></details>
+<details><summary>日帰りのときはどうなりますか？</summary><p>泊数を「日帰り」にすると、日数1・泊数0として計算します。下着やパジャマなど「人数×泊数」の項目は0になり、印刷とコピーから外れます。予備を持っていくなら、数え方を「1人1つ」に変えてください。</p></details>
+<details><summary>家族の分をまとめて作れますか？</summary><p>作れます。人数に家族全員、「うち子ども」に子どもの人数を入れてください。歯ブラシなど1人1つのものは人数分、子どもの着替えは子どもの人数×日数で出ます。財布や常備薬のように全体で1つあればよいものは1になります。</p></details>
+<details><summary>海外旅行で気をつけることは？</summary><p>パスポートの残りの有効期間、ビザや電子渡航認証、コンセントの形と電圧、機内に持ち込めるものは、渡航先や航空会社によって違います。リストには確認用の項目を入れていますが、必ず渡航先の公式情報や航空会社の案内で確かめてください。</p></details>
+<details><summary>リストは保存されますか？</summary><p>この端末のブラウザに自動で保存します。どこにも送信しません。家族や友だちと共有するときは「テキストでコピー」でLINEなどに貼ってください。ブラウザのデータを消すと、リストも消えます。</p></details>
+<details><summary>印刷するとどうなりますか？</summary><p>A4縦に2段組みで、チェック欄つきで印刷します。個数が0の項目は外し、最後に手書き用のメモ欄をつけます。項目が多いときは2枚になります。</p></details>
+</section>
+
+<footer>紙町活版所 ・ <a href="../">ほかの無料ツール</a></footer>
+</main>
+<div id="printArea"></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/*CORE-START*/
+var Pack=(function(){
+  var CATS=[['val','貴重品'],['clo','衣類'],['toi','洗面・身だしなみ'],['dev','電子機器'],['hea','薬・衛生用品'],['kid','子ども用'],['bath','温泉・お風呂'],['out','アウトドア'],['work','仕事'],['misc','その他']];
+  var MODES=[['one','全体で1つ'],['person','1人1つ'],['pday','人数×日数'],['pnight','人数×泊数'],['kperson','子ども1人1つ'],['kday','子ども×日数'],['knight','子ども×泊数']];
+  var ITEMS=[
+    ['wallet','val','財布（現金・カード）','one'],
+    ['phone','val','スマートフォン','person'],
+    ['insurance','val','マイナ保険証・資格確認書など','person'],
+    ['ic','val','交通系ICカード','person'],
+    ['license','val','運転免許証（運転する人）','one'],
+    ['booking','val','宿・交通の予約確認（画面・控え）','one'],
+    ['key','val','家の鍵','one'],
+    ['passport','val','パスポート','person'],
+    ['passcopy','val','パスポートのコピー・顔写真ページの写真','one'],
+    ['ticket','val','航空券・eチケットの控え','one'],
+    ['entrydoc','val','入国に必要な書類（渡航先の公式情報で確認）','one'],
+    ['currency','val','外貨・海外で使えるカード','one'],
+    ['travelins','val','海外旅行保険の証書・緊急連絡先','one'],
+    ['tops','clo','着替え（トップス）','pnight'],
+    ['bottoms','clo','替えのボトムス','person'],
+    ['underwear','clo','下着','pnight'],
+    ['socks','clo','靴下','pnight'],
+    ['pajama','clo','パジャマ・部屋着','person'],
+    ['outer','clo','羽織るもの（冷房・朝晩の冷え対策）','person'],
+    ['warm','clo','防寒着（フリース・ダウンなど）','person'],
+    ['gloves','clo','手袋','person'],
+    ['knit','clo','ニット帽・耳あて','person'],
+    ['snowshoes','clo','滑りにくい靴','person'],
+    ['hat','clo','帽子','person'],
+    ['swimsuit','clo','水着','person'],
+    ['rashguard','clo','ラッシュガード','person'],
+    ['sandal','clo','ビーチサンダル','person'],
+    ['toothbrush','toi','歯ブラシ・歯みがき粉','person'],
+    ['skincare','toi','スキンケア用品・化粧品','one'],
+    ['hair','toi','ヘアブラシ・ヘアゴム','one'],
+    ['contacts','toi','メガネ・コンタクト用品（使う人）','one'],
+    ['razor','toi','ひげそり（使う人）','one'],
+    ['handkerchief','toi','ハンカチ・ハンドタオル','pday'],
+    ['tissue','toi','ポケットティッシュ','person'],
+    ['towel','toi','タオル・バスタオル','person'],
+    ['lipbalm','toi','保湿クリーム・リップクリーム','one'],
+    ['charger','dev','スマホの充電器・ケーブル','person'],
+    ['battery','dev','モバイルバッテリー','one'],
+    ['plug','dev','変換プラグ（渡航先による）','one'],
+    ['transformer','dev','変圧器（充電器が渡航先の電圧に対応していない場合）','one'],
+    ['wifi','dev','現地の通信手段（eSIM・SIM・Wi-Fiルーターなど）','one'],
+    ['laptop','dev','ノートパソコン・充電器','one'],
+    ['tap','dev','延長コード・電源タップ','one'],
+    ['waterproof','dev','スマホの防水ケース','one'],
+    ['meds','hea','常備薬・持病の薬','one'],
+    ['bandage','hea','絆創膏','one'],
+    ['mask','hea','マスク','pday'],
+    ['wetwipe','hea','ウェットティッシュ','one'],
+    ['sanitary','hea','生理用品（必要な人）','one'],
+    ['sunscreen','hea','日焼け止め','one'],
+    ['bugspray','hea','虫よけ','one'],
+    ['k_clothes','kid','子どもの着替え（汚れたとき用を含む）','kday'],
+    ['k_under','kid','子どもの下着','kday'],
+    ['k_pajama','kid','子どものパジャマ','kperson'],
+    ['k_med','kid','子どもの医療証（医療費助成の受給者証など）','kperson'],
+    ['boshi','kid','母子健康手帳（乳幼児）','kperson'],
+    ['diaper','kid','おむつ・おしりふき（使う場合。日数分＋予備）','one'],
+    ['k_snack','kid','おやつ・飲み物','one'],
+    ['k_toy','kid','お気に入りのおもちゃ・絵本','kperson'],
+    ['k_carry','kid','抱っこひも・ベビーカー（使う場合）','one'],
+    ['k_meds','kid','子ども用の薬・体温計','one'],
+    ['k_spoon','kid','子ども用の食器・スプーン（必要な場合）','one'],
+    ['coins','bath','小銭（ロッカー・日帰り湯用）','one'],
+    ['hairclip','bath','ヘアクリップ（長い髪をまとめる）','one'],
+    ['bathbag','bath','湯めぐり用の小さなバッグ','one'],
+    ['rainwear','out','雨具（レインウェア）','person'],
+    ['headlamp','out','ヘッドライト・懐中電灯','person'],
+    ['workgloves','out','軍手','person'],
+    ['dirtyshoes','out','汚れてもよい靴','person'],
+    ['sleepingbag','out','寝袋（借りない場合）','person'],
+    ['tent','out','テント・マット（借りない場合）','one'],
+    ['water','out','飲み水・水筒','person'],
+    ['garbage','out','ゴミ袋（持ち帰り用）','one'],
+    ['meishi','work','名刺','one'],
+    ['docs','work','資料・書類','one'],
+    ['pen','work','筆記用具・手帳','one'],
+    ['suit','work','スーツ・ジャケット','person'],
+    ['shirt','work','ワイシャツ・ブラウス','pnight'],
+    ['tie','work','ネクタイ（必要な場合）','one'],
+    ['idcard','work','社員証・入館証','person'],
+    ['receipt','work','領収書を入れる封筒','one'],
+    ['bags','misc','ビニール袋（ゴミ・汚れ物用）','one'],
+    ['ecobag','misc','エコバッグ','one'],
+    ['umbrella','misc','折りたたみ傘','person'],
+    ['detergent','misc','洗濯用洗剤（小分け）','one'],
+    ['laundrynet','misc','洗濯ネット・汚れ物を分ける袋','one'],
+    ['compress','misc','衣類圧縮袋','one'],
+    ['penabroad','misc','ボールペン（書類記入用）','one'],
+    ['liquidbag','misc','透明の小袋（液体物を手荷物に入れるとき）','one'],
+    ['inflight','misc','機内で使うもの（羽織り・耳栓など）','person'],
+    ['daybag','misc','サブバッグ（現地で持ち歩く用）','one'],
+    ['wetbag','misc','濡れたものを入れる袋','one'],
+    ['kairo','misc','使い捨てカイロ','pday']
+  ];
+  var DOM1='wallet phone insurance ic license booking key tops underwear socks pajama outer toothbrush skincare hair contacts razor handkerchief tissue charger battery meds bandage mask wetwipe sanitary bags ecobag umbrella';
+  var PRESETS=[
+    ['day','日帰り','A','wallet phone insurance ic booking key handkerchief tissue battery meds bandage mask wetwipe sanitary bags ecobag umbrella'],
+    ['dom1','国内1泊','A',DOM1],
+    ['dom3','国内2〜3泊','A',DOM1+' bottoms detergent laundrynet compress'],
+    ['abroad','海外','A','wallet phone ic booking key tops bottoms underwear socks pajama outer toothbrush skincare hair contacts razor handkerchief tissue charger battery meds bandage mask wetwipe sanitary bags ecobag umbrella passport passcopy ticket entrydoc currency travelins plug transformer wifi penabroad liquidbag inflight laundrynet compress daybag'],
+    ['biz','出張','A','wallet phone insurance ic booking key underwear socks pajama toothbrush skincare hair contacts razor handkerchief tissue charger battery meds mask bags umbrella meishi laptop docs pen suit shirt tie idcard receipt tap'],
+    ['kids','子連れ','B','k_clothes k_under k_pajama k_med boshi diaper k_snack k_toy k_carry k_meds k_spoon wetwipe bags'],
+    ['onsen','温泉','B','towel coins hairclip bathbag lipbalm wetbag'],
+    ['camp','キャンプ・アウトドア','B','rainwear warm hat headlamp workgloves dirtyshoes sleepingbag tent water garbage bugspray sunscreen towel wetbag battery'],
+    ['beach','海・プール','B','swimsuit rashguard sandal hat towel sunscreen waterproof wetbag water'],
+    ['winter','冬・雪','B','warm gloves knit snowshoes kairo lipbalm']
+  ].map(function(p){return {id:p[0],name:p[1],group:p[2],keys:p[3].split(' ')}});
+  var BY={},PBY={},ORD={};
+  ITEMS.forEach(function(d,i){BY[d[0]]=d;ORD[d[0]]=i});
+  PRESETS.forEach(function(p){PBY[p.id]=p});
+  var MODE_IDS=MODES.map(function(m){return m[0]}),CAT_IDS=CATS.map(function(c){return c[0]});
+
+  function qty(mode,people,kids,nights){
+    var days=nights+1;
+    switch(mode){
+      case 'one':return 1;
+      case 'person':return people;
+      case 'pday':return people*days;
+      case 'pnight':return people*nights;
+      case 'kperson':return kids;
+      case 'kday':return kids*days;
+      case 'knight':return kids*nights;
+    }
+    return 1;
+  }
+  function detail(mode,people,kids,nights){
+    var days=nights+1;
+    if((mode==='pnight'||mode==='knight')&&nights===0)return '日帰りなので0';
+    if(mode.charAt(0)==='k'&&kids===0)return '子ども0人なので0';
+    switch(mode){
+      case 'one':return '全体で1つ';
+      case 'person':return people+'人分';
+      case 'pday':return people+'人×'+days+'日';
+      case 'pnight':return people+'人×'+nights+'泊';
+      case 'kperson':return '子ども'+kids+'人分';
+      case 'kday':return '子ども'+kids+'人×'+days+'日';
+      case 'knight':return '子ども'+kids+'人×'+nights+'泊';
+    }
+    return '';
+  }
+  function tripLabel(n){return n===0?'日帰り':n+'泊'+(n+1)+'日'}
+  function clampInt(v,a,b,d){v=Math.round(Number(v));return isFinite(v)?Math.min(b,Math.max(a,v)):d}
+
+  function newState(){var st={title:'',people:2,kids:0,nights:1,presets:[],items:[],seq:0};togglePreset(st,'dom1',true);return st}
+  function makeItem(key,pid){var d=BY[key];return {id:key,name:d[2],cat:d[1],mode:d[3],checked:false,src:[pid],custom:false,ord:ORD[key]}}
+  function togglePreset(st,pid,on){
+    var p=PBY[pid];if(!p)return;
+    if(on){
+      if(st.presets.indexOf(pid)<0)st.presets.push(pid);
+      p.keys.forEach(function(k){
+        var it=null;for(var i=0;i<st.items.length;i++)if(st.items[i].id===k){it=st.items[i];break}
+        if(it){if(it.src.indexOf(pid)<0)it.src.push(pid)}else st.items.push(makeItem(k,pid));
+      });
+    }else{
+      st.presets=st.presets.filter(function(x){return x!==pid});
+      st.items=st.items.filter(function(it){
+        if(it.custom)return true;
+        it.src=it.src.filter(function(s){return s!==pid});
+        return it.src.length>0;
+      });
+    }
+  }
+  function rebuild(st){var ps=st.presets.slice();st.items=[];st.presets=[];ps.forEach(function(p){togglePreset(st,p,true)})}
+  function addCustom(st,name,cat,mode){
+    st.seq=(st.seq||0)+1;
+    var it={id:'c'+st.seq+'_'+Date.now().toString(36),name:name,cat:CAT_IDS.indexOf(cat)>=0?cat:'misc',mode:MODE_IDS.indexOf(mode)>=0?mode:'one',checked:false,src:[],custom:true,ord:10000+st.seq};
+    st.items.push(it);return it;
+  }
+  // Clean up anything loaded from storage.
+  function sanitize(raw){
+    var st=newState();
+    if(!raw||typeof raw!=='object')return st;
+    st.title=typeof raw.title==='string'?raw.title.slice(0,30):'';
+    st.people=clampInt(raw.people,1,12,2);
+    st.kids=clampInt(raw.kids,0,st.people,0);
+    st.nights=clampInt(raw.nights,0,14,1);
+    st.seq=clampInt(raw.seq,0,1e9,0);
+    st.presets=Array.isArray(raw.presets)?raw.presets.filter(function(p,i,a){return PBY[p]&&a.indexOf(p)===i}):[];
+    if(Array.isArray(raw.items)){
+      var seen={};
+      st.items=raw.items.filter(function(it){return it&&typeof it.id==='string'&&typeof it.name==='string'&&!seen[it.id]&&(seen[it.id]=1)}).map(function(it){
+        return {id:it.id,name:it.name.slice(0,30),cat:CAT_IDS.indexOf(it.cat)>=0?it.cat:'misc',mode:MODE_IDS.indexOf(it.mode)>=0?it.mode:'one',checked:!!it.checked,
+          src:Array.isArray(it.src)?it.src.filter(function(p){return PBY[p]}):[],custom:!!it.custom,ord:typeof it.ord==='number'?it.ord:(ORD[it.id]!==undefined?ORD[it.id]:9999)};
+      }).filter(function(it){return it.custom||it.src.length});
+    }else rebuild(st);
+    return st;
+  }
+  // Items grouped by category in display order: [{cat,name,items:[{it,q}]}]
+  function grouped(st){
+    var out=[];
+    CATS.forEach(function(c){
+      var its=st.items.filter(function(it){return it.cat===c[0]}).sort(function(a,b){return a.ord-b.ord});
+      if(its.length)out.push({cat:c[0],name:c[1],items:its.map(function(it){return {it:it,q:qty(it.mode,st.people,st.kids,st.nights)}})});
+    });
+    return out;
+  }
+  function condText(st){
+    var s=st.people+'人'+(st.kids?'（うち子ども'+st.kids+'人）':'')+'・'+tripLabel(st.nights);
+    var names=st.presets.map(function(p){return PBY[p].name});
+    return names.length?s+'・'+names.join('＋'):s;
+  }
+  function toText(st,url){
+    var lines=['【持ち物リスト】'+(st.title?st.title:''),condText(st)];
+    grouped(st).forEach(function(g){
+      var its=g.items.filter(function(x){return x.q>0});
+      if(!its.length)return;
+      lines.push('','■'+g.name);
+      its.forEach(function(x){lines.push((x.it.checked?'✓ ':'□ ')+x.it.name+(x.q>1?' ×'+x.q:''))});
+    });
+    if(url)lines.push('','持ち物チェックリスト '+url);
+    return lines.join('\n');
+  }
+  return {CATS:CATS,MODES:MODES,ITEMS:ITEMS,PRESETS:PRESETS,PBY:PBY,qty:qty,detail:detail,tripLabel:tripLabel,newState:newState,togglePreset:togglePreset,rebuild:rebuild,addCustom:addCustom,sanitize:sanitize,grouped:grouped,condText:condText,toText:toText};
+})();
+/*CORE-END*/
+
+(function(){
+var KEY='kamimachi-packing-v1',URL_SELF='https://sulla-bluefelix.github.io/kamimachi-tools/packing/';
+var $=function(id){return document.getElementById(id)};
+var st,editing=false,confirmAction=null;
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function load(){var raw=null;try{raw=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}st=raw?Pack.sanitize(raw):Pack.newState()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}}
+function toast(msg){var t=$('toast');t.textContent=msg;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(function(){t.hidden=true},2400)}
+function opts(arr,sel){return arr.map(function(a){return '<option value="'+esc(a[0])+'"'+(String(a[0])===String(sel)?' selected':'')+'>'+esc(a[1])+'</option>'}).join('')}
+function modeOpts(cur){return opts(Pack.MODES.filter(function(m){return m[0].charAt(0)!=='k'||st.kids>0||m[0]===cur}),cur)}
+
+function renderConds(){
+  var p=[],k=[],n=[],i;
+  for(i=1;i<=12;i++)p.push([i,i+'人']);
+  for(i=0;i<=st.people;i++)k.push([i,i?i+'人':'なし']);
+  for(i=0;i<=14;i++)n.push([i,Pack.tripLabel(i)]);
+  $('people').innerHTML=opts(p,st.people);$('kids').innerHTML=opts(k,st.kids);$('nights').innerHTML=opts(n,st.nights);
+  $('title').value=st.title;
+  ['A','B'].forEach(function(g){
+    $('presets'+g).innerHTML=Pack.PRESETS.filter(function(p){return p.group===g}).map(function(p){
+      return '<label class="chip"><input type="checkbox" value="'+p.id+'"'+(st.presets.indexOf(p.id)>=0?' checked':'')+'><span>'+esc(p.name)+'</span></label>';
+    }).join('');
+  });
+  $('newCat').innerHTML=opts(Pack.CATS,'misc');
+  $('newMode').innerHTML=modeOpts('one');
+}
+
+function renderList(){
+  var h='',groups=Pack.grouped(st);
+  groups.forEach(function(g){
+    h+='<section class="cat" data-cat="'+g.cat+'"><h3><span>'+esc(g.name)+'</span><span class="cnt"></span></h3><ul>';
+    g.items.forEach(function(x){
+      var it=x.it,zero=x.q===0,d=Pack.detail(it.mode,st.people,st.kids,st.nights);
+      var q=zero?'<small>'+esc(d)+'</small>':(it.mode==='one'?'':'<b>'+x.q+'</b><small>'+esc(d)+'</small>');
+      h+='<li class="item'+(it.checked?' done':'')+(zero?' zero':'')+'" data-id="'+esc(it.id)+'" data-q="'+x.q+'">';
+      if(editing){
+        h+='<input type="checkbox" class="ck"'+(it.checked?' checked':'')+' aria-label="'+esc(it.name)+'を済みにする">'+
+           '<input type="text" class="nmIn" maxlength="30" value="'+esc(it.name)+'" aria-label="項目の名前">'+
+           '<span class="q">'+q+'</span>'+
+           '<div class="ed"><select class="md" aria-label="'+esc(it.name)+'の数え方">'+modeOpts(it.mode)+'</select><button type="button" class="x del" aria-label="'+esc(it.name)+'を削除">削除</button></div>';
+      }else{
+        h+='<label class="it"><input type="checkbox" class="ck"'+(it.checked?' checked':'')+'><span class="nm">'+esc(it.name)+'</span></label><span class="q">'+q+'</span>';
+      }
+      h+='</li>';
+    });
+    h+='</ul></section>';
+  });
+  if(!groups.length)h='<p class="muted">項目がありません。上で旅の形を選ぶか、下の欄から追加してください。</p>';
+  $('list').innerHTML=h;
+  $('summary').textContent=Pack.condText(st);
+  updateProgress();
+}
+function updateProgress(){
+  var all=0,done=0;
+  document.querySelectorAll('#list .cat').forEach(function(sec){
+    var a=0,d=0;
+    sec.querySelectorAll('.item').forEach(function(li){if(li.getAttribute('data-q')!=='0'){a++;if(li.classList.contains('done'))d++}});
+    sec.querySelector('.cnt').textContent=a?d+'/'+a:'';all+=a;done+=d;
+  });
+  $('progress').textContent=all?done+' / '+all+' 済み'+(done===all?'　すべてそろいました':''):'';
+  $('barFill').style.width=(all?Math.round(done/all*100):0)+'%';
+}
+function findItem(id){for(var i=0;i<st.items.length;i++)if(st.items[i].id===id)return st.items[i];return null}
+
+// conditions
+$('people').onchange=function(){st.people=Number(this.value);if(st.kids>st.people)st.kids=st.people;save();renderConds();renderList()};
+$('kids').onchange=function(){st.kids=Number(this.value);save();renderConds();renderList()};
+$('nights').onchange=function(){st.nights=Number(this.value);save();renderList()};
+$('title').oninput=function(){st.title=this.value.slice(0,30);save()};
+function onPreset(e){
+  var cb=e.target;if(!cb||cb.type!=='checkbox')return;
+  var id=cb.value,on=cb.checked,msg=[];
+  Pack.togglePreset(st,id,on);
+  if(on){
+    if(id==='day'&&st.nights!==0){st.nights=0;msg.push('泊数を日帰りにしました')}
+    if(id==='dom1'&&st.nights===0){st.nights=1;msg.push('泊数を1泊2日にしました')}
+    if(id==='dom3'&&st.nights<2){st.nights=2;msg.push('泊数を2泊3日にしました')}
+    if(id==='kids'&&st.kids===0){if(st.people<2)st.people=2;st.kids=1;msg.push('子どもの人数を1人にしました')}
+  }
+  save();renderConds();renderList();
+  if(msg.length)toast(msg.join('・'));
+}
+$('presetsA').addEventListener('change',onPreset);
+$('presetsB').addEventListener('change',onPreset);
+
+// list interactions
+$('list').addEventListener('change',function(e){
+  var li=e.target.closest('.item');if(!li)return;var it=findItem(li.getAttribute('data-id'));if(!it)return;
+  if(e.target.classList.contains('ck')){it.checked=e.target.checked;li.classList.toggle('done',it.checked);save();updateProgress()}
+  else if(e.target.classList.contains('md')){it.mode=e.target.value;save();renderList();var s=document.querySelector('.item[data-id="'+CSS.escape(it.id)+'"] .md');if(s)s.focus()}
+  else if(e.target.classList.contains('nmIn')){var v=e.target.value.trim().slice(0,30);if(v){it.name=v;save()}else e.target.value=it.name}
+});
+$('list').addEventListener('input',function(e){
+  if(!e.target.classList.contains('nmIn'))return;
+  var li=e.target.closest('.item'),it=li&&findItem(li.getAttribute('data-id'));
+  var v=e.target.value.trim().slice(0,30);if(it&&v){it.name=v;save()}
+});
+$('list').addEventListener('click',function(e){
+  var b=e.target.closest('.del');if(!b)return;
+  var li=b.closest('.item'),id=li.getAttribute('data-id'),it=findItem(id);
+  st.items=st.items.filter(function(x){return x.id!==id});
+  save();renderList();toast('「'+(it?it.name:'')+'」を削除しました');
+});
+$('editToggle').onclick=function(){editing=!editing;this.setAttribute('aria-pressed',String(editing));this.textContent=editing?'編集を終える':'項目を編集（数え方・名前・削除）';renderList()};
+$('addForm').onsubmit=function(e){
+  e.preventDefault();var n=$('newName').value.trim().slice(0,30);
+  if(!n){$('newName').focus();return}
+  if(st.items.length>=300){toast('300項目までです');return}
+  Pack.addCustom(st,n,$('newCat').value,$('newMode').value);
+  $('newName').value='';save();renderList();toast('「'+n+'」を追加しました');
+};
+
+function ask(msg,fn){$('confirmMsg').textContent=msg;confirmAction=fn;$('confirmBox').hidden=false;$('confirmNo').focus()}
+$('confirmYes').onclick=function(){$('confirmBox').hidden=true;if(confirmAction)confirmAction();confirmAction=null};
+$('confirmNo').onclick=function(){$('confirmBox').hidden=true;confirmAction=null};
+$('uncheckAll').onclick=function(){
+  if(!st.items.some(function(i){return i.checked})){toast('チェック済みの項目はありません');return}
+  ask('チェックをすべて外しますか？',function(){st.items.forEach(function(i){i.checked=false});save();renderList();toast('チェックを外しました')});
+};
+$('rebuild').onclick=function(){
+  $('listCard').scrollIntoView({behavior:'smooth',block:'start'});
+  ask('追加・編集した項目とチェックを消して、選んだ旅の種類から作り直しますか？',function(){Pack.rebuild(st);save();renderList();toast('作り直しました')});
+};
+
+// print & copy
+function buildPrint(){
+  var h='<div class="ph"><h1>'+esc(st.title||'旅行の持ち物リスト')+'</h1><p>'+esc(Pack.condText(st))+'</p></div><div class="pcols">';
+  Pack.grouped(st).forEach(function(g){
+    var its=g.items.filter(function(x){return x.q>0});if(!its.length)return;
+    h+='<section class="pcat"><h2>'+esc(g.name)+'</h2><ul>';
+    its.forEach(function(x){h+='<li><span class="box">'+(x.it.checked?'✓':'')+'</span><span class="pn">'+esc(x.it.name)+'</span>'+(x.it.mode!=='one'?'<span class="pq">'+x.q+'</span>':'')+'</li>'});
+    h+='</ul></section>';
+  });
+  h+='<section class="pcat"><h2>メモ・追加するもの</h2><ul>';
+  for(var i=0;i<6;i++)h+='<li><span class="box"></span><span class="line"></span></li>';
+  h+='</ul></section></div>';
+  $('printArea').innerHTML=h;
+}
+$('printBtn').onclick=function(){buildPrint();window.print()};
+window.addEventListener('beforeprint',buildPrint);
+function copyText(t,msg){
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){toast(msg)},function(){fallback(t,msg)})}else fallback(t,msg);
+}
+function fallback(t,msg){var a=document.createElement('textarea');a.value=t;a.setAttribute('readonly','');a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy');toast(msg)}catch(e){toast('コピーできませんでした')}a.remove()}
+$('copyBtn').onclick=function(){copyText(Pack.toText(st,URL_SELF),'コピーしました')};
+
+load();renderConds();renderList();
+})();
+</script>
+</body>
+</html>
